@@ -43,6 +43,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoardCell.cs" />
+    <Compile Include="BoardState.cs" />
+    <Compile Include="Cell.cs" />
+    <Compile Include="CellManager.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Line.cs" />
+    <Compile Include="LineType.cs" />
+    <Compile Include="MoveResult.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

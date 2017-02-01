@@ -7,10 +7,10 @@ namespace Gomoku2
 {
     public class Game
     {
-        private int width;
-        private int height;
-        private BoardCell[,] board;
-        private Stopwatch sw;
+        private readonly int width;
+        private readonly int height;
+        private readonly BoardCell[,] board;
+        private readonly Stopwatch sw;
 
         public event Action<BoardState, Cell, int> StateChanged;
 
@@ -20,6 +20,11 @@ namespace Gomoku2
             this.height = height;
             board = new BoardCell[width, height];
             sw = new Stopwatch();
+        }
+
+        public BoardCell[,] Board
+        {
+            get { return board; }
         }
 
         public void DoOpponentMove(int x, int y)

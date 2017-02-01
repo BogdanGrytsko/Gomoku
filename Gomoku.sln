@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gomoku", "Gomoku\Gomoku.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gomoku2", "Gomoku2\Gomoku2.csproj", "{DC2AB8B0-2011-4C29-B523-32BB17B1CBF9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GomokuSimulator", "GomokuSimulator\GomokuSimulator.csproj", "{F6AA5769-DDD9-446F-9C71-221C034D585C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DC2AB8B0-2011-4C29-B523-32BB17B1CBF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC2AB8B0-2011-4C29-B523-32BB17B1CBF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC2AB8B0-2011-4C29-B523-32BB17B1CBF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6AA5769-DDD9-446F-9C71-221C034D585C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6AA5769-DDD9-446F-9C71-221C034D585C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6AA5769-DDD9-446F-9C71-221C034D585C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6AA5769-DDD9-446F-9C71-221C034D585C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Gomoku2;
 
@@ -7,26 +9,37 @@ namespace GomokuSimulator
 {
     public partial class Form1 : Form
     {
+        private readonly GameRunner gameRunner = new GameRunner();
+        private List<BoardCell[,]> boardStates;
+        private int currState;
+
         public Form1()
         {
             InitializeComponent();
-            var game = new Gomoku2.Game(15, 15);
-            DrawGrid(game.Board);
+            DrawGrid(15,15);
         }
 
-        private void DrawGrid(BoardCell[,] board)
+        private void DrawGrid(int xcount, int ycount)
         {
-            Controls.Clear();
+            for (int x = 0; x < xcount; x++)
+            {
+                for (int y = 0; y < ycount; y++)
+                {
+                    var tmpButton = CreateButton(x,y);
+                    Controls.Add(tmpButton);
+                }
+            }
+        }
 
-
+        private void UpdateGrid(BoardCell[,] board)
+        {
             for (int x = 0; x < board.GetLength(0); x++)
             {
                 for (int y = 0; y < board.GetLength(1); y++)
                 {
-                    var tmpButton = CreateButton(x,y);
-                    tmpButton.Text = GetButtonText(board[x, y]);
-                    tmpButton.ForeColor = GetButonColor(board[x, y]);
-                    Controls.Add(tmpButton);
+                    var cell = Controls[GetName(x,y)];
+                    cell.Text = GetButtonText(board[x, y]);
+                    cell.ForeColor = GetButonColor(board[x, y]);
                 }
             }
         }
@@ -50,7 +63,7 @@ namespace GomokuSimulator
             switch (boardCell)
             {
                 case BoardCell.None:
-                    return string.Empty + "1";
+                    return string.Empty;
                 case BoardCell.First:
                     return "X";
                 case BoardCell.Second:
@@ -72,9 +85,45 @@ namespace GomokuSimulator
                 Top = startX + (x*buttonHeight + distance),
                 Left = startY + (y*buttonWidth + distance),
                 Width = buttonWidth,
-                Height = buttonHeight
+                Height = buttonHeight,
+                Name = GetName(x,y)
             };
             return tmpButton;
+        }
+
+        private static string GetName(int x, int y)
+        {
+            return string.Format("ButtonX{0}Y{1}", x, y);
+        }
+
+        private void PlayButtonClick(object sender, System.EventArgs e)
+        {
+            boardStates = gameRunner.PlayGame().ToList();
+            foreach (var board in boardStates)
+            {
+                UpdateGrid(board);
+                currState++;
+                Application.DoEvents();
+                Thread.Sleep(100);
+            }
+        }
+
+        private void BackBtnClick(object sender, System.EventArgs e)
+        {
+            if (currState > 1)
+            {
+                currState--;
+                UpdateGrid(boardStates[currState]);
+            }
+        }
+
+        private void ForwardBtnClick(object sender, System.EventArgs e)
+        {
+            if (currState < boardStates.Count - 1)
+            {
+                currState++;
+                UpdateGrid(boardStates[currState]);
+            }
         }
     }
 }

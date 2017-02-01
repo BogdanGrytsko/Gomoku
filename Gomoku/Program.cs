@@ -257,6 +257,12 @@ namespace Gomoku
             return move;
         }
 
+        public bool HasFiveInARow(BoardCell boardCell)
+        {
+            var lines = GetLines(boardCell);
+            return lines.Any(l => l.Count >= 5);
+        }
+
         private int AlphaBeta(BoardState state, int alpha, int beta, out Cell move, List<Cell> cellsToCheck = null)
         {
             if (state.IsTerminal) return LeafCase(state, alpha, beta, out move);
@@ -567,10 +573,6 @@ namespace Gomoku
             list.Sort(Comparison);
             return list;
         }
-
-
-
-
 
         private int Comparison(Tuple<Cell, List<Line>, int> t1, Tuple<Cell, List<Line>, int> t2)
         {

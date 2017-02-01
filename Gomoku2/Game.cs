@@ -538,6 +538,12 @@ namespace Gomoku2
             }
         }
 
+        public bool HasFiveInARow(BoardCell boardCell)
+        {
+            var lines = GetLines(boardCell);
+            return lines.Any(l => l.Count >= 5);
+        }
+
         public BoardState GetState()
         {
             return new BoardState(GetLines(BoardCell.First), GetLines(BoardCell.Second), BoardCell.First, 0, 0, 0, board);

@@ -12,7 +12,15 @@ namespace Gomoku2
         private readonly BoardCell[,] board;
         private readonly Stopwatch sw;
 
-        public event Action<BoardState, Cell, int> StateChanged;
+        public event Action<GameState> StateChanged;
+
+        public Game(BoardCell[,] board)
+        {
+            width = board.GetLength(0);
+            height = board.GetLength(1);
+            this.board = board;
+            sw = new Stopwatch();
+        }
 
         public Game(int width, int height)
         {
@@ -25,6 +33,20 @@ namespace Gomoku2
         public BoardCell[,] Board
         {
             get { return board; }
+        }
+
+        public EstimatedBoard EstimatedBoard
+        {
+            get
+            {
+                var firstLines = GetLines(BoardCell.First);
+                var secondLines = GetLines(BoardCell.Second);
+                return new EstimatedBoard
+                {
+                    Board = (BoardCell[,]) board.Clone(),
+                    Estimate = SumLines(firstLines, BoardCell.First) - SumLines(secondLines, BoardCell.Second)
+                };
+            }
         }
 
         public void DoOpponentMove(int x, int y)
@@ -135,7 +157,7 @@ namespace Gomoku2
 
         private void OnStateChanged(BoardState newState, Cell move, int estimate)
         {
-            if (StateChanged != null) StateChanged(newState, move, estimate);
+            StateChanged?.Invoke(new GameState { BoardState =  newState.Clone(), Cell = move, Estimate = estimate});
         }
 
         private int LeafCase(BoardState state, int alpha, int beta, out Cell move)
@@ -383,10 +405,6 @@ namespace Gomoku2
             return list;
         }
 
-
-
-
-
         private int Comparison(Tuple<Cell, List<Line>, int> t1, Tuple<Cell, List<Line>, int> t2)
         {
             var comp = t2.Item3.CompareTo(t1.Item3);
@@ -518,24 +536,6 @@ namespace Gomoku2
                 lines.Add(mergedLine);
             }
             if (mergedLine == null) usedLines.Add(line);
-        }
-
-        public void AppendBoardLine(int i, string line)
-        {
-            for (int j = 0; j < line.Length; j++)
-            {
-                board[i, j] = (BoardCell)Enum.Parse(typeof(BoardCell), line[j].ToString());
-            }
-        }
-
-        public void AppendBoardLineXO(int i, string line)
-        {
-            for (int j = 0; j < line.Length; j++)
-            {
-                if (line[j].ToString() == " ") board[i, j] = BoardCell.None;
-                if (line[j].ToString() == "X") board[i, j] = BoardCell.First;
-                if (line[j].ToString() == "O") board[i, j] = BoardCell.Second;
-            }
         }
 
         public bool HasFiveInARow(BoardCell boardCell)

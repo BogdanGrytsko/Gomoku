@@ -65,7 +65,6 @@ namespace Gomoku2
             if (immidiateThreatCells.Any())
             {
                 nextCells = immidiateThreatCells;
-                ////if (MinDepth >= -4)
                 MinDepth--;
             }
             else nextCells = cellsToCheck ?? GetNearEmptyCells();

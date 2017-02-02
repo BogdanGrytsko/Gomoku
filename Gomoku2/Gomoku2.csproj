@@ -47,7 +47,9 @@
     <Compile Include="BoardState.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="CellManager.cs" />
+    <Compile Include="EstimatedBoard.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="LineType.cs" />
     <Compile Include="MoveResult.cs" />

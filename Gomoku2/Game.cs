@@ -11,6 +11,7 @@ namespace Gomoku2
         private readonly int height;
         private readonly BoardCell[,] board;
         private readonly Stopwatch sw;
+        private int lastEstimate;
 
         public event Action<GameState> StateChanged;
 
@@ -44,7 +45,7 @@ namespace Gomoku2
                 return new EstimatedBoard
                 {
                     Board = (BoardCell[,]) board.Clone(),
-                    Estimate = SumLines(firstLines, BoardCell.First) - SumLines(secondLines, BoardCell.Second)
+                    Estimate = lastEstimate
                 };
             }
         }
@@ -89,7 +90,7 @@ namespace Gomoku2
 
             //if (GetBestFromNextMoves(state, out move)) return move;
 
-            AlphaBeta(state, int.MinValue, int.MaxValue, out move);
+            lastEstimate = AlphaBeta(state, int.MinValue, int.MaxValue, out move);
             sw.Stop();
             return move;
         }

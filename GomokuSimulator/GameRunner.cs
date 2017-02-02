@@ -10,20 +10,19 @@ namespace GomokuSimulator
             var player1 = new Gomoku2.Game(15, 15);
             var player2 = new Gomoku.Game(15, 15);
 
-            bool shouldContinuePlaying = true;
-            while (shouldContinuePlaying)
+            while (true)
             {
                 var player1Move = player1.DoMove();
                 player2.DoOpponentMove(player1Move.X, player1Move.Y);
                 yield return player1.EstimatedBoard;
                 if (player1.HasFiveInARow(Gomoku2.BoardCell.First))
-                    shouldContinuePlaying = false;
+                    break;
 
                 var player2Move = player2.DoMove();
                 player1.DoOpponentMove(player2Move.X, player2Move.Y);
                 yield return player1.EstimatedBoard;
                 if (player1.HasFiveInARow(Gomoku2.BoardCell.Second))
-                    shouldContinuePlaying = false;
+                    break;
             }
         }
     }

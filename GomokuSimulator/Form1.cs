@@ -183,6 +183,10 @@ namespace GomokuSimulator
 
         private void AnalyzeBtnClick(object sender, System.EventArgs e)
         {
+            analyzisTreeView.Nodes.Clear();
+            rootGameStates.Clear();
+            allGameStates.Clear();
+
             var game = new Game(boards[currState].Board);
             game.StateChanged += GameOnStateChanged;
             game.DoMove(analyzeDepth);

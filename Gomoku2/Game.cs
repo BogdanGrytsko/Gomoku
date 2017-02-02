@@ -18,7 +18,7 @@ namespace Gomoku2
         {
             width = board.GetLength(0);
             height = board.GetLength(1);
-            this.board = board;
+            this.board = (BoardCell[,])board.Clone();
             sw = new Stopwatch();
         }
 
@@ -74,8 +74,8 @@ namespace Gomoku2
             if (!myLines.Any()) return FirstMoveCase();
 
             Cell move;
-            if (WinInThisMove(myLines, BoardCell.First, out move)) return move;
-            if (WinInThisMove(oppLines, BoardCell.Second, out move)) return move;
+            //if (WinInThisMove(myLines, BoardCell.First, out move)) return move;
+            //if (WinInThisMove(oppLines, BoardCell.Second, out move)) return move;
 
             BoardState state;
             if (sw.Elapsed < TimeSpan.FromSeconds(5))
@@ -87,7 +87,7 @@ namespace Gomoku2
             else
                 state = new BoardState(myLines, oppLines, BoardCell.First, depth - 2, 0, maxWidth, board);
 
-            if (GetBestFromNextMoves(state, out move)) return move;
+            //if (GetBestFromNextMoves(state, out move)) return move;
 
             AlphaBeta(state, int.MinValue, int.MaxValue, out move);
             sw.Stop();

@@ -155,7 +155,9 @@ namespace GomokuSimulator
 
         private void ImportBoardBtnClick(object sender, System.EventArgs e)
         {
-            var board = GetBoard("board13.txt");
+            if (importBoardFileDialog.ShowDialog() != DialogResult.OK) return;
+
+            var board = GetBoard(importBoardFileDialog.FileName);
             boards.Add(board);
             UpdateGrid(board);
         }

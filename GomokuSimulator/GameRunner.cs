@@ -8,7 +8,7 @@ namespace GomokuSimulator
         public IEnumerable<EstimatedBoard> PlayGame()
         {
             var player1 = new Gomoku2.Game(15, 15);
-            var player2 = new Gomoku.Game(15, 15);
+            var player2 = new Gomoku2.Game(15, 15);
 
             while (true)
             {

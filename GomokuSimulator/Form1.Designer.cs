@@ -37,6 +37,7 @@
             this.importBoardBtn = new System.Windows.Forms.Button();
             this.analyzeBtn = new System.Windows.Forms.Button();
             this.analyzisTreeView = new System.Windows.Forms.TreeView();
+            this.importBoardFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // button1
@@ -124,6 +125,10 @@
             this.analyzisTreeView.TabIndex = 9;
             this.analyzisTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.AnalyzisTreeViewNodeClick);
             // 
+            // importBoardFileDialog
+            // 
+            this.importBoardFileDialog.FileName = "openFileDialog1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -155,6 +160,7 @@
         private System.Windows.Forms.Button importBoardBtn;
         private System.Windows.Forms.Button analyzeBtn;
         private System.Windows.Forms.TreeView analyzisTreeView;
+        private System.Windows.Forms.OpenFileDialog importBoardFileDialog;
     }
 }
 

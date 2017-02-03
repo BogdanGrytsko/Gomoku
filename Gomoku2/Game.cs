@@ -31,17 +31,10 @@ namespace Gomoku2
             sw = new Stopwatch();
         }
 
-        public BoardCell[,] Board
-        {
-            get { return board; }
-        }
-
         public EstimatedBoard EstimatedBoard
         {
             get
             {
-                var firstLines = GetLines(BoardCell.First);
-                var secondLines = GetLines(BoardCell.Second);
                 return new EstimatedBoard
                 {
                     Board = (BoardCell[,]) board.Clone(),
@@ -50,28 +43,23 @@ namespace Gomoku2
             }
         }
 
-        public void DoOpponentMove(int x, int y)
+        public void DoOpponentMove(int x, int y, BoardCell boardCell = BoardCell.Second)
         {
-            board[x, y] = BoardCell.Second;
+            board[x, y] = boardCell;
         }
 
-        public void DoMyMove(int x, int y)
+        public Cell DoMove(BoardCell boardCell = BoardCell.First, int depth = 4, int treeMaxWidth = 16)
         {
-            board[x, y] = BoardCell.First;
-        }
-
-        public Cell DoMove(int depth = 4, int treeMaxWidth = 16)
-        {
-            var move = DoMoveInternal(depth, treeMaxWidth);
-            board[move.X, move.Y] = BoardCell.First;
+            var move = DoMoveInternal(boardCell, depth, treeMaxWidth);
+            board[move.X, move.Y] = boardCell;
             return move;
         }
 
-        public Cell DoMoveInternal(int depth, int maxWidth)
+        private Cell DoMoveInternal(BoardCell boardCell, int depth, int maxWidth)
         {
             sw.Start();
-            var myLines = GetLines(BoardCell.First);
-            var oppLines = GetLines(BoardCell.Second);
+            var myLines = GetLines(boardCell);
+            var oppLines = GetLines(boardCell.Opponent());
             if (!myLines.Any()) return FirstMoveCase();
 
             Cell move;
@@ -80,13 +68,11 @@ namespace Gomoku2
 
             BoardState state;
             if (sw.Elapsed < TimeSpan.FromSeconds(5))
-                state = new BoardState(myLines, oppLines, BoardCell.First, depth, 0, maxWidth, board);
+                state = new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board);
             else if (sw.Elapsed < TimeSpan.FromSeconds(6.6))
-                state = new BoardState(myLines, oppLines, BoardCell.First, depth - 1, 0, maxWidth, board);
-            else if (sw.Elapsed < TimeSpan.FromSeconds(9.9))
-                state = new BoardState(myLines, oppLines, BoardCell.First, depth - 2, 0, maxWidth, board);
+                state = new BoardState(myLines, oppLines, boardCell, depth - 1, 0, maxWidth, board);
             else
-                state = new BoardState(myLines, oppLines, BoardCell.First, depth - 2, 0, maxWidth, board);
+                state = new BoardState(myLines, oppLines, boardCell, depth - 2, 0, maxWidth, board);
 
             //if (GetBestFromNextMoves(state, out move)) return move;
 
@@ -95,27 +81,27 @@ namespace Gomoku2
             return move;
         }
 
-        private int AlphaBeta(BoardState state, int alpha, int beta, out Cell move, List<Cell> cellsToCheck = null)
+        private int AlphaBeta(BoardState state, int alpha, int beta, out Cell move)
         {
             if (state.IsTerminal) return LeafCase(state, alpha, beta, out move);
 
             move = null;
             int bestEstim = state.StartEstimate;
 
-            var nextCells = state.GetNextCells(cellsToCheck);
-            var toTake = state.Depth == 4 ? 10 : state.MaxWidth;
-
-            foreach (var tuple in EstimateCells(state, nextCells).Take(toTake))
+            var nextCells = state.GetNextCells();
+            foreach (var tuple in EstimateCells(state, nextCells))
             {
                 var cell = tuple.Item1;
                 Cell bestMove;
 
-                board[cell.X, cell.Y] = state.Type;
+                board[cell.X, cell.Y] = state.MyCellType;
                 var currEstim = tuple.Item3 * (state.MovesFirst ? 1 : -1);
                 OnStateChanged(state, cell, currEstim);
                 int minMax;
-                if (FiveInRow(tuple.Item3) || StraightFour(tuple.Item3)) minMax = currEstim;
-                else minMax = AlphaBeta(state.GetNextState(tuple.Item2), alpha, beta, out bestMove);
+                if (FiveInRow(tuple.Item3) || StraightFour(tuple.Item3))
+                    minMax = currEstim;
+                else
+                    minMax = AlphaBeta(state.GetNextState(tuple.Item2), alpha, beta, out bestMove);
 
                 if (state.MovesFirst && minMax > bestEstim)
                 {
@@ -167,37 +153,32 @@ namespace Gomoku2
             int bestEstim = state.StartEstimate;
             foreach (var cell in state.GetNextCells())
             {
-                board[cell.X, cell.Y] = state.Type;
+                board[cell.X, cell.Y] = state.MyCellType;
                 var newLines = GetLinesByAddingCell(cell, state.MyLines);
-                var myEstim = SumLines(newLines, state.Type);
+                var myEstim = SumLines(newLines, state.MyCellType);
 
-                var oppEstim = EstimateOtherMove(state.OppLines, state.Type);
-                var estim = (myEstim - oppEstim) * (state.MovesFirst ? 1 : -1);
+                var oppEstim = SumLines(state.OppLines, state.OpponentCellType);
+                var minMax = (myEstim - oppEstim) * (state.MovesFirst ? 1 : -1);
 
-                if (state.MovesFirst && estim > bestEstim)
+                if (state.MovesFirst && minMax > bestEstim)
                 {
-                    bestEstim = estim;
-                    alpha = estim;
+                    bestEstim = minMax;
+                    alpha = minMax;
                     move = cell;
-                    OnStateChanged(state, cell, estim);
+                    OnStateChanged(state, cell, minMax);
                 }
-                if (!state.MovesFirst && estim < bestEstim)
+                if (!state.MovesFirst && minMax < bestEstim)
                 {
-                    bestEstim = estim;
-                    beta = estim;
+                    bestEstim = minMax;
+                    beta = minMax;
                     move = cell;
-                    OnStateChanged(state, cell, estim);
+                    OnStateChanged(state, cell, minMax);
                 }
                 board[cell.X, cell.Y] = BoardCell.None;
-                if (BreakOnFive(state.MovesFirst, estim) || BreakOnStraightFour(state.MovesFirst, estim)
+                if (BreakOnFive(state.MovesFirst, minMax) || BreakOnStraightFour(state.MovesFirst, minMax)
                     || beta <= alpha) break;
             }
             return bestEstim;
-        }
-
-        private int EstimateOtherMove(List<Line> lines, BoardCell type)
-        {
-            return SumLines(lines, type == BoardCell.First ? BoardCell.Second : BoardCell.First);
         }
 
         private Cell FirstMoveCase()
@@ -205,80 +186,80 @@ namespace Gomoku2
             return board[7, 7] == BoardCell.None ? CellManager.Get(7, 7) : CellManager.Get(8, 8);
         }
 
-        private bool GetBestFromNextMoves(BoardState state, out Cell move)
-        {
-            move = null;
-            MoveResult myThree = MoveResult.NotFound, oppThree = MoveResult.NotFound;
-            if (OneMoveForwardFour(state, ref myThree, ref move)) return true;
-            if (DefendFromOpenedThree(state, out move)) return true;
-            if (OneMoveForwardFour(state.Switch(), ref oppThree, ref move)) return true;
-            if (myThree.Found)
-            {
-                move = myThree.Move;
-                return true;
-            }
-            if (oppThree.Found)
-            {
-                move = oppThree.Move;
-                return true;
-            }
-            return false;
-        }
+        //private bool GetBestFromNextMoves(BoardState state, out Cell move)
+        //{
+        //    move = null;
+        //    MoveResult myThree = MoveResult.NotFound, oppThree = MoveResult.NotFound;
+        //    if (OneMoveForwardFour(state, ref myThree, ref move)) return true;
+        //    if (DefendFromOpenedThree(state, out move)) return true;
+        //    if (OneMoveForwardFour(state.Switch(), ref oppThree, ref move)) return true;
+        //    if (myThree.Found)
+        //    {
+        //        move = myThree.Move;
+        //        return true;
+        //    }
+        //    if (oppThree.Found)
+        //    {
+        //        move = oppThree.Move;
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
-        private bool OneMoveForwardFour(
-            BoardState state,
-            ref MoveResult myThree,
-            ref Cell move)
-        {
-            foreach (var line in state.MyLines)
-            {
-                var moves = line.GetTwoNextCells(board);
-                var res = FindBestMove(state, moves.Item1);
-                if (LineFour(ref move, res)) return true;
-                if (res.Found) myThree = res;
-                res = FindBestMove(state, moves.Item2);
-                if (LineFour(ref move, res)) return true;
-                if (res.Found) myThree = res;
-            }
-            foreach (var cell in state.GetNearEmptyCells())
-            {
-                var res = FindBestMove(state, cell);
-                if (LineFour(ref move, res)) return true;
-                if (res.Found) myThree = res;
-            }
-            return false;
-        }
+        //private bool OneMoveForwardFour(
+        //    BoardState state,
+        //    ref MoveResult myThree,
+        //    ref Cell move)
+        //{
+        //    foreach (var line in state.MyLines)
+        //    {
+        //        var moves = line.GetTwoNextCells(board);
+        //        var res = FindBestMove(state, moves.Item1);
+        //        if (LineFour(ref move, res)) return true;
+        //        if (res.Found) myThree = res;
+        //        res = FindBestMove(state, moves.Item2);
+        //        if (LineFour(ref move, res)) return true;
+        //        if (res.Found) myThree = res;
+        //    }
+        //    foreach (var cell in state.GetNearEmptyCells())
+        //    {
+        //        var res = FindBestMove(state, cell);
+        //        if (LineFour(ref move, res)) return true;
+        //        if (res.Found) myThree = res;
+        //    }
+        //    return false;
+        //}
 
-        private static bool LineFour(ref Cell move, MoveResult res)
-        {
-            if (res.FoundFour)
-            {
-                move = res.Move;
-                return true;
-            }
-            return false;
-        }
+        //private static bool LineFour(ref Cell move, MoveResult res)
+        //{
+        //    if (res.FoundFour)
+        //    {
+        //        move = res.Move;
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
-        private bool DefendFromOpenedThree(BoardState state, out Cell move)
-        {
-            move = null;
-            var cellsToDefend = new List<Cell>();
-            foreach (var oppLine in state.OppLines)
-            {
-                Tuple<Cell, Cell> moves;
-                if (ThreeInRowWithTwoPossibleMovesCase(oppLine, out moves))
-                {
-                    cellsToDefend.Add(moves.Item1);
-                    cellsToDefend.Add(moves.Item2);
-                }
-            }
-            if (cellsToDefend.Any())
-            {
-                AlphaBeta(state, int.MinValue, int.MaxValue, out move, cellsToDefend);
-                return true;
-            }
-            return false;
-        }
+        //private bool DefendFromOpenedThree(BoardState state, out Cell move)
+        //{
+        //    move = null;
+        //    var cellsToDefend = new List<Cell>();
+        //    foreach (var oppLine in state.OppLines)
+        //    {
+        //        Tuple<Cell, Cell> moves;
+        //        if (ThreeInRowWithTwoPossibleMovesCase(oppLine, out moves))
+        //        {
+        //            cellsToDefend.Add(moves.Item1);
+        //            cellsToDefend.Add(moves.Item2);
+        //        }
+        //    }
+        //    if (cellsToDefend.Any())
+        //    {
+        //        AlphaBeta(state, int.MinValue, int.MaxValue, out move, cellsToDefend);
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         public int SumLines(List<Line> lines, BoardCell type)
         {
@@ -297,95 +278,95 @@ namespace Gomoku2
             return lineType == LineType.FourInRow || lineType == LineType.BrokenFourInRow;
         }
 
-        private bool WinInThisMove(List<Line> lines, BoardCell type, out Cell move)
-        {
-            move = null;
-            foreach (var line in lines)
-            {
-                var next = line.GetTwoNextCells(board);
-                var res1 = CanDoWinMove(lines, next.Item1, type);
-                if (res1.Found)
-                {
-                    move = res1.Move;
-                    return true;
-                }
-                var res2 = CanDoWinMove(lines, next.Item2, type);
-                if (res2.Found)
-                {
-                    move = res2.Move;
-                    return true;
-                }
-            }
-            return false;
-        }
+        //private bool WinInThisMove(List<Line> lines, BoardCell type, out Cell move)
+        //{
+        //    move = null;
+        //    foreach (var line in lines)
+        //    {
+        //        var next = line.GetTwoNextCells(board);
+        //        var res1 = CanDoWinMove(lines, next.Item1, type);
+        //        if (res1.Found)
+        //        {
+        //            move = res1.Move;
+        //            return true;
+        //        }
+        //        var res2 = CanDoWinMove(lines, next.Item2, type);
+        //        if (res2.Found)
+        //        {
+        //            move = res2.Move;
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
 
-        private MoveResult CanDoWinMove(List<Line> existingLines, Cell proposedMove, BoardCell type)
-        {
-            if (proposedMove == null) return MoveResult.NotFound;
-            board[proposedMove.X, proposedMove.Y] = type;
+        //private MoveResult CanDoWinMove(List<Line> existingLines, Cell proposedMove, BoardCell type)
+        //{
+        //    if (proposedMove == null) return MoveResult.NotFound;
+        //    board[proposedMove.X, proposedMove.Y] = type;
 
-            var lines = GetLinesByAddingCell(proposedMove, existingLines);
-            if (lines.Any(l => l.Count >= 5)) return RevertAndReturn(proposedMove, 5);
+        //    var lines = GetLinesByAddingCell(proposedMove, existingLines);
+        //    if (lines.Any(l => l.Count >= 5)) return RevertAndReturn(proposedMove, 5);
 
-            board[proposedMove.X, proposedMove.Y] = BoardCell.None;
-            return MoveResult.NotFound;
-        }
+        //    board[proposedMove.X, proposedMove.Y] = BoardCell.None;
+        //    return MoveResult.NotFound;
+        //}
 
-        private MoveResult FindBestMove(BoardState state, Cell move)
-        {
-            if (move == null) return MoveResult.NotFound;
-            // do move
-            board[move.X, move.Y] = state.Type;
+        //private MoveResult FindBestMove(BoardState state, Cell move)
+        //{
+        //    if (move == null) return MoveResult.NotFound;
+        //    // do move
+        //    board[move.X, move.Y] = state.MyCellType;
 
-            var lines = GetLinesByAddingCell(move, state.MyLines);
-            int lineOfThree = 0, lineOfFour = 0;
-            foreach (var line in lines)
-            {
-                var lineType = line.Estimate(board, state.Type);
-                if (lineType == LineType.StraightFour) return RevertAndReturn(move, 4);
-                if ((ThreatOfFour(lineType)) && line.Contains(move))
-                {
-                    lineOfFour++;
-                    continue;
-                }
-                if (ThreatOfThree(lineType) && line.Contains(move)) lineOfThree++;
-            }
-            if (lineOfFour >= 2) return RevertAndReturn(move, 4);
-            if (lineOfFour >= 1 && lineOfThree >= 1) return RevertAndReturn(move, 4);
+        //    var lines = GetLinesByAddingCell(move, state.MyLines);
+        //    int lineOfThree = 0, lineOfFour = 0;
+        //    foreach (var line in lines)
+        //    {
+        //        var lineType = line.Estimate(board, state.MyCellType);
+        //        if (lineType == LineType.StraightFour) return RevertAndReturn(move, 4);
+        //        if ((ThreatOfFour(lineType)) && line.Contains(move))
+        //        {
+        //            lineOfFour++;
+        //            continue;
+        //        }
+        //        if (ThreatOfThree(lineType) && line.Contains(move)) lineOfThree++;
+        //    }
+        //    if (lineOfFour >= 2) return RevertAndReturn(move, 4);
+        //    if (lineOfFour >= 1 && lineOfThree >= 1) return RevertAndReturn(move, 4);
 
-            if (lineOfThree >= 2 && !state.OppLines.Any(l => ThreatOfThree(l.Estimate(board, state.Type))))
-                return RevertAndReturn(move, 3);
-            // revert
-            board[move.X, move.Y] = BoardCell.None;
-            return MoveResult.NotFound;
-        }
+        //    if (lineOfThree >= 2 && !state.OppLines.Any(l => ThreatOfThree(l.Estimate(board, state.MyCellType))))
+        //        return RevertAndReturn(move, 3);
+        //    // revert
+        //    board[move.X, move.Y] = BoardCell.None;
+        //    return MoveResult.NotFound;
+        //}
 
         public static bool ThreatOfThree(LineType lineType)
         {
             return lineType == LineType.ThreeInRow || lineType == LineType.BrokenThree;
         }
 
-        private MoveResult RevertAndReturn(Cell proposedMove, int lenght)
-        {
-            board[proposedMove.X, proposedMove.Y] = BoardCell.None;
-            return new MoveResult(proposedMove, lenght, true);
-        }
+        //private MoveResult RevertAndReturn(Cell proposedMove, int lenght)
+        //{
+        //    board[proposedMove.X, proposedMove.Y] = BoardCell.None;
+        //    return new MoveResult(proposedMove, lenght, true);
+        //}
 
-        private bool ThreeInRowWithTwoPossibleMovesCase(Line oppLine, out Tuple<Cell, Cell> moves)
-        {
-            moves = null;
-            if (oppLine.Count != 3)
-            {
-                return false;
-            }
-            var oppBest = oppLine.GetTwoNextCells(board);
-            if (oppBest.Item1 != null && oppBest.Item2 != null)
-            {
-                moves = oppBest;
-                return true;
-            }
-            return false;
-        }
+        //private bool ThreeInRowWithTwoPossibleMovesCase(Line oppLine, out Tuple<Cell, Cell> moves)
+        //{
+        //    moves = null;
+        //    if (oppLine.Count != 3)
+        //    {
+        //        return false;
+        //    }
+        //    var oppBest = oppLine.GetTwoNextCells(board);
+        //    if (oppBest.Item1 != null && oppBest.Item2 != null)
+        //    {
+        //        moves = oppBest;
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         private List<Tuple<Cell, List<Line>, int>> EstimateCells(
             BoardState state, IEnumerable<Cell> cells)
@@ -394,11 +375,11 @@ namespace Gomoku2
 
             foreach (var cell in cells)
             {
-                board[cell.X, cell.Y] = state.Type;
+                board[cell.X, cell.Y] = state.MyCellType;
                 var newLines = GetLinesByAddingCell(cell, state.MyLines);
-                var oppEstim = EstimateOtherMove(state.OppLines, state.Type);
+                var oppEstim = SumLines(state.OppLines, state.OpponentCellType);
                 list.Add(new Tuple<Cell, List<Line>, int>(
-                    cell, newLines, SumLines(newLines, state.Type) - oppEstim));
+                    cell, newLines, SumLines(newLines, state.MyCellType) - oppEstim));
                 board[cell.X, cell.Y] = BoardCell.None;
 
             }
@@ -543,11 +524,6 @@ namespace Gomoku2
         {
             var lines = GetLines(boardCell);
             return lines.Any(l => l.Count >= 5);
-        }
-
-        public BoardState GetState()
-        {
-            return new BoardState(GetLines(BoardCell.First), GetLines(BoardCell.Second), BoardCell.First, 0, 0, 0, board);
         }
     }
 }

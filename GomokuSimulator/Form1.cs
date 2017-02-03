@@ -41,41 +41,13 @@ namespace GomokuSimulator
                 for (int y = 0; y < board.GetLength(1); y++)
                 {
                     var cell = Controls[GetName(x,y)];
-                    cell.Text = GetCellText(board[x, y]);
-                    cell.ForeColor = GetButonColor(board[x, y]);
+                    cell.Text = board[x, y].GetCellText();
+                    cell.ForeColor = board[x, y].GetButonColor();
                 }
             }
 
             estimateTxtBox.Text = estimatedBoard.Estimate.ToString();
             moveNumberTxtBox.Text = currState.ToString();
-        }
-
-        private Color GetButonColor(BoardCell boardCell)
-        {
-            switch (boardCell)
-            {
-                case BoardCell.None:
-                    return Color.White;
-                case BoardCell.First:
-                    return Color.Red;
-                case BoardCell.Second:
-                    return Color.Blue;
-            }
-            return Color.Black;
-        }
-
-        private string GetCellText(BoardCell boardCell)
-        {
-            switch (boardCell)
-            {
-                case BoardCell.None:
-                    return " ";
-                case BoardCell.First:
-                    return "X";
-                case BoardCell.Second:
-                    return "O";
-            }
-            return string.Empty;
         }
 
         private static Button CreateButton(int x, int y)
@@ -146,7 +118,7 @@ namespace GomokuSimulator
                 {
                     for (int y = 0; y < board.GetLength(1); y++)
                     {
-                        sw.Write(GetCellText(board[x,y]));
+                        sw.Write(board[x, y].GetCellText());
                     }
                     sw.WriteLine();
                 }
@@ -181,18 +153,27 @@ namespace GomokuSimulator
             return new EstimatedBoard {Board = board};
         }
 
-        private const int analyzeDepth = 5;
-
         private void AnalyzeBtnClick(object sender, System.EventArgs e)
         {
             analyzisTreeView.Nodes.Clear();
             rootGameStates.Clear();
             allGameStates.Clear();
 
-            var game = new Game(boards[currState].Board);
+            var board = boards[currState].Board;
+            var game = new Game(board);
             game.StateChanged += GameOnStateChanged;
-            game.DoMove(analyzeDepth);
+            game.DoMove(board.WhoMovesNext(), AnalyzeDepth, AnalyzeWidth);
             PopulateTree(analyzisTreeView.Nodes, rootGameStates);
+        }
+
+        private int AnalyzeDepth
+        {
+            get { return int.Parse(depthTextBox.Text); }
+        }
+
+        private int AnalyzeWidth
+        {
+            get { return int.Parse(widthTxtBox.Text); }
         }
 
         private static void PopulateTree(TreeNodeCollection nodes, IEnumerable<GameState> gameStates)
@@ -207,7 +188,7 @@ namespace GomokuSimulator
 
         private void GameOnStateChanged(GameState gameState)
         {
-            if (gameState.BoardState.Depth == analyzeDepth)
+            if (gameState.BoardState.Depth == AnalyzeDepth)
             {
                 rootGameStates.Add(gameState);
                 allGameStates.Add(gameState);

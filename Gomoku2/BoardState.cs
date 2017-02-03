@@ -9,7 +9,12 @@ namespace Gomoku2
 
         public List<Line> OppLines { get; private set; }
 
-        public BoardCell Type { get; private set; }
+        public BoardCell MyCellType { get; private set; }
+
+        public BoardCell OpponentCellType
+        {
+            get { return MyCellType.Opponent(); }
+        }
 
         public int Depth { get; private set; }
 
@@ -18,11 +23,11 @@ namespace Gomoku2
         public BoardCell[,] Board { get; private set; }
 
         public BoardState(
-            List<Line> myLines, List<Line> oppLines, BoardCell type, int depth, int minDepth, int maxWidth, BoardCell[,] board)
+            List<Line> myLines, List<Line> oppLines, BoardCell myCellType, int depth, int minDepth, int maxWidth, BoardCell[,] board)
         {
             MyLines = myLines;
             OppLines = oppLines;
-            Type = type;
+            MyCellType = myCellType;
             Depth = depth;
             Board = board;
             MaxWidth = maxWidth;
@@ -33,7 +38,7 @@ namespace Gomoku2
         {
             get
             {
-                return Type == BoardCell.First;
+                return MyCellType == BoardCell.First;
             }
         }
 
@@ -45,20 +50,12 @@ namespace Gomoku2
             }
         }
 
-        public BoardCell Opponent
-        {
-            get
-            {
-                return MovesFirst ? BoardCell.Second : BoardCell.First;
-            }
-        }
-
         public BoardState GetNextState(List<Line> myNewLines)
         {
-            return new BoardState(OppLines, myNewLines, Opponent, Depth - 1, MinDepth, MaxWidth, Board);
+            return new BoardState(OppLines, myNewLines, OpponentCellType, Depth - 1, MinDepth, MaxWidth, Board);
         }
 
-        public IEnumerable<Cell> GetNextCells(List<Cell> cellsToCheck = null)
+        public IEnumerable<Cell> GetNextCells()
         {
             IEnumerable<Cell> nextCells;
             var immidiateThreatCells = GetImmidiateThreatCells().ToList();
@@ -67,7 +64,7 @@ namespace Gomoku2
                 nextCells = immidiateThreatCells;
                 MinDepth--;
             }
-            else nextCells = cellsToCheck ?? GetNearEmptyCells();
+            else nextCells = GetNearEmptyCells().Take(MaxWidth);
             return nextCells;
         }
 
@@ -83,8 +80,15 @@ namespace Gomoku2
 
         private IEnumerable<Cell> GetImmidiateThreatCells()
         {
-            var threatOfFour = OppLines.Where(l => Game.ThreatOfFour(l.Estimate(Board, Opponent))).ToList();
+            //TODO this doesn't work propery with broken 4. Threat Cell just return next cells.
+            var myThreatOfFour = MyLines.Where(l => Game.ThreatOfFour(l.Estimate(Board, MyCellType))).ToList();
+            foreach (var cell in GetThreatCells(myThreatOfFour)) yield return cell;
+
+            //TODO this doesn't work propery with broken 4. Threat Cell just return next cells.
+            var threatOfFour = OppLines.Where(l => Game.ThreatOfFour(l.Estimate(Board, OpponentCellType))).ToList();
             foreach (var cell in GetThreatCells(threatOfFour)) yield return cell;
+
+            
 
             ////if (threatOfFour.Any()) yield break;
             ////var oppThreatOfThree = OppLines.Where(l => Game.ThreatOfThree(l.Estimate(Board, Opponent))).ToList();
@@ -92,10 +96,10 @@ namespace Gomoku2
             ////{
             ////    foreach (var cell in GetThreatCells(oppThreatOfThree)) yield return cell;
 
-            ////    var myThreatOfFour = MyLines.Where(l => l.Estimate(Board, Type) == LineType.BlokedThree);
+            ////    var myThreatOfFour = MyLines.Where(l => l.Estimate(Board, MyCellType) == LineType.BlokedThree);
             ////    foreach (var cell in GetThreatCells(myThreatOfFour)) yield return cell;
 
-            ////    var myThreatOfThree = MyLines.Where(l => Game.ThreatOfThree(l.Estimate(Board, Type)));
+            ////    var myThreatOfThree = MyLines.Where(l => Game.ThreatOfThree(l.Estimate(Board, MyCellType)));
             ////    foreach (var cell in GetThreatCells(myThreatOfThree)) yield return cell;
             ////}
         }
@@ -113,6 +117,9 @@ namespace Gomoku2
         public IEnumerable<Cell> GetNearEmptyCells()
         {
             var set = new HashSet<Cell>();
+            set.UnionWith(GetPriorityCells(MyLines));
+            set.UnionWith(GetPriorityCells(OppLines));
+
             for (int x = 0; x < 15; ++x)
             {
                 for (int y = 0; y < 15; ++y)
@@ -121,19 +128,27 @@ namespace Gomoku2
                         set.UnionWith(Game.GetAdjustmentCells(Board, CellManager.Get(x, y)));
                 }
             }
-            set.UnionWith(GetNextNextCells(MyLines));
-            set.UnionWith(GetNextNextCells(OppLines));
-            return set.OrderBy(c => c.X * 15 + c.Y);
+            return set;
         }
 
-        private IEnumerable<Cell> GetNextNextCells(List<Line> lines)
+        private IEnumerable<Cell> GetPriorityCells(IEnumerable<Line> lines)
         {
             foreach (var line in lines)
             {
                 var close = line.GetTwoNextCells(Board);
                 var next = line.GetTwoNextNextCells(Board);
-                if (close.Item1 != null && next.Item1 != null) yield return next.Item1;
-                if (close.Item2 != null && next.Item2 != null) yield return next.Item2;
+                if (close.Item1 != null)
+                {
+                    yield return close.Item1;
+                    if (next.Item1 != null)
+                        yield return next.Item1;
+                }
+                if (close.Item2 != null)
+                {
+                    yield return close.Item2;
+                    if (next.Item2 != null)
+                        yield return next.Item2;
+                }
             }
         }
 
@@ -149,12 +164,12 @@ namespace Gomoku2
                     boardCopy[i, j] = Board[i, j];
                 }
             }
-            return new BoardState(MyLines, OppLines, Type, Depth, MinDepth, MaxWidth, boardCopy);
+            return new BoardState(MyLines, OppLines, MyCellType, Depth, MinDepth, MaxWidth, boardCopy);
         }
 
         public BoardState Switch()
         {
-            return new BoardState(OppLines, MyLines, Opponent, Depth, MinDepth, MaxWidth, Board);
+            return new BoardState(OppLines, MyLines, OpponentCellType, Depth, MinDepth, MaxWidth, Board);
         }
     }
 }

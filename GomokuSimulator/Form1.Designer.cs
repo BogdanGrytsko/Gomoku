@@ -38,6 +38,10 @@
             this.analyzeBtn = new System.Windows.Forms.Button();
             this.analyzisTreeView = new System.Windows.Forms.TreeView();
             this.importBoardFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.depthTextBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.widthTxtBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button1
@@ -119,9 +123,9 @@
             // 
             // analyzisTreeView
             // 
-            this.analyzisTreeView.Location = new System.Drawing.Point(670, 129);
+            this.analyzisTreeView.Location = new System.Drawing.Point(670, 171);
             this.analyzisTreeView.Name = "analyzisTreeView";
-            this.analyzisTreeView.Size = new System.Drawing.Size(265, 479);
+            this.analyzisTreeView.Size = new System.Drawing.Size(265, 437);
             this.analyzisTreeView.TabIndex = 9;
             this.analyzisTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.AnalyzisTreeViewNodeClick);
             // 
@@ -129,11 +133,49 @@
             // 
             this.importBoardFileDialog.FileName = "openFileDialog1";
             // 
+            // depthTextBox
+            // 
+            this.depthTextBox.Location = new System.Drawing.Point(712, 129);
+            this.depthTextBox.Name = "depthTextBox";
+            this.depthTextBox.Size = new System.Drawing.Size(76, 20);
+            this.depthTextBox.TabIndex = 10;
+            this.depthTextBox.Text = "1";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(670, 132);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(36, 13);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Depth";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(794, 132);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Width";
+            // 
+            // widthTxtBox
+            // 
+            this.widthTxtBox.Location = new System.Drawing.Point(835, 129);
+            this.widthTxtBox.Name = "widthTxtBox";
+            this.widthTxtBox.Size = new System.Drawing.Size(76, 20);
+            this.widthTxtBox.TabIndex = 13;
+            this.widthTxtBox.Text = "26";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(947, 646);
+            this.Controls.Add(this.widthTxtBox);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.depthTextBox);
             this.Controls.Add(this.analyzisTreeView);
             this.Controls.Add(this.analyzeBtn);
             this.Controls.Add(this.importBoardBtn);
@@ -161,6 +203,10 @@
         private System.Windows.Forms.Button analyzeBtn;
         private System.Windows.Forms.TreeView analyzisTreeView;
         private System.Windows.Forms.OpenFileDialog importBoardFileDialog;
+        private System.Windows.Forms.TextBox depthTextBox;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox widthTxtBox;
     }
 }
 

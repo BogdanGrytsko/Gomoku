@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Gomoku2;
@@ -11,8 +9,6 @@ namespace GomokuSimulator
     {
         private readonly GameRunner gameRunner = new GameRunner();
         private readonly List<EstimatedBoard> boards = new List<EstimatedBoard>();
-        private readonly List<GameState> allGameStates = new List<GameState>();
-        private readonly List<GameState> rootGameStates = new List<GameState>();
         private int currState;
 
         public Form1()
@@ -156,14 +152,11 @@ namespace GomokuSimulator
         private void AnalyzeBtnClick(object sender, System.EventArgs e)
         {
             analyzisTreeView.Nodes.Clear();
-            rootGameStates.Clear();
-            allGameStates.Clear();
 
             var board = boards[currState].Board;
             var game = new Game(board);
-            game.StateChanged += GameOnStateChanged;
             game.DoMove(board.WhoMovesNext(), AnalyzeDepth, AnalyzeWidth);
-            PopulateTree(analyzisTreeView.Nodes, rootGameStates);
+            PopulateTree(analyzisTreeView.Nodes, game.GameStates);
         }
 
         private int AnalyzeDepth
@@ -184,19 +177,6 @@ namespace GomokuSimulator
                 node.Tag = gameState;
                 PopulateTree(node.Nodes, gameState.Children);
             }
-        }
-
-        private void GameOnStateChanged(GameState gameState)
-        {
-            if (gameState.BoardState.Depth == AnalyzeDepth)
-            {
-                rootGameStates.Add(gameState);
-                allGameStates.Add(gameState);
-                return;
-            }
-            var parent = allGameStates.FindLast(gs => gs.BoardState.Depth == gameState.BoardState.Depth + 1);
-            parent.Children.Add(gameState);
-            allGameStates.Add(gameState);
         }
 
         private void AnalyzisTreeViewNodeClick(object sender, TreeNodeMouseClickEventArgs e)

@@ -34,7 +34,7 @@ namespace Gomoku2
             MinDepth = minDepth;
         }
 
-        public bool MovesFirst
+        public bool ItIsFirstsTurn
         {
             get
             {
@@ -46,7 +46,7 @@ namespace Gomoku2
         {
             get
             {
-                return MovesFirst ? int.MinValue : int.MaxValue;
+                return ItIsFirstsTurn ? int.MinValue : int.MaxValue;
             }
         }
 
@@ -125,7 +125,7 @@ namespace Gomoku2
                 for (int y = 0; y < 15; ++y)
                 {
                     if (Board[x, y] != BoardCell.None)
-                        set.UnionWith(Game.GetAdjustmentCells(Board, CellManager.Get(x, y)));
+                        set.UnionWith(CellManager.Get(x, y).GetAdjustmentEmptyCells(Board));
                 }
             }
             return set;
@@ -154,17 +154,7 @@ namespace Gomoku2
 
         public BoardState Clone()
         {
-            var width = Board.GetLength(0);
-            var height = Board.GetLength(1);
-            var boardCopy = new BoardCell[width, height];
-            for (int i = 0; i < width; i++)
-            {
-                for (int j = 0; j < height; j++)
-                {
-                    boardCopy[i, j] = Board[i, j];
-                }
-            }
-            return new BoardState(MyLines, OppLines, MyCellType, Depth, MinDepth, MaxWidth, boardCopy);
+            return new BoardState(MyLines, OppLines, MyCellType, Depth, MinDepth, MaxWidth, (BoardCell[,])Board.Clone());
         }
 
         public BoardState Switch()

@@ -243,7 +243,7 @@ namespace Gomoku2
         private bool LineOfOneCase(BoardCell[,] board, out Cell findNextCell1)
         {
             findNextCell1 = null;
-            var cell = Game.GetAdjustmentCells(board, Start).FirstOrDefault();
+            var cell = Start.GetAdjustmentEmptyCells(board).FirstOrDefault();
             if (cell != null)
             {
                 findNextCell1 = cell;

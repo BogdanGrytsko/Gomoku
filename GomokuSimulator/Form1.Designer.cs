@@ -44,6 +44,8 @@
             this.totalStateCountTxtBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.exportBoardFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.label4 = new System.Windows.Forms.Label();
+            this.minMaxTxtBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button1
@@ -159,7 +161,7 @@
             this.widthTxtBox.Name = "widthTxtBox";
             this.widthTxtBox.Size = new System.Drawing.Size(37, 20);
             this.widthTxtBox.TabIndex = 13;
-            this.widthTxtBox.Text = "12";
+            this.widthTxtBox.Text = "20";
             // 
             // totalStateCountTxtBox
             // 
@@ -182,11 +184,30 @@
             // 
             this.exportBoardFileDialog.DefaultExt = "txt";
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(733, 163);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(44, 13);
+            this.label4.TabIndex = 16;
+            this.label4.Text = "MinMax";
+            // 
+            // minMaxTxtBox
+            // 
+            this.minMaxTxtBox.Location = new System.Drawing.Point(783, 160);
+            this.minMaxTxtBox.Name = "minMaxTxtBox";
+            this.minMaxTxtBox.ReadOnly = true;
+            this.minMaxTxtBox.Size = new System.Drawing.Size(56, 20);
+            this.minMaxTxtBox.TabIndex = 17;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1015, 646);
+            this.Controls.Add(this.minMaxTxtBox);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.totalStateCountTxtBox);
             this.Controls.Add(this.widthTxtBox);
@@ -225,6 +246,8 @@
         private System.Windows.Forms.TextBox totalStateCountTxtBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.SaveFileDialog exportBoardFileDialog;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox minMaxTxtBox;
     }
 }
 

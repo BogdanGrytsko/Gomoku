@@ -92,7 +92,7 @@ namespace Gomoku2
             move = null;
             int bestEstim = state.StartEstimate;
            
-            foreach (var estimatedCell in EstimateCells(state, nextCells.Take(26)).Take(state.MaxWidth))
+            foreach (var estimatedCell in EstimateCells(state, nextCells).Take(state.MaxWidth))
             {
                 var cell = estimatedCell.Cell;
                 Cell bestMove;

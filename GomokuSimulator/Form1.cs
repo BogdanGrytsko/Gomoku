@@ -112,7 +112,6 @@ namespace GomokuSimulator
             if (importBoardFileDialog.ShowDialog() != DialogResult.OK) return;
 
             var board = BoardExportImport.Import(importBoardFileDialog.FileName);
-            boards.Add(board);
             UpdateGrid(board);
         }
         
@@ -120,10 +119,12 @@ namespace GomokuSimulator
         {
             analyzisTreeView.Nodes.Clear();
 
-            var board = boards[currState].Board;
+            var board = currentBoard.Board;
             var game = new Game(board);
             game.DoMove(board.WhoMovesNext(), AnalyzeDepth, AnalyzeWidth);
             PopulateTree(analyzisTreeView.Nodes, game.GameStates);
+
+            minMaxTxtBox.Text = game.EstimatedBoard.Estimate.ToString();
             totalStateCountTxtBox.Text = game.GameStates.TotalStateCount().ToString();
         }
 
@@ -141,7 +142,11 @@ namespace GomokuSimulator
         {
             foreach (var gameState in gameStates)
             {
-                var node = nodes.Add(gameState.Cell + " " + gameState.Estimate);
+                var childrenStateCount = gameState.Children.TotalStateCount();
+                var nodeText = childrenStateCount == 0
+                    ? string.Format("{0} {1}", gameState.Cell, gameState.Estimate)
+                    : string.Format("{0} {1} ({2})", gameState.Cell, gameState.Estimate, childrenStateCount);
+                var node = nodes.Add(nodeText);
                 node.Tag = gameState;
                 PopulateTree(node.Nodes, gameState.Children);
             }

@@ -8,7 +8,7 @@ namespace Gomoku2
     public class Line : IComparable<Line>, IEnumerable<Cell>, IEquatable<Line>
     {
         private readonly List<Cell> line = new List<Cell>();
-        private readonly List<Cell> priorityCellses = new List<Cell>();
+        private readonly List<Cell> priorityCells = new List<Cell>();
         private LineType lineType;
 
         public Line()
@@ -80,10 +80,11 @@ namespace Gomoku2
 
         public LineType LineType { get { return lineType; } }
 
-        public List<Cell> PriorityCells { get { return priorityCellses; } } 
+        public List<Cell> PriorityCells { get { return priorityCells; } } 
 
         public LineType Estimate(BoardCell[,] board, BoardCell type)
         {
+            priorityCells.Clear();
             return lineType = GetEstimate(board, type);
         }
 
@@ -220,9 +221,9 @@ namespace Gomoku2
         private int OpenSpace(BoardCell[,] board)
         {
             var nextCells = GetTwoNextCells(board);
-            if (nextCells.Item1 != null) priorityCellses.Add(nextCells.Item1);
-            if (nextCells.Item2 != null) priorityCellses.Add(nextCells.Item2);
-            return priorityCellses.Count;
+            if (nextCells.Item1 != null) priorityCells.Add(nextCells.Item1);
+            if (nextCells.Item2 != null) priorityCells.Add(nextCells.Item2);
+            return priorityCells.Count;
         }
 
         private int NextSpace(BoardCell[,] board, BoardCell type)

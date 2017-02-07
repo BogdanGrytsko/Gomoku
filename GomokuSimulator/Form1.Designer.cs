@@ -31,7 +31,6 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.estimateTxtBox = new System.Windows.Forms.TextBox();
             this.moveNumberTxtBox = new System.Windows.Forms.TextBox();
             this.exportBoardBtn = new System.Windows.Forms.Button();
             this.importBoardBtn = new System.Windows.Forms.Button();
@@ -42,6 +41,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.widthTxtBox = new System.Windows.Forms.TextBox();
+            this.totalStateCountTxtBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.exportBoardFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.SuspendLayout();
             // 
             // button1
@@ -74,14 +76,6 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.BackBtnClick);
             // 
-            // estimateTxtBox
-            // 
-            this.estimateTxtBox.Location = new System.Drawing.Point(670, 100);
-            this.estimateTxtBox.Name = "estimateTxtBox";
-            this.estimateTxtBox.ReadOnly = true;
-            this.estimateTxtBox.Size = new System.Drawing.Size(100, 20);
-            this.estimateTxtBox.TabIndex = 4;
-            // 
             // moveNumberTxtBox
             // 
             this.moveNumberTxtBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -113,7 +107,7 @@
             // 
             // analyzeBtn
             // 
-            this.analyzeBtn.Location = new System.Drawing.Point(777, 100);
+            this.analyzeBtn.Location = new System.Drawing.Point(910, 127);
             this.analyzeBtn.Name = "analyzeBtn";
             this.analyzeBtn.Size = new System.Drawing.Size(75, 23);
             this.analyzeBtn.TabIndex = 8;
@@ -123,9 +117,9 @@
             // 
             // analyzisTreeView
             // 
-            this.analyzisTreeView.Location = new System.Drawing.Point(670, 171);
+            this.analyzisTreeView.Location = new System.Drawing.Point(673, 197);
             this.analyzisTreeView.Name = "analyzisTreeView";
-            this.analyzisTreeView.Size = new System.Drawing.Size(265, 437);
+            this.analyzisTreeView.Size = new System.Drawing.Size(312, 437);
             this.analyzisTreeView.TabIndex = 9;
             this.analyzisTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.AnalyzisTreeViewNodeClick);
             // 
@@ -137,9 +131,9 @@
             // 
             this.depthTextBox.Location = new System.Drawing.Point(712, 129);
             this.depthTextBox.Name = "depthTextBox";
-            this.depthTextBox.Size = new System.Drawing.Size(76, 20);
+            this.depthTextBox.Size = new System.Drawing.Size(33, 20);
             this.depthTextBox.TabIndex = 10;
-            this.depthTextBox.Text = "1";
+            this.depthTextBox.Text = "4";
             // 
             // label1
             // 
@@ -153,7 +147,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(794, 132);
+            this.label2.Location = new System.Drawing.Point(751, 132);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 13);
             this.label2.TabIndex = 12;
@@ -161,17 +155,40 @@
             // 
             // widthTxtBox
             // 
-            this.widthTxtBox.Location = new System.Drawing.Point(835, 129);
+            this.widthTxtBox.Location = new System.Drawing.Point(792, 129);
             this.widthTxtBox.Name = "widthTxtBox";
-            this.widthTxtBox.Size = new System.Drawing.Size(76, 20);
+            this.widthTxtBox.Size = new System.Drawing.Size(37, 20);
             this.widthTxtBox.TabIndex = 13;
-            this.widthTxtBox.Text = "26";
+            this.widthTxtBox.Text = "12";
+            // 
+            // totalStateCountTxtBox
+            // 
+            this.totalStateCountTxtBox.Location = new System.Drawing.Point(929, 160);
+            this.totalStateCountTxtBox.Name = "totalStateCountTxtBox";
+            this.totalStateCountTxtBox.ReadOnly = true;
+            this.totalStateCountTxtBox.Size = new System.Drawing.Size(56, 20);
+            this.totalStateCountTxtBox.TabIndex = 14;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(857, 163);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(42, 13);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "State #";
+            // 
+            // exportBoardFileDialog
+            // 
+            this.exportBoardFileDialog.DefaultExt = "txt";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(947, 646);
+            this.ClientSize = new System.Drawing.Size(1015, 646);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.totalStateCountTxtBox);
             this.Controls.Add(this.widthTxtBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -181,7 +198,6 @@
             this.Controls.Add(this.importBoardBtn);
             this.Controls.Add(this.exportBoardBtn);
             this.Controls.Add(this.moveNumberTxtBox);
-            this.Controls.Add(this.estimateTxtBox);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -196,7 +212,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TextBox estimateTxtBox;
         private System.Windows.Forms.TextBox moveNumberTxtBox;
         private System.Windows.Forms.Button exportBoardBtn;
         private System.Windows.Forms.Button importBoardBtn;
@@ -207,6 +222,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox widthTxtBox;
+        private System.Windows.Forms.TextBox totalStateCountTxtBox;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.SaveFileDialog exportBoardFileDialog;
     }
 }
 

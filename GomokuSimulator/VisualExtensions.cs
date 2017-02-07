@@ -19,19 +19,5 @@ namespace GomokuSimulator
             }
             return Color.Black;
         }
-
-        public static string GetCellText(this BoardCell boardCell)
-        {
-            switch (boardCell)
-            {
-                case BoardCell.None:
-                    return " ";
-                case BoardCell.First:
-                    return "X";
-                case BoardCell.Second:
-                    return "O";
-            }
-            return string.Empty;
-        }
     }
 }

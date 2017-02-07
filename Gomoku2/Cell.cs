@@ -4,14 +4,10 @@ namespace Gomoku2
 {
     public class Cell : IEquatable<Cell>
     {
-        public Cell()
+        public Cell(int x, int y)
         {
-        }
-
-        public Cell(int i, int j)
-        {
-            X = i;
-            Y = j;
+            X = x;
+            Y = y;
         }
 
         public int X { get; set; }

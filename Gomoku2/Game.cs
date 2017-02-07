@@ -67,12 +67,7 @@ namespace Gomoku2
             var myLines = GetLines(boardCell);
             var oppLines = GetLines(boardCell.Opponent());
             if (!myLines.Any()) return FirstMoveCase();
-
-            Cell move;
-           //TODO needs to move inside AlphaBeta
-            //if (WinInThisMove(myLines, BoardCell.First, out move)) return move;
-            //if (WinInThisMove(oppLines, BoardCell.Second, out move)) return move;
-
+            
             BoardState state;
             if (sw.Elapsed < TimeSpan.FromSeconds(5))
                 state = new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board);
@@ -85,6 +80,7 @@ namespace Gomoku2
 
             //todo we may want to remember history for perf improvement
             gameStates.Clear();
+            Cell move;
             lastEstimate = AlphaBeta(state, int.MinValue, int.MaxValue, out move, null);
             sw.Stop();
             return move;
@@ -93,26 +89,26 @@ namespace Gomoku2
         private int AlphaBeta(BoardState state, int alpha, int beta, out Cell move, GameState parent)
         {
             var nextCells = state.GetNextCells();
-            //if (state.IsTerminal) return LeafCase(state, alpha, beta, out move, parent);
-
             move = null;
             int bestEstim = state.StartEstimate;
            
-            foreach (var estimatedCell in EstimateCells(state, nextCells))
+            foreach (var estimatedCell in EstimateCells(state, nextCells.Take(26)).Take(state.MaxWidth))
             {
                 var cell = estimatedCell.Cell;
                 Cell bestMove;
 
                 board[cell.X, cell.Y] = state.MyCellType;
-                var currEstim = estimatedCell.Estimate * (state.ItIsFirstsTurn ? 1 : -1);
+                var currEstim = estimatedCell.Estimate * state.Multiplier;
 
                 var gameState = new GameState {BoardState = state.Clone(), Cell = cell, Estimate = currEstim};
                 OnStateChanged(gameState, parent);
-                var minMax = state.IsTerminal ? currEstim : AlphaBeta(state.GetNextState(estimatedCell.Lines), alpha, beta, out bestMove, gameState);
-                //if (FiveInRow(tuple.Item3) || StraightFour(tuple.Item3))
-                //    minMax = currEstim;
-                //else
-                //    minMax = AlphaBeta(state.GetNextState(tuple.Item2), alpha, beta, out bestMove);
+                int minMax;
+                //make sure we terminate in case of win\loose
+                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) || StraightFour(estimatedCell.Estimate))
+                    minMax = currEstim;
+                else
+                    minMax = AlphaBeta(state.GetNextState(estimatedCell.Lines), alpha, beta, out bestMove, gameState);
+
                 gameState.Estimate = minMax;
 
                 if (state.ItIsFirstsTurn && minMax > bestEstim)
@@ -263,40 +259,6 @@ namespace Gomoku2
             return lineType == LineType.FourInRow || lineType == LineType.BrokenFourInRow;
         }
 
-        //private bool WinInThisMove(List<Line> lines, BoardCell type, out Cell move)
-        //{
-        //    move = null;
-        //    foreach (var line in lines)
-        //    {
-        //        var next = line.GetTwoNextCells(board);
-        //        var res1 = CanDoWinMove(lines, next.Item1, type);
-        //        if (res1.Found)
-        //        {
-        //            move = res1.Move;
-        //            return true;
-        //        }
-        //        var res2 = CanDoWinMove(lines, next.Item2, type);
-        //        if (res2.Found)
-        //        {
-        //            move = res2.Move;
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
-
-        //private MoveResult CanDoWinMove(List<Line> existingLines, Cell proposedMove, BoardCell type)
-        //{
-        //    if (proposedMove == null) return MoveResult.NotFound;
-        //    board[proposedMove.X, proposedMove.Y] = type;
-
-        //    var lines = GetLinesByAddingCell(proposedMove, existingLines);
-        //    if (lines.Any(l => l.Count >= 5)) return RevertAndReturn(proposedMove, 5);
-
-        //    board[proposedMove.X, proposedMove.Y] = BoardCell.None;
-        //    return MoveResult.NotFound;
-        //}
-
         //private MoveResult FindBestMove(BoardState state, Cell move)
         //{
         //    if (move == null) return MoveResult.NotFound;
@@ -326,16 +288,10 @@ namespace Gomoku2
         //    return MoveResult.NotFound;
         //}
 
-        public static bool ThreatOfThree(LineType lineType)
+        private static bool ThreatOfThree(LineType lineType)
         {
             return lineType == LineType.ThreeInRow || lineType == LineType.BrokenThree;
         }
-
-        //private MoveResult RevertAndReturn(Cell proposedMove, int lenght)
-        //{
-        //    board[proposedMove.X, proposedMove.Y] = BoardCell.None;
-        //    return new MoveResult(proposedMove, lenght, true);
-        //}
 
         //private bool ThreeInRowWithTwoPossibleMovesCase(Line oppLine, out Tuple<Cell, Cell> moves)
         //{

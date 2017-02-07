@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoardCell.cs" />
+    <Compile Include="BoardExportImport.cs" />
     <Compile Include="BoardState.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="CellManager.cs" />

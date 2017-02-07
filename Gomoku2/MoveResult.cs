@@ -22,13 +22,5 @@
                 return Found && Lenght >= 4;
             }
         }
-
-        public static MoveResult NotFound
-        {
-            get
-            {
-                return new MoveResult(null, 0, false);
-            }
-        }
     }
 }

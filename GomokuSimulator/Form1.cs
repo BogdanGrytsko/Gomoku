@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Windows.Forms;
 using Gomoku2;
 
@@ -7,8 +6,9 @@ namespace GomokuSimulator
 {
     public partial class Form1 : Form
     {
-        private readonly GameRunner gameRunner = new GameRunner();
+        private readonly GamePlayer gamePlayer = new GamePlayer();
         private readonly List<EstimatedBoard> boards = new List<EstimatedBoard>();
+        private EstimatedBoard currentBoard;
         private int currState;
 
         public Form1()
@@ -31,6 +31,7 @@ namespace GomokuSimulator
 
         private void UpdateGrid(EstimatedBoard estimatedBoard)
         {
+            currentBoard = estimatedBoard;
             var board = estimatedBoard.Board;
             for (int x = 0; x < board.GetLength(0); x++)
             {
@@ -42,7 +43,6 @@ namespace GomokuSimulator
                 }
             }
 
-            estimateTxtBox.Text = estimatedBoard.Estimate.ToString();
             moveNumberTxtBox.Text = currState.ToString();
         }
 
@@ -72,7 +72,7 @@ namespace GomokuSimulator
 
         private void PlayButtonClick(object sender, System.EventArgs e)
         {
-            foreach (var board in gameRunner.PlayGame())
+            foreach (var board in gamePlayer.PlayGame())
             {
                 boards.Add(board);
                 UpdateGrid(board);
@@ -102,53 +102,20 @@ namespace GomokuSimulator
 
         private void ExportBoardBtnClick(object sender, System.EventArgs e)
         {
-            ExportBoard(boards[currState]);
-        }
+            if (exportBoardFileDialog.ShowDialog() != DialogResult.OK) return;
 
-        private void ExportBoard(EstimatedBoard estimatedBoard)
-        {
-            using (var sw = new StreamWriter(string.Format("board{0}.txt", currState)))
-            {
-                var board = estimatedBoard.Board;
-                for (int x = 0; x < board.GetLength(0); x++)
-                {
-                    for (int y = 0; y < board.GetLength(1); y++)
-                    {
-                        sw.Write(board[x, y].GetCellText());
-                    }
-                    sw.WriteLine();
-                }
-            }
+            BoardExportImport.Export(currentBoard, exportBoardFileDialog.FileName);
         }
 
         private void ImportBoardBtnClick(object sender, System.EventArgs e)
         {
             if (importBoardFileDialog.ShowDialog() != DialogResult.OK) return;
 
-            var board = GetBoard(importBoardFileDialog.FileName);
+            var board = BoardExportImport.Import(importBoardFileDialog.FileName);
             boards.Add(board);
             UpdateGrid(board);
         }
-
-        private static EstimatedBoard GetBoard(string fileName)
-        {
-            var board = new BoardCell[15, 15];
-            using (var sw = new StreamReader(fileName))
-            {
-                for (int x = 0; x < board.GetLength(0); x++)
-                {
-                    var line = sw.ReadLine();
-                    for (int y = 0; y < board.GetLength(1); y++)
-                    {
-                        if (line[y].ToString() == " ") board[x, y] = BoardCell.None;
-                        if (line[y].ToString() == "X") board[x, y] = BoardCell.First;
-                        if (line[y].ToString() == "O") board[x, y] = BoardCell.Second;
-                    }
-                }
-            }
-            return new EstimatedBoard {Board = board};
-        }
-
+        
         private void AnalyzeBtnClick(object sender, System.EventArgs e)
         {
             analyzisTreeView.Nodes.Clear();
@@ -157,6 +124,7 @@ namespace GomokuSimulator
             var game = new Game(board);
             game.DoMove(board.WhoMovesNext(), AnalyzeDepth, AnalyzeWidth);
             PopulateTree(analyzisTreeView.Nodes, game.GameStates);
+            totalStateCountTxtBox.Text = game.GameStates.TotalStateCount().ToString();
         }
 
         private int AnalyzeDepth

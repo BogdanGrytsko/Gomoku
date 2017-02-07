@@ -42,6 +42,11 @@ namespace Gomoku2
             }
         }
 
+        public int Multiplier
+        {
+            get { return ItIsFirstsTurn ? 1 : -1; }
+        }
+
         public int StartEstimate
         {
             get
@@ -58,13 +63,13 @@ namespace Gomoku2
         public IEnumerable<Cell> GetNextCells()
         {
             IEnumerable<Cell> nextCells;
-            var immidiateThreatCells = GetImmidiateThreatCells().ToList();
+            var immidiateThreatCells = GetPriorityThreatCells().ToList();
             if (immidiateThreatCells.Any())
             {
                 nextCells = immidiateThreatCells;
                 MinDepth--;
             }
-            else nextCells = GetNearEmptyCells().Take(MaxWidth);
+            else nextCells = GetNearEmptyCells();
             return nextCells;
         }
 
@@ -78,18 +83,25 @@ namespace Gomoku2
             }
         }
 
-        private IEnumerable<Cell> GetImmidiateThreatCells()
+        private IEnumerable<Cell> GetPriorityThreatCells()
         {
-            //TODO this doesn't work propery with broken 4. Threat Cell just return next cells.
-            var myThreatOfFour = MyLines.Where(l => Game.ThreatOfFour(l.Estimate(Board, MyCellType))).ToList();
-            foreach (var cell in GetThreatCells(myThreatOfFour)) yield return cell;
+            foreach (var myLine in MyLines)
+            {
+                myLine.Estimate(Board, MyCellType);
+            }
+            foreach (var oppLine in OppLines)
+            {
+                oppLine.Estimate(Board, OpponentCellType);
+            }
+            var myStraightFour = MyLines.Where(l => l.LineType == LineType.StraightFour);
+            foreach (var cell in myStraightFour.SelectMany(l => l.PriorityCells)) yield return cell;
 
-            //TODO this doesn't work propery with broken 4. Threat Cell just return next cells.
-            var threatOfFour = OppLines.Where(l => Game.ThreatOfFour(l.Estimate(Board, OpponentCellType))).ToList();
-            foreach (var cell in GetThreatCells(threatOfFour)) yield return cell;
+            var myThreatOfFour = MyLines.Where(l => Game.ThreatOfFour(l.LineType));
+            foreach (var cell in myThreatOfFour.SelectMany(l => l.PriorityCells)) yield return cell;
 
+            var oppThreatOfFour = OppLines.Where(l => Game.ThreatOfFour(l.LineType));
+            foreach (var cell in oppThreatOfFour.SelectMany(l => l.PriorityCells)) yield return cell;
             
-
             ////if (threatOfFour.Any()) yield break;
             ////var oppThreatOfThree = OppLines.Where(l => Game.ThreatOfThree(l.Estimate(Board, Opponent))).ToList();
             ////if (oppThreatOfThree.Any())
@@ -102,16 +114,6 @@ namespace Gomoku2
             ////    var myThreatOfThree = MyLines.Where(l => Game.ThreatOfThree(l.Estimate(Board, MyCellType)));
             ////    foreach (var cell in GetThreatCells(myThreatOfThree)) yield return cell;
             ////}
-        }
-
-        private IEnumerable<Cell> GetThreatCells(IEnumerable<Line> lines)
-        {
-            foreach (var line in lines)
-            {
-                var moves = line.GetTwoNextCells(Board);
-                if (moves.Item1 != null) yield return moves.Item1;
-                if (moves.Item2 != null) yield return moves.Item2;
-            }
         }
 
         public IEnumerable<Cell> GetNearEmptyCells()
@@ -155,11 +157,6 @@ namespace Gomoku2
         public BoardState Clone()
         {
             return new BoardState(MyLines, OppLines, MyCellType, Depth, MinDepth, MaxWidth, (BoardCell[,])Board.Clone());
-        }
-
-        public BoardState Switch()
-        {
-            return new BoardState(OppLines, MyLines, OpponentCellType, Depth, MinDepth, MaxWidth, Board);
         }
     }
 }

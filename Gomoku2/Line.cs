@@ -7,7 +7,9 @@ namespace Gomoku2
 {
     public class Line : IComparable<Line>, IEnumerable<Cell>, IEquatable<Line>
     {
-        private List<Cell> line = new List<Cell>();
+        private readonly List<Cell> line = new List<Cell>();
+        private readonly List<Cell> priorityCellses = new List<Cell>();
+        private LineType lineType;
 
         public Line()
         {
@@ -74,15 +76,18 @@ namespace Gomoku2
 
         private Cell End { get; set; }
 
-        public int Count
-        {
-            get
-            {
-                return line.Count;
-            }
-        }
+        public int Count { get { return line.Count; } }
+
+        public LineType LineType { get { return lineType; } }
+
+        public List<Cell> PriorityCells { get { return priorityCellses; } } 
 
         public LineType Estimate(BoardCell[,] board, BoardCell type)
+        {
+            return lineType = GetEstimate(board, type);
+        }
+
+        private LineType GetEstimate(BoardCell[,] board, BoardCell type)
         {
             int space;
             switch (Count)
@@ -212,32 +217,38 @@ namespace Gomoku2
             return new Tuple<Cell, Cell>(first, second);
         }
 
-        public int OpenSpace(BoardCell[,] board)
+        private int OpenSpace(BoardCell[,] board)
         {
-            int opened = 0;
-            if (CellIsDesiredType(board, Start.X + Direction.X, Start.Y + Direction.Y, BoardCell.None)) opened++;
-            if (CellIsDesiredType(board, End.X - Direction.X, End.Y - Direction.Y, BoardCell.None)) opened++;
-            return opened;
+            var nextCells = GetTwoNextCells(board);
+            if (nextCells.Item1 != null) priorityCellses.Add(nextCells.Item1);
+            if (nextCells.Item2 != null) priorityCellses.Add(nextCells.Item2);
+            return priorityCellses.Count;
         }
 
-        public int NextSpace(BoardCell[,] board, BoardCell type)
+        private int NextSpace(BoardCell[,] board, BoardCell type)
         {
-            // redundant check for case of 2
             int space = 0;
             if (CellIsDesiredType(board, Start.X + Direction.X, Start.Y + Direction.Y, BoardCell.None))
             {
-                if (CellIsDesiredType(board, Start.X + 2 * Direction.X, Start.Y + 2 * Direction.Y, type)) space++;
+                var nextNextCell = Start + 2*Direction;
+                if (CellIsDesiredType(board, nextNextCell, type)) space++;
             }
             if (CellIsDesiredType(board, End.X - Direction.X, End.Y - Direction.Y, BoardCell.None))
             {
-                if (CellIsDesiredType(board, End.X - 2 * Direction.X, End.Y - 2 * Direction.Y, type)) space++;
+                var prevPrevCell = End - 2*Direction;
+                if (CellIsDesiredType(board, prevPrevCell, type)) space++;
             }
             return space;
         }
 
-        private static bool CellIsDesiredType(BoardCell[,] board, int x, int y, BoardCell type)
+        private static bool CellIsDesiredType(BoardCell[,] board, Cell cell, BoardCell type)
         {
-            return x >= 0 && x < 15 && y >= 0 && y < 15 && board[x, y] == type;
+            return CellIsDesiredType(board, cell.X, cell.Y, type);
+        }
+
+        private static bool CellIsDesiredType(BoardCell[,] board, int x, int y, BoardCell cellType)
+        {
+            return x >= 0 && x < 15 && y >= 0 && y < 15 && board[x, y] == cellType;
         }
 
         private bool LineOfOneCase(BoardCell[,] board, out Cell findNextCell1)
@@ -293,7 +304,7 @@ namespace Gomoku2
 
         public override string ToString()
         {
-            return string.Format("S {0} E {1}", Start, End);
+            return string.Format("{2} S {0} E {1}", Start, End, Count);
         }
 
         public Line GetMergedLine(Line otherLine)

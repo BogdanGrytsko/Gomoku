@@ -59,5 +59,24 @@ namespace Gomoku2
         {
             return GetAdjustmentCells(startCell).Where(cell => cell.IsEmpty(board));
         }
+
+        public static int TotalStateCount(this IEnumerable<GameState> gameStates)
+        {
+            return gameStates.Sum(gs => gs.Children.Any() ? TotalStateCount(gs.Children) + 1 : 1);
+        }
+
+        public static string GetCellText(this BoardCell boardCell)
+        {
+            switch (boardCell)
+            {
+                case BoardCell.None:
+                    return " ";
+                case BoardCell.First:
+                    return "X";
+                case BoardCell.Second:
+                    return "O";
+            }
+            return String.Empty;
+        }
     }
 }

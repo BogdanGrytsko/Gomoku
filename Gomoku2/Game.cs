@@ -43,6 +43,8 @@ namespace Gomoku2
                 };
             }
         }
+        
+        public TimeSpan Elapsed { get { return sw.Elapsed; } }
 
         public List<GameState> GameStates
         {

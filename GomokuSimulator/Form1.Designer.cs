@@ -46,6 +46,8 @@
             this.exportBoardFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.label4 = new System.Windows.Forms.Label();
             this.minMaxTxtBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.elapsedTxtBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button1
@@ -174,7 +176,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(857, 163);
+            this.label3.Location = new System.Drawing.Point(881, 163);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(42, 13);
             this.label3.TabIndex = 15;
@@ -187,7 +189,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(733, 163);
+            this.label4.Location = new System.Drawing.Point(769, 163);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(44, 13);
             this.label4.TabIndex = 16;
@@ -195,17 +197,36 @@
             // 
             // minMaxTxtBox
             // 
-            this.minMaxTxtBox.Location = new System.Drawing.Point(783, 160);
+            this.minMaxTxtBox.Location = new System.Drawing.Point(819, 160);
             this.minMaxTxtBox.Name = "minMaxTxtBox";
             this.minMaxTxtBox.ReadOnly = true;
             this.minMaxTxtBox.Size = new System.Drawing.Size(56, 20);
             this.minMaxTxtBox.TabIndex = 17;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(670, 163);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(45, 13);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "Elapsed";
+            // 
+            // elapsedTxtBox
+            // 
+            this.elapsedTxtBox.Location = new System.Drawing.Point(712, 160);
+            this.elapsedTxtBox.Name = "elapsedTxtBox";
+            this.elapsedTxtBox.ReadOnly = true;
+            this.elapsedTxtBox.Size = new System.Drawing.Size(56, 20);
+            this.elapsedTxtBox.TabIndex = 19;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1015, 646);
+            this.Controls.Add(this.elapsedTxtBox);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.minMaxTxtBox);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -248,6 +269,8 @@
         private System.Windows.Forms.SaveFileDialog exportBoardFileDialog;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox minMaxTxtBox;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox elapsedTxtBox;
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 using Gomoku2;
 
@@ -78,7 +79,6 @@ namespace GomokuSimulator
                 UpdateGrid(board);
                 currState++;
                 Application.DoEvents();
-                //Thread.Sleep(100);
             }
         }
 
@@ -124,6 +124,7 @@ namespace GomokuSimulator
             game.DoMove(board.WhoMovesNext(), AnalyzeDepth, AnalyzeWidth);
             PopulateTree(analyzisTreeView.Nodes, game.GameStates);
 
+            elapsedTxtBox.Text = game.Elapsed.TotalSeconds.ToString(CultureInfo.InvariantCulture);
             minMaxTxtBox.Text = game.EstimatedBoard.Estimate.ToString();
             totalStateCountTxtBox.Text = game.GameStates.TotalStateCount().ToString();
         }

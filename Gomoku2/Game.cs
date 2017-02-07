@@ -93,22 +93,22 @@ namespace Gomoku2
         private int AlphaBeta(BoardState state, int alpha, int beta, out Cell move, GameState parent)
         {
             var nextCells = state.GetNextCells();
-            if (state.IsTerminal) return LeafCase(state, alpha, beta, out move, parent);
+            //if (state.IsTerminal) return LeafCase(state, alpha, beta, out move, parent);
 
             move = null;
             int bestEstim = state.StartEstimate;
            
-            foreach (var tuple in EstimateCells(state, nextCells))
+            foreach (var estimatedCell in EstimateCells(state, nextCells))
             {
-                var cell = tuple.Item1;
+                var cell = estimatedCell.Cell;
                 Cell bestMove;
 
                 board[cell.X, cell.Y] = state.MyCellType;
-                var currEstim = tuple.Item3 * (state.ItIsFirstsTurn ? 1 : -1);
+                var currEstim = estimatedCell.Estimate * (state.ItIsFirstsTurn ? 1 : -1);
 
                 var gameState = new GameState {BoardState = state.Clone(), Cell = cell, Estimate = currEstim};
                 OnStateChanged(gameState, parent);
-                int minMax = AlphaBeta(state.GetNextState(tuple.Item2), alpha, beta, out bestMove, gameState);
+                var minMax = state.IsTerminal ? currEstim : AlphaBeta(state.GetNextState(estimatedCell.Lines), alpha, beta, out bestMove, gameState);
                 //if (FiveInRow(tuple.Item3) || StraightFour(tuple.Item3))
                 //    minMax = currEstim;
                 //else
@@ -164,41 +164,6 @@ namespace Gomoku2
             {
                 parentState.Children.Add(gameState);
             }
-        }
-
-        private int LeafCase(BoardState state, int alpha, int beta, out Cell move, GameState parent)
-        {
-            move = null;
-            int bestEstim = state.StartEstimate;
-            foreach (var cell in state.GetNextCells())
-            {
-                board[cell.X, cell.Y] = state.MyCellType;
-                var newLines = GetLinesByAddingCell(cell, state.MyLines);
-                var myEstim = SumLines(newLines, state.MyCellType);
-
-                var oppEstim = SumLines(state.OppLines, state.OpponentCellType);
-                var minMax = (myEstim - oppEstim) * (state.ItIsFirstsTurn ? 1 : -1);
-                var gameState = new GameState { BoardState = state.Clone(), Cell = cell, Estimate = minMax };
-                OnStateChanged(gameState, parent);
-
-                if (state.ItIsFirstsTurn && minMax > bestEstim)
-                {
-                    bestEstim = minMax;
-                    alpha = minMax;
-                    move = cell;
-                }
-                if (!state.ItIsFirstsTurn && minMax < bestEstim)
-                {
-                    bestEstim = minMax;
-                    beta = minMax;
-                    move = cell;
-                }
-                
-                board[cell.X, cell.Y] = BoardCell.None;
-                if (BreakOnFive(state.ItIsFirstsTurn, minMax) || BreakOnStraightFour(state.ItIsFirstsTurn, minMax)
-                    || beta <= alpha) break;
-            }
-            return bestEstim;
         }
 
         private Cell FirstMoveCase()
@@ -281,7 +246,7 @@ namespace Gomoku2
         //    return false;
         //}
 
-        public int SumLines(List<Line> lines, BoardCell type)
+        private int SumLines(List<Line> lines, BoardCell type)
         {
             var estims = lines.Select(l => l.Estimate(board, type)).ToList();
             int killerLines = 0;
@@ -388,27 +353,20 @@ namespace Gomoku2
         //    return false;
         //}
 
-        private List<Tuple<Cell, List<Line>, int>> EstimateCells(
-            BoardState state, IEnumerable<Cell> cells)
+        private IEnumerable<EstimatedCell> EstimateCells(BoardState state, IEnumerable<Cell> cells)
         {
-            var list = new List<Tuple<Cell, List<Line>, int>>();
+            var list = new List<EstimatedCell>();
 
             foreach (var cell in cells)
             {
                 board[cell.X, cell.Y] = state.MyCellType;
-                var myLines = GetLinesByAddingCell(cell, state.MyLines);
+                var myNewLines = GetLinesByAddingCell(cell, state.MyLines);
                 var oppEstim = SumLines(state.OppLines, state.OpponentCellType);
-                var myEstim = SumLines(myLines, state.MyCellType);
-                list.Add(new Tuple<Cell, List<Line>, int>(cell, myLines, myEstim - oppEstim));
+                var myEstim = SumLines(myNewLines, state.MyCellType);
+                list.Add(new EstimatedCell(cell, myNewLines, myEstim - oppEstim));
                 board[cell.X, cell.Y] = BoardCell.None;
             }
-            list.Sort(Comparison);
-            return list;
-        }
-
-        private static int Comparison(Tuple<Cell, List<Line>, int> t1, Tuple<Cell, List<Line>, int> t2)
-        {
-            return t2.Item3.CompareTo(t1.Item3);
+            return list.OrderByDescending(ec => ec.Estimate);
         }
 
         public List<Line> GetLines(BoardCell type)

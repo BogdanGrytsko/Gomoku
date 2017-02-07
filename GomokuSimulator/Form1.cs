@@ -124,6 +124,11 @@ namespace GomokuSimulator
             game.DoMove(board.WhoMovesNext(), AnalyzeDepth, AnalyzeWidth);
             PopulateTree(analyzisTreeView.Nodes, game.GameStates);
 
+            BindGameTextBoxValues(game);
+        }
+
+        private void BindGameTextBoxValues(Game game)
+        {
             elapsedTxtBox.Text = game.Elapsed.TotalSeconds.ToString(CultureInfo.InvariantCulture);
             minMaxTxtBox.Text = game.EstimatedBoard.Estimate.ToString();
             totalStateCountTxtBox.Text = game.GameStates.TotalStateCount().ToString();

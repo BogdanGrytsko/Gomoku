@@ -62,7 +62,10 @@
   <ItemGroup>
     <Content Include="BoardStates\board14.txt" />
     <Content Include="BoardStates\board07.txt" />
-    <Content Include="BoardStates\Move19FirstLoosesBecauseStraightFiveIsNotCountered.txt">
+    <Content Include="BoardStates\FourInLineNotPriorityForDef.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BoardStates\StraightFiveIsNotCountered.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="BoardStates\SecondHasWinningMove.txt">

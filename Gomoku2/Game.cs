@@ -83,7 +83,7 @@ namespace Gomoku2
             //todo we may want to remember history for perf improvement
             gameStates.Clear();
             Cell move;
-            lastEstimate = AlphaBeta(state, int.MinValue, int.MaxValue, out move, null) * state.Multiplier;
+            lastEstimate = AlphaBeta(state, int.MinValue, int.MaxValue, out move, null);
             sw.Stop();
             return move;
         }

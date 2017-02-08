@@ -230,7 +230,9 @@ namespace Gomoku2
 
         private Cell NextCell(int i)
         {
-            return Start + i*Direction;
+            if (i >= 0)
+                return Start + i*Direction;
+            return End + i*Direction;
         }
 
         private int NextSpace(BoardCell[,] board, BoardCell type)
@@ -325,7 +327,7 @@ namespace Gomoku2
 
         public override string ToString()
         {
-            return string.Format("{2} S {0} E {1}", Start, End, Count);
+            return string.Format("{2} S {0} E {1}", Start, End, LineType);
         }
 
         public Line GetMergedLine(Line otherLine)

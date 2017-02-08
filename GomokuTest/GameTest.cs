@@ -27,15 +27,21 @@ namespace GomokuTest
         }
 
         [TestMethod]
-        public void Board14()
+        public void Board14HasWinningMove()
         {
-            DoTest("board14.txt", new Cell(8, 10), new Cell(8, 11));
+            DoTest("Board14HasWinningMove.txt", new Cell(8, 10), new Cell(8, 11));
         }
 
         [TestMethod]
         public void Board16WinNotFound()
         {
-            DoTest("board16WinNotFound.txt", new Cell(7, 10));
+            DoTest("Board16WinNotFound.txt", new Cell(7, 10));
+        }
+
+        [TestMethod]
+        public void Board07IsLost()
+        {
+            DoTest("Board07IsLost.txt", new Cell(8, 6));
         }
 
         private static void DoTest(string boardName, params Cell[] correctMoves)

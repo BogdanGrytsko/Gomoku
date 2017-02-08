@@ -256,16 +256,17 @@ namespace Gomoku2
         //    return false;
         //}
 
-        private int SumLines(List<Line> lines, BoardCell type)
+        public int SumLines(List<Line> lines, BoardCell type)
         {
             var estims = lines.Select(l => l.Estimate(board, type)).ToList();
+            var sum = estims.Sum(es => (int) es);
             int killerLines = 0;
-            foreach (var lineType in estims)
+            foreach (var line in lines)
             {
-                if (ThreatOfThree(lineType) || ThreatOfFour(lineType)) killerLines++;
+                if (ThreatOfThree(line.LineType) || (ThreatOfFour(line.LineType) && line.Count > 2)) killerLines++;
             }
-            if (killerLines >= 2) return (int)LineType.DoubleThreat + estims.Sum(es => (int)es);
-            return estims.Sum(es => (int)es);
+            if (killerLines >= 2) return sum + (int)LineType.DoubleThreat;
+            return sum;
         }
 
         public static bool ThreatOfFour(LineType lineType)

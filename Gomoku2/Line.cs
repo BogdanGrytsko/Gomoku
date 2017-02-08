@@ -106,10 +106,7 @@ namespace Gomoku2
                     if (nextThreeSpace == 2) return LineType.StraightFour;
                     if (nextThreeSpace == 1) return LineType.BrokenFourInRow;
                     if (space == 2) return LineType.ThreeInRow;
-                    if (space == 1)
-                    {
-                        return LineType.BlokedThree;
-                    }
+                    if (space == 1 && priorityCells.Count == 2) return LineType.BlokedThree;
                     return LineType.DeadThree;
                 case 2:
                     space = OpenSpace(board);

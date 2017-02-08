@@ -44,6 +44,23 @@ namespace GomokuTest
             DoTest("Board07IsLost.txt", new Cell(8, 6));
         }
 
+        [TestMethod]
+        public void BlockedThreeIntoDeadFour()
+        {
+            DoTest("BlockedThreeIntoDeadFour.txt", new Cell(7, 6));
+        }
+
+        [TestMethod]
+        public void BrokenFourEstimatedTwice()
+        {
+            var board = BoardExportImport.Import(Path.Combine("BoardStates", "BrokenFourEstimatedTwice.txt")).Board;
+            var game = new Game(board);
+            var linesOwner = board.WhoMovesNext().Opponent();
+            var lines = game.GetLines(linesOwner);
+            var estimate = game.SumLines(lines, linesOwner);
+            Assert.IsTrue(estimate < (int) LineType.DoubleThreat);
+        }
+
         private static void DoTest(string boardName, params Cell[] correctMoves)
         {
             var board = BoardExportImport.Import(Path.Combine("BoardStates", boardName)).Board;

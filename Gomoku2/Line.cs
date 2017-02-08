@@ -102,15 +102,18 @@ namespace Gomoku2
                     return LineType.DeadFour;
                 case 3:
                     space = OpenSpace(board);
-                    var nextThreeSpace = NextSpace(board, type);
+                    var nextThreeSpace = NextSpace(board, type, true);
                     if (nextThreeSpace == 2) return LineType.StraightFour;
                     if (nextThreeSpace == 1) return LineType.BrokenFourInRow;
                     if (space == 2) return LineType.ThreeInRow;
-                    if (space == 1) return LineType.BlokedThree;
+                    if (space == 1)
+                    {
+                        return LineType.BlokedThree;
+                    }
                     return LineType.DeadThree;
                 case 2:
                     space = OpenSpace(board);
-                    var nextSpace = NextSpace(board, type);
+                    var nextSpace = NextSpace(board, type, false);
                     if (HasBrokenFour(board, type))
                         return LineType.BrokenFourInRow;
                     if (space == 2)
@@ -235,16 +238,22 @@ namespace Gomoku2
             return End + i*Direction;
         }
 
-        private int NextSpace(BoardCell[,] board, BoardCell type)
+        private int NextSpace(BoardCell[,] board, BoardCell type, bool addNextNextCellAsPriority)
         {
             int space = 0;
             if (CellIsDesiredType(board, NextCell(1), BoardCell.None))
             {
-                if (CellIsDesiredType(board, NextCell(2), type)) space++;
+                var nextNextCell = NextCell(2);
+                if (CellIsDesiredType(board, nextNextCell, type)) space++;
+                else if (addNextNextCellAsPriority && CellIsDesiredType(board, nextNextCell, BoardCell.None))
+                    priorityCells.Add(nextNextCell);
             }
             if (CellIsDesiredType(board, NextCell(-1), BoardCell.None))
             {
-                if (CellIsDesiredType(board, NextCell(-2), type)) space++;
+                var nextNextCell = NextCell(-2);
+                if (CellIsDesiredType(board, nextNextCell, type)) space++;
+                else if (addNextNextCellAsPriority && CellIsDesiredType(board, nextNextCell, BoardCell.None))
+                    priorityCells.Add(nextNextCell);
             }
             return space;
         }
@@ -254,12 +263,20 @@ namespace Gomoku2
             if (CellIsDesiredType(board, NextCell(1), BoardCell.None))
             {
                 if (CellIsDesiredType(board, NextCell(2), type) && CellIsDesiredType(board, NextCell(3), type))
+                {
+                    priorityCells.Clear();
+                    priorityCells.Add(NextCell(1));
                     return true;
+                }
             }
             if (CellIsDesiredType(board, NextCell(-1), BoardCell.None))
             {
                 if (CellIsDesiredType(board, NextCell(-2), type) && CellIsDesiredType(board, NextCell(-3), type))
+                {
+                    priorityCells.Clear();
+                    priorityCells.Add(NextCell(-1));
                     return true;
+                }
             }
             return false;
         }

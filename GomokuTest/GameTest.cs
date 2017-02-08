@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Gomoku2;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,7 +29,7 @@ namespace GomokuTest
         [TestMethod]
         public void Board14()
         {
-            DoTest("board14.txt", new Cell(8, 11));
+            DoTest("board14.txt", new Cell(8, 10), new Cell(8, 11));
         }
 
         [TestMethod]

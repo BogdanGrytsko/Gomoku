@@ -103,7 +103,6 @@ namespace Gomoku2
                 var cell = estimatedCell.Cell;
                 Cell bestMove;
 
-
                 board[cell.X, cell.Y] = state.MyCellType;
                 var currEstim = estimatedCell.Estimate * state.Multiplier;
 
@@ -114,7 +113,7 @@ namespace Gomoku2
                 //StraightFour comparison leds to invalid analysis. Can break on it only if oppent doesn't have broken/Blocked 4
                 //but after bug fixed it seems to work.
                 //TODO invesigate further
-                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) || StraightFour(estimatedCell.Estimate))
+                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) || StraightFourAndOpponentDoesntHaveThreaOfFour(estimatedCell.Estimate))
                     minMax = currEstim;
                 else
                     minMax = AlphaBeta(state.GetNextState(estimatedCell.MyLines), alpha, beta, out bestMove, gameState);
@@ -138,6 +137,11 @@ namespace Gomoku2
                     || beta <= alpha) break;
             }
             return bestEstim;
+        }
+
+        private bool StraightFourAndOpponentDoesntHaveThreaOfFour(int estimate)
+        {
+            return StraightFour(estimate);
         }
 
         private static bool FiveInRow(int estim)
@@ -298,9 +302,9 @@ namespace Gomoku2
         //    return MoveResult.NotFound;
         //}
 
-        private static bool ThreatOfThree(LineType lineType)
+        public static bool ThreatOfThree(LineType lineType)
         {
-            return lineType == LineType.ThreeInRow || lineType == LineType.BrokenThree;
+            return lineType == LineType.ThreeInRow || lineType == LineType.BrokenThree || lineType == LineType.DoubleBrokenThree;
         }
 
         //private bool ThreeInRowWithTwoPossibleMovesCase(Line oppLine, out Tuple<Cell, Cell> moves)

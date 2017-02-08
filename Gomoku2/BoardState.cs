@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Gomoku2
@@ -63,11 +64,11 @@ namespace Gomoku2
         public IEnumerable<Cell> GetNextCells()
         {
             IEnumerable<Cell> nextCells;
-            var immidiateThreatCells = GetPriorityThreatCells().ToList();
-            if (immidiateThreatCells.Any())
+            var threatCells = GetPriorityThreatCells().ToList();
+            if (threatCells.Any())
             {
-                nextCells = immidiateThreatCells;
                 MinDepth--;
+                return new HashSet<Cell>(threatCells);
             }
             else nextCells = GetNearEmptyCells();
             return nextCells;
@@ -93,30 +94,18 @@ namespace Gomoku2
             {
                 oppLine.Estimate(Board, OpponentCellType);
             }
-            var myStraightFour = MyLines.Where(l => l.LineType == LineType.StraightFour);
-            foreach (var cell in myStraightFour.SelectMany(l => l.PriorityCells)) yield return cell;
+            foreach (var cell in SelectManyPriorityCells(MyLines, type => type == LineType.StraightFour)) yield return cell;
+            foreach (var cell in SelectManyPriorityCells(OppLines, type => type == LineType.StraightFour)) yield return cell;
 
-            var oppStraightFour = OppLines.Where(l => l.LineType == LineType.StraightFour);
-            foreach (var cell in oppStraightFour.SelectMany(l => l.PriorityCells)) yield return cell;
+            foreach (var cell in SelectManyPriorityCells(MyLines, Game.ThreatOfFour)) yield return cell;
+            foreach (var cell in SelectManyPriorityCells(OppLines, Game.ThreatOfFour)) yield return cell;
 
-            var myThreatOfFour = MyLines.Where(l => Game.ThreatOfFour(l.LineType));
-            foreach (var cell in myThreatOfFour.SelectMany(l => l.PriorityCells)) yield return cell;
+            foreach (var cell in SelectManyPriorityCells(MyLines, type => type == LineType.BlokedThree)) yield return cell;
+        }
 
-            var oppThreatOfFour = OppLines.Where(l => Game.ThreatOfFour(l.LineType));
-            foreach (var cell in oppThreatOfFour.SelectMany(l => l.PriorityCells)) yield return cell;
-            
-            ////if (threatOfFour.Any()) yield break;
-            ////var oppThreatOfThree = OppLines.Where(l => Game.ThreatOfThree(l.Estimate(Board, Opponent))).ToList();
-            ////if (oppThreatOfThree.Any())
-            ////{
-            ////    foreach (var cell in GetThreatCells(oppThreatOfThree)) yield return cell;
-
-            ////    var myThreatOfFour = MyLines.Where(l => l.Estimate(Board, MyCellType) == LineType.BlokedThree);
-            ////    foreach (var cell in GetThreatCells(myThreatOfFour)) yield return cell;
-
-            ////    var myThreatOfThree = MyLines.Where(l => Game.ThreatOfThree(l.Estimate(Board, MyCellType)));
-            ////    foreach (var cell in GetThreatCells(myThreatOfThree)) yield return cell;
-            ////}
+        private static IEnumerable<Cell> SelectManyPriorityCells(IEnumerable<Line> lines, Predicate<LineType> predicate)
+        {
+            return lines.Where(l => predicate(l.LineType)).SelectMany(l => l.PriorityCells);
         }
 
         public IEnumerable<Cell> GetNearEmptyCells()
@@ -124,6 +113,8 @@ namespace Gomoku2
             var set = new HashSet<Cell>();
             set.UnionWith(GetPriorityCells(MyLines));
             set.UnionWith(GetPriorityCells(OppLines));
+            set.UnionWith(SelectManyPriorityCells(MyLines, Game.ThreatOfThree));
+            set.UnionWith(SelectManyPriorityCells(OppLines, Game.ThreatOfThree));
 
             for (int x = 0; x < 15; ++x)
             {

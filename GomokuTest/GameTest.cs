@@ -41,7 +41,7 @@ namespace GomokuTest
         [TestMethod]
         public void Board07IsLost()
         {
-            DoTest("Board07IsLost.txt", new Cell(8, 6));
+            DoOnlyMoveTest("Board07IsLost.txt", new Cell(8, 6));
         }
 
         [TestMethod]
@@ -61,13 +61,25 @@ namespace GomokuTest
             Assert.IsTrue(estimate < (int) LineType.DoubleThreat);
         }
 
+        private static void DoOnlyMoveTest(string boardName, params Cell[] correctMoves)
+        {
+            DoTest(boardName, false, correctMoves);
+        }
+
         private static void DoTest(string boardName, params Cell[] correctMoves)
+        {
+            DoTest(boardName, true, correctMoves);
+        }
+
+        private static void DoTest(string boardName, bool checkEstimate, params Cell[] correctMoves)
         {
             var board = BoardExportImport.Import(Path.Combine("BoardStates", boardName)).Board;
             var game = new Game(board);
             var move = game.DoMove(board.WhoMovesNext());
-            var estimatedBoard = game.EstimatedBoard;
             Assert.IsTrue(correctMoves.Any(cm => cm == move));
+
+            if (!checkEstimate) return;
+            var estimatedBoard = game.EstimatedBoard;
             Assert.IsTrue(Game.StraightFour(estimatedBoard.Estimate));
         }
     }

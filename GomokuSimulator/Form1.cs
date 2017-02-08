@@ -45,6 +45,8 @@ namespace GomokuSimulator
             }
 
             moveNumberTxtBox.Text = currState.ToString();
+            //todo: this binding is made twice. Refactor - Remove.
+            minMaxTxtBox.Text = estimatedBoard.Estimate.ToString();
         }
 
         private static Button CreateButton(int x, int y)
@@ -73,6 +75,8 @@ namespace GomokuSimulator
 
         private void PlayButtonClick(object sender, System.EventArgs e)
         {
+            boards.Clear();
+            currState = 0;
             foreach (var board in gamePlayer.PlayGame())
             {
                 boards.Add(board);

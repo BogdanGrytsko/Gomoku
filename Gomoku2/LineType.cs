@@ -5,6 +5,7 @@
         FiveInRow = 10000,
         StraightFour = 3000,
         DoubleThreat = 1000,
+        DoubleBrokenThree = 35,
         FourInRow = 30,
         BrokenFourInRow = 23,
         ThreeInRow = 20,

@@ -56,7 +56,7 @@ namespace Gomoku2
             board[x, y] = boardCell;
         }
 
-        public Cell DoMove(BoardCell boardCell = BoardCell.First, int depth = 4, int treeMaxWidth = 16)
+        public Cell DoMove(BoardCell boardCell = BoardCell.First, int depth = 4, int treeMaxWidth = 20)
         {
             var move = DoMoveInternal(boardCell, depth, treeMaxWidth);
             board[move.X, move.Y] = boardCell;
@@ -83,7 +83,7 @@ namespace Gomoku2
             //todo we may want to remember history for perf improvement
             gameStates.Clear();
             Cell move;
-            lastEstimate = AlphaBeta(state, int.MinValue, int.MaxValue, out move, null);
+            lastEstimate = AlphaBeta(state, int.MinValue, int.MaxValue, out move, null) * state.Multiplier;
             sw.Stop();
             return move;
         }
@@ -106,7 +106,8 @@ namespace Gomoku2
                 OnStateChanged(gameState, parent);
                 int minMax;
                 //make sure we terminate in case of win\loose
-                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) || StraightFour(estimatedCell.Estimate))
+                //StraightFour comparison leds to invalid analysis
+                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate))
                     minMax = currEstim;
                 else
                     minMax = AlphaBeta(state.GetNextState(estimatedCell.Lines), alpha, beta, out bestMove, gameState);

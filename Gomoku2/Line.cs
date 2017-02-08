@@ -110,13 +110,15 @@ namespace Gomoku2
                     return LineType.DeadThree;
                 case 2:
                     space = OpenSpace(board);
+                    var nextSpace = NextSpace(board, type);
+                    if (HasBrokenFour(board, type))
+                        return LineType.BrokenFourInRow;
                     if (space == 2)
                     {
-                        var nextSpace = NextSpace(board, type);
-                        if (nextSpace != 0)
-                        {
+                        if (nextSpace == 2)
+                            return LineType.DoubleBrokenThree;
+                        if (nextSpace == 1)
                             return LineType.BrokenThree;
-                        }
                         return LineType.TwoInRow;
                     }
                     if (space == 1) return LineType.BlockedTwo;
@@ -178,14 +180,14 @@ namespace Gomoku2
             }
 
             Cell first = null;
-            var start = Start + Direction;
+            var start = NextCell(1);
             if (start.IsEmpty(board))
             {
                 first = start;
             }
 
             Cell second = null;
-            var end = End - Direction;
+            var end = NextCell(-1);
             if (end.IsEmpty(board))
             {
                 second = end;
@@ -226,20 +228,38 @@ namespace Gomoku2
             return priorityCells.Count;
         }
 
+        private Cell NextCell(int i)
+        {
+            return Start + i*Direction;
+        }
+
         private int NextSpace(BoardCell[,] board, BoardCell type)
         {
             int space = 0;
-            if (CellIsDesiredType(board, Start.X + Direction.X, Start.Y + Direction.Y, BoardCell.None))
+            if (CellIsDesiredType(board, NextCell(1), BoardCell.None))
             {
-                var nextNextCell = Start + 2*Direction;
-                if (CellIsDesiredType(board, nextNextCell, type)) space++;
+                if (CellIsDesiredType(board, NextCell(2), type)) space++;
             }
-            if (CellIsDesiredType(board, End.X - Direction.X, End.Y - Direction.Y, BoardCell.None))
+            if (CellIsDesiredType(board, NextCell(-1), BoardCell.None))
             {
-                var prevPrevCell = End - 2*Direction;
-                if (CellIsDesiredType(board, prevPrevCell, type)) space++;
+                if (CellIsDesiredType(board, NextCell(-2), type)) space++;
             }
             return space;
+        }
+
+        private bool HasBrokenFour(BoardCell[,] board, BoardCell type)
+        {
+            if (CellIsDesiredType(board, NextCell(1), BoardCell.None))
+            {
+                if (CellIsDesiredType(board, NextCell(2), type) && CellIsDesiredType(board, NextCell(3), type))
+                    return true;
+            }
+            if (CellIsDesiredType(board, NextCell(-1), BoardCell.None))
+            {
+                if (CellIsDesiredType(board, NextCell(-2), type) && CellIsDesiredType(board, NextCell(-3), type))
+                    return true;
+            }
+            return false;
         }
 
         private static bool CellIsDesiredType(BoardCell[,] board, Cell cell, BoardCell type)

@@ -34,12 +34,20 @@ namespace GomokuTest
             DoTest("board14.txt", new Cell(8, 11));
         }
 
-        private void DoTest(string boardName, params Cell[] correctMoves)
+        [TestMethod]
+        public void Board16WinNotFound()
+        {
+            DoTest("board16WinNotFound.txt", new Cell(7, 10));
+        }
+
+        private static void DoTest(string boardName, params Cell[] correctMoves)
         {
             var board = BoardExportImport.Import(Path.Combine("BoardStates", boardName)).Board;
             var game = new Game(board);
             var move = game.DoMove(board.WhoMovesNext());
+            var estimatedBoard = game.EstimatedBoard;
             Assert.IsTrue(correctMoves.Any(cm => cm == move));
+            Assert.IsTrue(Game.StraightFour(estimatedBoard.Estimate));
         }
     }
 }

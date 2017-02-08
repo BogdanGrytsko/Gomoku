@@ -1,4 +1,6 @@
-﻿namespace GomokuSimulator
+﻿using Gomoku2;
+
+namespace GomokuSimulator
 {
     partial class Form1
     {
@@ -137,7 +139,6 @@
             this.depthTextBox.Name = "depthTextBox";
             this.depthTextBox.Size = new System.Drawing.Size(33, 20);
             this.depthTextBox.TabIndex = 10;
-            this.depthTextBox.Text = "4";
             // 
             // label1
             // 
@@ -163,7 +164,6 @@
             this.widthTxtBox.Name = "widthTxtBox";
             this.widthTxtBox.Size = new System.Drawing.Size(37, 20);
             this.widthTxtBox.TabIndex = 13;
-            this.widthTxtBox.Text = "20";
             // 
             // totalStateCountTxtBox
             // 

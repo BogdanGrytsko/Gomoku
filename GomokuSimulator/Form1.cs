@@ -15,6 +15,8 @@ namespace GomokuSimulator
         public Form1()
         {
             InitializeComponent();
+            widthTxtBox.Text = Game.DefaultWidth.ToString();
+            depthTextBox.Text = Game.DefaultDepth.ToString();
             DrawGrid(15,15);
         }
 

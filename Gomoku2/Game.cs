@@ -7,6 +7,8 @@ namespace Gomoku2
 {
     public class Game
     {
+        public const int DefaultDepth = 4, DefaultWidth = 20;
+
         private readonly int width;
         private readonly int height;
         private readonly BoardCell[,] board;
@@ -56,7 +58,7 @@ namespace Gomoku2
             board[x, y] = boardCell;
         }
 
-        public Cell DoMove(BoardCell boardCell = BoardCell.First, int depth = 4, int treeMaxWidth = 20)
+        public Cell DoMove(BoardCell boardCell = BoardCell.First, int depth = DefaultDepth, int treeMaxWidth = DefaultWidth)
         {
             var move = DoMoveInternal(boardCell, depth, treeMaxWidth);
             board[move.X, move.Y] = boardCell;
@@ -96,8 +98,11 @@ namespace Gomoku2
            
             foreach (var estimatedCell in EstimateCells(state, nextCells).Take(state.MaxWidth))
             {
+                //TODO
+                //for leaf case we probably don't even need to iterate - first (or last) one will be the result, since we order them.
                 var cell = estimatedCell.Cell;
                 Cell bestMove;
+
 
                 board[cell.X, cell.Y] = state.MyCellType;
                 var currEstim = estimatedCell.Estimate * state.Multiplier;
@@ -107,10 +112,12 @@ namespace Gomoku2
                 int minMax;
                 //make sure we terminate in case of win\loose
                 //StraightFour comparison leds to invalid analysis. Can break on it only if oppent doesn't have broken/Blocked 4
-                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate))
+                //but after bug fixed it seems to work.
+                //TODO invesigate further
+                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) || StraightFour(estimatedCell.Estimate))
                     minMax = currEstim;
                 else
-                    minMax = AlphaBeta(state.GetNextState(estimatedCell.Lines), alpha, beta, out bestMove, gameState);
+                    minMax = AlphaBeta(state.GetNextState(estimatedCell.MyLines), alpha, beta, out bestMove, gameState);
 
                 gameState.Estimate = minMax;
 
@@ -138,7 +145,7 @@ namespace Gomoku2
             return Math.Abs(estim) >= (int)LineType.FiveInRow / 2;
         }
 
-        private static bool StraightFour(int estim)
+        public static bool StraightFour(int estim)
         {
             return Math.Abs(estim) >= (int)LineType.StraightFour / 2;
         }
@@ -322,7 +329,7 @@ namespace Gomoku2
                 var myNewLines = GetLinesByAddingCell(cell, state.MyLines);
                 var oppEstim = SumLines(state.OppLines, state.OpponentCellType);
                 var myEstim = SumLines(myNewLines, state.MyCellType);
-                list.Add(new EstimatedCell(cell, myNewLines, myEstim - oppEstim));
+                list.Add(new EstimatedCell(cell, myNewLines, myEstim, oppEstim));
                 board[cell.X, cell.Y] = BoardCell.None;
             }
             return list.OrderByDescending(ec => ec.Estimate);

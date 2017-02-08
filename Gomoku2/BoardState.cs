@@ -96,6 +96,9 @@ namespace Gomoku2
             var myStraightFour = MyLines.Where(l => l.LineType == LineType.StraightFour);
             foreach (var cell in myStraightFour.SelectMany(l => l.PriorityCells)) yield return cell;
 
+            var oppStraightFour = OppLines.Where(l => l.LineType == LineType.StraightFour);
+            foreach (var cell in oppStraightFour.SelectMany(l => l.PriorityCells)) yield return cell;
+
             var myThreatOfFour = MyLines.Where(l => Game.ThreatOfFour(l.LineType));
             foreach (var cell in myThreatOfFour.SelectMany(l => l.PriorityCells)) yield return cell;
 

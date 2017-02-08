@@ -28,6 +28,12 @@ namespace GomokuTest
             DoTest("FourInLineNotPriorityForDef.txt", new Cell(5, 9));
         }
 
+        [TestMethod]
+        public void Board14()
+        {
+            DoTest("board14.txt", new Cell(8, 11));
+        }
+
         private void DoTest(string boardName, params Cell[] correctMoves)
         {
             var board = BoardExportImport.Import(Path.Combine("BoardStates", boardName)).Board;

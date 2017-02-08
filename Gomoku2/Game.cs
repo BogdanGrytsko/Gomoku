@@ -106,7 +106,7 @@ namespace Gomoku2
                 OnStateChanged(gameState, parent);
                 int minMax;
                 //make sure we terminate in case of win\loose
-                //StraightFour comparison leds to invalid analysis
+                //StraightFour comparison leds to invalid analysis. Can break on it only if oppent doesn't have broken/Blocked 4
                 if (state.IsTerminal || FiveInRow(estimatedCell.Estimate))
                     minMax = currEstim;
                 else

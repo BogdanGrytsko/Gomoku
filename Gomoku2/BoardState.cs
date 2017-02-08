@@ -63,15 +63,13 @@ namespace Gomoku2
 
         public IEnumerable<Cell> GetNextCells()
         {
-            IEnumerable<Cell> nextCells;
             var threatCells = GetPriorityThreatCells().ToList();
             if (threatCells.Any())
             {
                 MinDepth--;
                 return new HashSet<Cell>(threatCells);
             }
-            else nextCells = GetNearEmptyCells();
-            return nextCells;
+            return GetNearEmptyCells();
         }
 
         private int MinDepth { get; set; }
@@ -99,7 +97,6 @@ namespace Gomoku2
 
             foreach (var cell in SelectManyPriorityCells(MyLines, Game.ThreatOfFour)) yield return cell;
             foreach (var cell in SelectManyPriorityCells(OppLines, Game.ThreatOfFour)) yield return cell;
-
             foreach (var cell in SelectManyPriorityCells(MyLines, type => type == LineType.BlokedThree)) yield return cell;
         }
 

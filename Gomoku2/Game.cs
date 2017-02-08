@@ -113,7 +113,7 @@ namespace Gomoku2
                 //StraightFour comparison leds to invalid analysis. Can break on it only if oppent doesn't have broken/Blocked 4
                 //but after bug fixed it seems to work.
                 //TODO invesigate further
-                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) || StraightFourAndOpponentDoesntHaveThreaOfFour(estimatedCell.Estimate))
+                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) || StraightFourAndOpponentDoesntHaveThreatOfFour(estimatedCell.Estimate))
                     minMax = currEstim;
                 else
                     minMax = AlphaBeta(state.GetNextState(estimatedCell.MyLines), alpha, beta, out bestMove, gameState);
@@ -139,7 +139,7 @@ namespace Gomoku2
             return bestEstim;
         }
 
-        private bool StraightFourAndOpponentDoesntHaveThreaOfFour(int estimate)
+        private static bool StraightFourAndOpponentDoesntHaveThreatOfFour(int estimate)
         {
             return StraightFour(estimate);
         }
@@ -181,81 +181,6 @@ namespace Gomoku2
             return board[7, 7] == BoardCell.None ? CellManager.Get(7, 7) : CellManager.Get(8, 8);
         }
 
-        //private bool GetBestFromNextMoves(BoardState state, out Cell move)
-        //{
-        //    move = null;
-        //    MoveResult myThree = MoveResult.NotFound, oppThree = MoveResult.NotFound;
-        //    if (OneMoveForwardFour(state, ref myThree, ref move)) return true;
-        //    if (DefendFromOpenedThree(state, out move)) return true;
-        //    if (OneMoveForwardFour(state.Switch(), ref oppThree, ref move)) return true;
-        //    if (myThree.Found)
-        //    {
-        //        move = myThree.Move;
-        //        return true;
-        //    }
-        //    if (oppThree.Found)
-        //    {
-        //        move = oppThree.Move;
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
-        //private bool OneMoveForwardFour(
-        //    BoardState state,
-        //    ref MoveResult myThree,
-        //    ref Cell move)
-        //{
-        //    foreach (var line in state.MyLines)
-        //    {
-        //        var moves = line.GetTwoNextCells(board);
-        //        var res = FindBestMove(state, moves.Item1);
-        //        if (LineFour(ref move, res)) return true;
-        //        if (res.Found) myThree = res;
-        //        res = FindBestMove(state, moves.Item2);
-        //        if (LineFour(ref move, res)) return true;
-        //        if (res.Found) myThree = res;
-        //    }
-        //    foreach (var cell in state.GetNearEmptyCells())
-        //    {
-        //        var res = FindBestMove(state, cell);
-        //        if (LineFour(ref move, res)) return true;
-        //        if (res.Found) myThree = res;
-        //    }
-        //    return false;
-        //}
-
-        //private static bool LineFour(ref Cell move, MoveResult res)
-        //{
-        //    if (res.FoundFour)
-        //    {
-        //        move = res.Move;
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
-        //private bool DefendFromOpenedThree(BoardState state, out Cell move)
-        //{
-        //    move = null;
-        //    var cellsToDefend = new List<Cell>();
-        //    foreach (var oppLine in state.OppLines)
-        //    {
-        //        Tuple<Cell, Cell> moves;
-        //        if (ThreeInRowWithTwoPossibleMovesCase(oppLine, out moves))
-        //        {
-        //            cellsToDefend.Add(moves.Item1);
-        //            cellsToDefend.Add(moves.Item2);
-        //        }
-        //    }
-        //    if (cellsToDefend.Any())
-        //    {
-        //        AlphaBeta(state, int.MinValue, int.MaxValue, out move, cellsToDefend);
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
         public int SumLines(List<Line> lines, BoardCell type)
         {
             var estims = lines.Select(l => l.Estimate(board, type)).ToList();
@@ -274,55 +199,10 @@ namespace Gomoku2
             return lineType == LineType.FourInRow || lineType == LineType.BrokenFourInRow;
         }
 
-        //private MoveResult FindBestMove(BoardState state, Cell move)
-        //{
-        //    if (move == null) return MoveResult.NotFound;
-        //    // do move
-        //    board[move.X, move.Y] = state.MyCellType;
-
-        //    var lines = GetLinesByAddingCell(move, state.MyLines);
-        //    int lineOfThree = 0, lineOfFour = 0;
-        //    foreach (var line in lines)
-        //    {
-        //        var lineType = line.Estimate(board, state.MyCellType);
-        //        if (lineType == LineType.StraightFour) return RevertAndReturn(move, 4);
-        //        if ((ThreatOfFour(lineType)) && line.Contains(move))
-        //        {
-        //            lineOfFour++;
-        //            continue;
-        //        }
-        //        if (ThreatOfThree(lineType) && line.Contains(move)) lineOfThree++;
-        //    }
-        //    if (lineOfFour >= 2) return RevertAndReturn(move, 4);
-        //    if (lineOfFour >= 1 && lineOfThree >= 1) return RevertAndReturn(move, 4);
-
-        //    if (lineOfThree >= 2 && !state.OppLines.Any(l => ThreatOfThree(l.Estimate(board, state.MyCellType))))
-        //        return RevertAndReturn(move, 3);
-        //    // revert
-        //    board[move.X, move.Y] = BoardCell.None;
-        //    return MoveResult.NotFound;
-        //}
-
         public static bool ThreatOfThree(LineType lineType)
         {
             return lineType == LineType.ThreeInRow || lineType == LineType.BrokenThree || lineType == LineType.DoubleBrokenThree;
         }
-
-        //private bool ThreeInRowWithTwoPossibleMovesCase(Line oppLine, out Tuple<Cell, Cell> moves)
-        //{
-        //    moves = null;
-        //    if (oppLine.Count != 3)
-        //    {
-        //        return false;
-        //    }
-        //    var oppBest = oppLine.GetTwoNextCells(board);
-        //    if (oppBest.Item1 != null && oppBest.Item2 != null)
-        //    {
-        //        moves = oppBest;
-        //        return true;
-        //    }
-        //    return false;
-        //}
 
         private IEnumerable<EstimatedCell> EstimateCells(BoardState state, IEnumerable<Cell> cells)
         {
@@ -366,7 +246,7 @@ namespace Gomoku2
             return lines;
         }
 
-        private void FillLines(Cell cell, List<Line> lines)
+        private static void FillLines(Cell cell, List<Line> lines)
         {
             var cellsUsedInAdding = new HashSet<Cell>();
             var addedToSomeLine = false;

@@ -41,13 +41,19 @@ namespace GomokuTest
         [TestMethod]
         public void Board07IsLost()
         {
-            DoOnlyMoveTest("Board07IsLost.txt", new Cell(8, 6));
+            TestMove("Board07IsLost.txt", new Cell(8, 6));
         }
 
         [TestMethod]
         public void BlockedThreeIntoDeadFour()
         {
             DoTest("BlockedThreeIntoDeadFour.txt", new Cell(7, 6));
+        }
+
+        [TestMethod]
+        public void ZeroDepthReturnsWrongEstimate()
+        {
+            TestMove("ComplexPosition2.txt", 0, new Cell(9, 7), new Cell(5, 11));
         }
 
         [TestMethod]
@@ -61,26 +67,25 @@ namespace GomokuTest
             Assert.IsTrue(estimate < (int) LineType.DoubleThreat);
         }
 
-        private static void DoOnlyMoveTest(string boardName, params Cell[] correctMoves)
-        {
-            DoTest(boardName, false, correctMoves);
-        }
-
         private static void DoTest(string boardName, params Cell[] correctMoves)
         {
-            DoTest(boardName, true, correctMoves);
+            var game = TestMove(boardName, correctMoves);
+            var estimatedBoard = game.EstimatedBoard;
+            Assert.IsTrue(Game.StraightFour(estimatedBoard.Estimate));
         }
 
-        private static void DoTest(string boardName, bool checkEstimate, params Cell[] correctMoves)
+        private static Game TestMove(string boardName, int depth, params Cell[] correctMoves)
         {
             var board = BoardExportImport.Import(Path.Combine("BoardStates", boardName)).Board;
             var game = new Game(board);
-            var move = game.DoMove(board.WhoMovesNext());
+            var move = game.DoMove(board.WhoMovesNext(), depth);
             Assert.IsTrue(correctMoves.Any(cm => cm == move));
+            return game;
+        }
 
-            if (!checkEstimate) return;
-            var estimatedBoard = game.EstimatedBoard;
-            Assert.IsTrue(Game.StraightFour(estimatedBoard.Estimate));
+        private static Game TestMove(string boardName, params Cell[] correctMoves)
+        {
+            return TestMove(boardName, Game.DefaultDepth, correctMoves);
         }
     }
 }

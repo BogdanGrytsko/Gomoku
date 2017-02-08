@@ -78,7 +78,7 @@
     <Content Include="BoardStates\FourInLineNotPriorityForDef.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ComplexPositions\LongRunningComplexPosition.txt">
+    <Content Include="BoardStates\LongRunningComplexPosition.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="BoardStates\StraightFiveIsNotCountered.txt">
@@ -87,7 +87,7 @@
     <Content Include="BoardStates\SecondHasWinningMove.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ComplexPositions\ComplexPosition2.txt">
+    <Content Include="BoardStates\ComplexPosition2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

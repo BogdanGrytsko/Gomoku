@@ -22,7 +22,13 @@ namespace GomokuSimulator
 
                 var player2Move = player2.DoMove();
                 player1.DoOpponentMove(player2Move.X, player2Move.Y);
-                yield return player1.EstimatedBoard;
+                yield return
+                    new EstimatedBoard
+                    {
+                        Board = player1.EstimatedBoard.Board,
+                        Estimate = -player2.EstimatedBoard.Estimate
+                    };
+
                 if (player1.HasFiveInARow(Gomoku2.BoardCell.Second))
                     break;
             }

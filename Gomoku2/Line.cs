@@ -300,6 +300,7 @@ namespace Gomoku2
             return false;
         }
 
+        //todo maybe compare using not length but LineType
         public int CompareTo(Line other)
         {
             return -Count.CompareTo(other.Count);

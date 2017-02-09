@@ -50,23 +50,6 @@ namespace GomokuTest
             DoTest("BlockedThreeIntoDeadFour.txt", new Cell(7, 6));
         }
 
-        [TestMethod]
-        public void ZeroDepthReturnsWrongEstimate()
-        {
-            TestMove("ComplexPosition2.txt", 0, new Cell(9, 7), new Cell(5, 11));
-        }
-
-        [TestMethod]
-        public void BrokenFourEstimatedTwice()
-        {
-            var board = BoardExportImport.Import(Path.Combine("BoardStates", "BrokenFourEstimatedTwice.txt")).Board;
-            var game = new Game(board);
-            var linesOwner = board.WhoMovesNext().Opponent();
-            var lines = game.GetLines(linesOwner);
-            var estimate = game.SumLines(lines, linesOwner);
-            Assert.IsTrue(estimate < (int) LineType.DoubleThreat);
-        }
-
         private static void DoTest(string boardName, params Cell[] correctMoves)
         {
             var game = TestMove(boardName, correctMoves);

@@ -4,22 +4,17 @@ namespace Gomoku2
 {
     public class EstimatedCell
     {
-        public EstimatedCell(Cell cell, List<Line> myLines, int myEstimate, int oppEstimate)
+        public EstimatedCell(Cell cell, List<Line> myLines, int estimate)
         {
             Cell = cell;
             MyLines = myLines;
-            MyEstimate = myEstimate;
-            OppEstimate = oppEstimate;
+            Estimate = estimate;
         }
 
         public Cell Cell { get; private set; }
 
         public List<Line> MyLines { get; private set; }
 
-        public int MyEstimate { get; private set; }
-
-        public int OppEstimate { get; private set; }
-
-        public int Estimate { get { return MyEstimate - OppEstimate; } }
+        public int Estimate { get; set; }
     }
 }

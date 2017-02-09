@@ -50,6 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="EstimateTest.cs" />
     <Compile Include="GameTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -72,7 +73,7 @@
     <Content Include="BoardStates\Board16WinNotFound.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\BrokenFourEstimatedTwice.txt">
+    <Content Include="Estimations\BrokenFourEstimatedTwice.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="BoardStates\FourInLineNotPriorityForDef.txt">
@@ -87,7 +88,19 @@
     <Content Include="BoardStates\SecondHasWinningMove.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\ComplexPosition2.txt">
+    <Content Include="Estimations\BlockedFourEstimatedAsLost.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Estimations\FourInRowEstimatedAsWin.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Estimations\ThreeInRowEstimatedAsLost.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Estimations\StraightFourEstimatedAsLost.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Estimations\DoubleThreatEstimatedAsLost.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

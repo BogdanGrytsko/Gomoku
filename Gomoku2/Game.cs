@@ -181,7 +181,7 @@ namespace Gomoku2
             return board[7, 7] == BoardCell.None ? CellManager.Get(7, 7) : CellManager.Get(8, 8);
         }
 
-        public int SumLines(List<Line> lines, BoardCell type)
+        private int SumLines(List<Line> lines, BoardCell type)
         {
             var estims = lines.Select(l => l.Estimate(board, type)).ToList();
             var sum = estims.Sum(es => (int) es);
@@ -192,6 +192,11 @@ namespace Gomoku2
             }
             if (killerLines >= 2) return sum + (int)LineType.DoubleThreat;
             return sum;
+        }
+
+        private static bool FourCellLine(LineType lineType)
+        {
+            return ThreatOfFour(lineType) || lineType == LineType.StraightFour;
         }
 
         public static bool ThreatOfFour(LineType lineType)
@@ -212,12 +217,30 @@ namespace Gomoku2
             {
                 board[cell.X, cell.Y] = state.MyCellType;
                 var myNewLines = GetLinesByAddingCell(cell, state.MyLines);
-                var oppEstim = SumLines(state.OppLines, state.OpponentCellType);
-                var myEstim = SumLines(myNewLines, state.MyCellType);
-                list.Add(new EstimatedCell(cell, myNewLines, myEstim, oppEstim));
+               
+                list.Add(new EstimatedCell(cell, myNewLines, Estimate(myNewLines, state.MyCellType, state.OppLines, state.OpponentCellType)));
                 board[cell.X, cell.Y] = BoardCell.None;
             }
             return list.OrderByDescending(ec => ec.Estimate);
+        }
+
+        public int Estimate(List<Line> myLines, BoardCell myCellType, List<Line> oppLines, BoardCell opponentCellType)
+        {
+            var myEstim = SumLines(myLines, myCellType);
+            if (FiveInRow(myEstim)) return myEstim;
+
+            var oppEstim = SumLines(oppLines, opponentCellType);
+
+            if (oppLines.Any(line => FourCellLine(line.LineType)))
+                return -(int)LineType.FiveInRow;
+
+            if (myLines.Any(line => FourCellLine(line.LineType)))
+                return myEstim - oppEstim;
+
+            if (oppLines.Any(line => ThreatOfThree(line.LineType)))
+                return -(int)LineType.FiveInRow;
+
+            return myEstim - oppEstim;
         }
 
         public List<Line> GetLines(BoardCell type)

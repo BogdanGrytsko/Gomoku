@@ -61,6 +61,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="31MovesGame\31MoveGameBoard09LoosingMove.txt" />
+    <Content Include="31MovesGame\31MoveGameBoard11IsLost.txt" />
+    <Content Include="31MovesGame\31MoveGameBoard15IsLost.txt" />
+    <Content Include="31MovesGame\31MoveGameBoard18IsLost.txt" />
     <Content Include="BoardStates\BlockedThreeIntoDeadFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

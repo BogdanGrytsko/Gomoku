@@ -50,6 +50,12 @@ namespace GomokuTest
             DoTest("BlockedThreeIntoDeadFour.txt", new Cell(7, 6));
         }
 
+        [TestMethod, Ignore]
+        public void LongRunningComplexPosition()
+        {
+            TestMove("LongRunningComplexPosition.txt", new Cell(9, 7));
+        }
+
         private static void DoTest(string boardName, params Cell[] correctMoves)
         {
             var game = TestMove(boardName, correctMoves);

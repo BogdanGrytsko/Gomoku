@@ -1,0 +1,15 @@
+   X           
+    O  X       
+   OXOO        
+  O XO O       
+ X  OXXOX      
+   OXXXOXOO    
+  XOXXOXXX     
+  O XXOXO      
+   XOOXOO      
+  O XXOX       
+    OX OO      
+      X X      
+       O       
+               
+               

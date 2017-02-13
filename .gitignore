@@ -7,3 +7,4 @@ GomokuSimulator/obj/
 Gomoku2/bin/
 GomokuTest/obj/
 GomokuTest/bin/
+*.vsp

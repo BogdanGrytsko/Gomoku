@@ -47,8 +47,11 @@ namespace GomokuSimulator
             }
 
             moveNumberTxtBox.Text = currState.ToString();
-            //todo: this binding is made twice. Refactor - Remove.
             minMaxTxtBox.Text = estimatedBoard.Estimate.ToString();
+            if (estimatedBoard.PlayerType == BoardCell.First)
+                totalElapsedPlayer1TxtBox.Text = estimatedBoard.Elapsed.ToString();
+            if (estimatedBoard.PlayerType == BoardCell.Second)
+                totalElapsedPlayer2TxtBox.Text = estimatedBoard.Elapsed.ToString();
         }
 
         private static Button CreateButton(int x, int y)

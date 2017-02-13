@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using Gomoku2;
 
@@ -10,6 +11,7 @@ namespace GomokuSimulator
         private readonly MethodInfo doMove;
         private readonly MethodInfo doOpponentMove;
         private readonly PropertyInfo lastEstimate;
+        private readonly Stopwatch sw = new Stopwatch();
 
         public PlayerWrapper(string playerGameName)
         {
@@ -22,7 +24,9 @@ namespace GomokuSimulator
 
         public Cell DoMove()
         {
+            sw.Start();
             var cell = doMove.Invoke(player, null);
+            sw.Stop();
             return new Cell(GetPropertyValue(cell, "X"), GetPropertyValue(cell, "Y"));
         }
 
@@ -39,6 +43,8 @@ namespace GomokuSimulator
                 return (int)lastEstimate.GetValue(player, null);
             }
         }
+
+        public TimeSpan Elapsed { get { return sw.Elapsed; } }
 
         public void DoOpponentMove(int x, int y)
         {

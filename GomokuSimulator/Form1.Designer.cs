@@ -50,6 +50,10 @@ namespace GomokuSimulator
             this.minMaxTxtBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.elapsedTxtBox = new System.Windows.Forms.TextBox();
+            this.totalElapsedPlayer1TxtBox = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.totalElapsedPlayer2TxtBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button1
@@ -64,7 +68,7 @@ namespace GomokuSimulator
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(767, 51);
+            this.button2.Location = new System.Drawing.Point(835, 12);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 2;
@@ -74,7 +78,7 @@ namespace GomokuSimulator
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(670, 51);
+            this.button3.Location = new System.Drawing.Point(754, 12);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 3;
@@ -85,7 +89,7 @@ namespace GomokuSimulator
             // moveNumberTxtBox
             // 
             this.moveNumberTxtBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.moveNumberTxtBox.Location = new System.Drawing.Point(848, 53);
+            this.moveNumberTxtBox.Location = new System.Drawing.Point(929, 15);
             this.moveNumberTxtBox.Name = "moveNumberTxtBox";
             this.moveNumberTxtBox.ReadOnly = true;
             this.moveNumberTxtBox.Size = new System.Drawing.Size(44, 20);
@@ -93,7 +97,7 @@ namespace GomokuSimulator
             // 
             // exportBoardBtn
             // 
-            this.exportBoardBtn.Location = new System.Drawing.Point(767, 12);
+            this.exportBoardBtn.Location = new System.Drawing.Point(670, 50);
             this.exportBoardBtn.Name = "exportBoardBtn";
             this.exportBoardBtn.Size = new System.Drawing.Size(75, 23);
             this.exportBoardBtn.TabIndex = 6;
@@ -103,7 +107,7 @@ namespace GomokuSimulator
             // 
             // importBoardBtn
             // 
-            this.importBoardBtn.Location = new System.Drawing.Point(849, 12);
+            this.importBoardBtn.Location = new System.Drawing.Point(754, 50);
             this.importBoardBtn.Name = "importBoardBtn";
             this.importBoardBtn.Size = new System.Drawing.Size(75, 23);
             this.importBoardBtn.TabIndex = 7;
@@ -113,7 +117,7 @@ namespace GomokuSimulator
             // 
             // analyzeBtn
             // 
-            this.analyzeBtn.Location = new System.Drawing.Point(910, 127);
+            this.analyzeBtn.Location = new System.Drawing.Point(910, 156);
             this.analyzeBtn.Name = "analyzeBtn";
             this.analyzeBtn.Size = new System.Drawing.Size(75, 23);
             this.analyzeBtn.TabIndex = 8;
@@ -123,7 +127,7 @@ namespace GomokuSimulator
             // 
             // analyzisTreeView
             // 
-            this.analyzisTreeView.Location = new System.Drawing.Point(673, 197);
+            this.analyzisTreeView.Location = new System.Drawing.Point(673, 226);
             this.analyzisTreeView.Name = "analyzisTreeView";
             this.analyzisTreeView.Size = new System.Drawing.Size(312, 437);
             this.analyzisTreeView.TabIndex = 9;
@@ -135,7 +139,7 @@ namespace GomokuSimulator
             // 
             // depthTextBox
             // 
-            this.depthTextBox.Location = new System.Drawing.Point(712, 129);
+            this.depthTextBox.Location = new System.Drawing.Point(712, 158);
             this.depthTextBox.Name = "depthTextBox";
             this.depthTextBox.Size = new System.Drawing.Size(33, 20);
             this.depthTextBox.TabIndex = 10;
@@ -143,7 +147,7 @@ namespace GomokuSimulator
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(670, 132);
+            this.label1.Location = new System.Drawing.Point(670, 161);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(36, 13);
             this.label1.TabIndex = 11;
@@ -152,7 +156,7 @@ namespace GomokuSimulator
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(751, 132);
+            this.label2.Location = new System.Drawing.Point(751, 161);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 13);
             this.label2.TabIndex = 12;
@@ -160,14 +164,14 @@ namespace GomokuSimulator
             // 
             // widthTxtBox
             // 
-            this.widthTxtBox.Location = new System.Drawing.Point(792, 129);
+            this.widthTxtBox.Location = new System.Drawing.Point(792, 158);
             this.widthTxtBox.Name = "widthTxtBox";
             this.widthTxtBox.Size = new System.Drawing.Size(37, 20);
             this.widthTxtBox.TabIndex = 13;
             // 
             // totalStateCountTxtBox
             // 
-            this.totalStateCountTxtBox.Location = new System.Drawing.Point(929, 160);
+            this.totalStateCountTxtBox.Location = new System.Drawing.Point(929, 189);
             this.totalStateCountTxtBox.Name = "totalStateCountTxtBox";
             this.totalStateCountTxtBox.ReadOnly = true;
             this.totalStateCountTxtBox.Size = new System.Drawing.Size(56, 20);
@@ -176,7 +180,7 @@ namespace GomokuSimulator
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(881, 163);
+            this.label3.Location = new System.Drawing.Point(881, 192);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(42, 13);
             this.label3.TabIndex = 15;
@@ -189,7 +193,7 @@ namespace GomokuSimulator
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(769, 163);
+            this.label4.Location = new System.Drawing.Point(769, 192);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(44, 13);
             this.label4.TabIndex = 16;
@@ -197,7 +201,7 @@ namespace GomokuSimulator
             // 
             // minMaxTxtBox
             // 
-            this.minMaxTxtBox.Location = new System.Drawing.Point(819, 160);
+            this.minMaxTxtBox.Location = new System.Drawing.Point(819, 189);
             this.minMaxTxtBox.Name = "minMaxTxtBox";
             this.minMaxTxtBox.ReadOnly = true;
             this.minMaxTxtBox.Size = new System.Drawing.Size(56, 20);
@@ -206,7 +210,7 @@ namespace GomokuSimulator
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(670, 163);
+            this.label5.Location = new System.Drawing.Point(670, 192);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(45, 13);
             this.label5.TabIndex = 18;
@@ -214,17 +218,55 @@ namespace GomokuSimulator
             // 
             // elapsedTxtBox
             // 
-            this.elapsedTxtBox.Location = new System.Drawing.Point(712, 160);
+            this.elapsedTxtBox.Location = new System.Drawing.Point(712, 189);
             this.elapsedTxtBox.Name = "elapsedTxtBox";
             this.elapsedTxtBox.ReadOnly = true;
             this.elapsedTxtBox.Size = new System.Drawing.Size(56, 20);
             this.elapsedTxtBox.TabIndex = 19;
             // 
+            // totalElapsedPlayer1TxtBox
+            // 
+            this.totalElapsedPlayer1TxtBox.Location = new System.Drawing.Point(754, 79);
+            this.totalElapsedPlayer1TxtBox.Name = "totalElapsedPlayer1TxtBox";
+            this.totalElapsedPlayer1TxtBox.ReadOnly = true;
+            this.totalElapsedPlayer1TxtBox.Size = new System.Drawing.Size(75, 20);
+            this.totalElapsedPlayer1TxtBox.TabIndex = 20;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(670, 86);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(67, 13);
+            this.label6.TabIndex = 21;
+            this.label6.Text = "TotalP1Time";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(670, 119);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(67, 13);
+            this.label7.TabIndex = 23;
+            this.label7.Text = "TotalP2Time";
+            // 
+            // totalElapsedPlayer2TxtBox
+            // 
+            this.totalElapsedPlayer2TxtBox.Location = new System.Drawing.Point(754, 112);
+            this.totalElapsedPlayer2TxtBox.Name = "totalElapsedPlayer2TxtBox";
+            this.totalElapsedPlayer2TxtBox.ReadOnly = true;
+            this.totalElapsedPlayer2TxtBox.Size = new System.Drawing.Size(75, 20);
+            this.totalElapsedPlayer2TxtBox.TabIndex = 22;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1015, 646);
+            this.ClientSize = new System.Drawing.Size(993, 675);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.totalElapsedPlayer2TxtBox);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.totalElapsedPlayer1TxtBox);
             this.Controls.Add(this.elapsedTxtBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.minMaxTxtBox);
@@ -271,6 +313,10 @@ namespace GomokuSimulator
         private System.Windows.Forms.TextBox minMaxTxtBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox elapsedTxtBox;
+        private System.Windows.Forms.TextBox totalElapsedPlayer1TxtBox;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox totalElapsedPlayer2TxtBox;
     }
 }
 

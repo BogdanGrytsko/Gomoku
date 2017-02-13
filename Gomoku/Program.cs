@@ -222,7 +222,12 @@ namespace Gomoku
             board[x, y] = BoardCell.First;
         }
 
-        public Cell DoMove(int depth = 4, int treeMaxWidth = 16)
+        public Cell DoMove()
+        {
+            return DoMove(4, 16);
+        }
+
+        public Cell DoMove(int depth, int treeMaxWidth)
         {
             var move = DoMoveInternal(depth, treeMaxWidth);
             board[move.X, move.Y] = BoardCell.First;

@@ -61,7 +61,7 @@ namespace GomokuTest
         {
             var board = BoardExportImport.Import(Path.Combine("BoardStates", boardName)).Board;
             var game = new Game(board);
-            var move = game.DoMove(board.WhoMovesNext(), depth);
+            var move = game.DoMove(board.WhoMovesNext(), depth, 20);
             Assert.IsTrue(correctMoves.Any(cm => cm == move));
             return game;
         }

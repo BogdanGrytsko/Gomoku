@@ -48,17 +48,29 @@ namespace Gomoku2
         
         public TimeSpan Elapsed { get { return sw.Elapsed; } }
 
+        public int LastEstimate { get { return lastEstimate; } }
+
         public List<GameState> GameStates
         {
             get { return gameStates; }
-        } 
+        }
 
-        public void DoOpponentMove(int x, int y, BoardCell boardCell = BoardCell.Second)
+        public void DoOpponentMove(int x, int y)
+        {
+            DoOpponentMove(x, y, BoardCell.Second);
+        }
+
+        public void DoOpponentMove(int x, int y, BoardCell boardCell)
         {
             board[x, y] = boardCell;
         }
 
-        public Cell DoMove(BoardCell boardCell = BoardCell.First, int depth = DefaultDepth, int treeMaxWidth = DefaultWidth)
+        public Cell DoMove()
+        {
+            return DoMove(BoardCell.First, DefaultDepth, DefaultWidth);
+        }
+
+        public Cell DoMove(BoardCell boardCell, int depth, int treeMaxWidth)
         {
             var move = DoMoveInternal(boardCell, depth, treeMaxWidth);
             board[move.X, move.Y] = boardCell;
@@ -243,17 +255,19 @@ namespace Gomoku2
             return myEstim - oppEstim;
         }
 
-        public List<Line> GetLines(BoardCell type)
+        public List<Line> GetLines(BoardCell cellType)
+        {
+            return GetLines(board, cellType);
+        }
+
+        public static List<Line> GetLines(BoardCell[,] board, BoardCell type)
         {
             var lines = new List<Line>();
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < board.GetLength(0); i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < board.GetLength(1); j++)
                 {
-                    if (board[i, j] != type)
-                    {
-                        continue;
-                    }
+                    if (board[i, j] != type) continue;
                     FillLines(CellManager.Get(i, j), lines);
                 }
             }
@@ -318,12 +332,6 @@ namespace Gomoku2
                 lines.Add(mergedLine);
             }
             if (mergedLine == null) usedLines.Add(line);
-        }
-
-        public bool HasFiveInARow(BoardCell boardCell)
-        {
-            var lines = GetLines(boardCell);
-            return lines.Any(l => l.Count >= 5);
         }
     }
 }

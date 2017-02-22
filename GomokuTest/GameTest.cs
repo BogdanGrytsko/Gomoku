@@ -50,7 +50,7 @@ namespace GomokuTest
             DoTest("BlockedThreeIntoDeadFour.txt", new Cell(7, 6));
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         public void LongRunningComplexPosition()
         {
             TestMove("LongRunningComplexPosition.txt", new Cell(9, 7));

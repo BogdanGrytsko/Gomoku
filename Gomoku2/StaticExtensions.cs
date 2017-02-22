@@ -60,6 +60,11 @@ namespace Gomoku2
             return GetAdjustmentCells(startCell).Where(cell => cell.IsEmpty(board));
         }
 
+        public static IEnumerable<Cell> GetAdjustmentCells(this Cell startCell, BoardCell[,] board, BoardCell cellType)
+        {
+            return GetAdjustmentCells(startCell).Where(cell => cell.IsType(board, cellType));
+        }
+
         public static int TotalStateCount(this IEnumerable<GameState> gameStates)
         {
             return gameStates.Sum(gs => gs.Children.Any() ? TotalStateCount(gs.Children) + 1 : 1);

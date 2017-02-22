@@ -228,7 +228,7 @@ namespace Gomoku2
             foreach (var cell in cells)
             {
                 board[cell.X, cell.Y] = state.MyCellType;
-                var myNewLines = GetLinesByAddingCell(cell, state.MyLines);
+                var myNewLines = GetLinesByAddingCell(cell, state.MyLines, state.MyCellType);
                
                 list.Add(new EstimatedCell(cell, myNewLines, Estimate(myNewLines, state.MyCellType, state.OppLines, state.OpponentCellType)));
                 board[cell.X, cell.Y] = BoardCell.None;
@@ -268,7 +268,7 @@ namespace Gomoku2
                 for (int j = 0; j < board.GetLength(1); j++)
                 {
                     if (board[i, j] != type) continue;
-                    FillLines(CellManager.Get(i, j), lines);
+                    FillLines(CellManager.Get(i, j), lines, type, board);
                 }
             }
             var sorted = lines.ToList();
@@ -276,15 +276,21 @@ namespace Gomoku2
             return sorted;
         }
 
-        public List<Line> GetLinesByAddingCell(Cell cell, List<Line> existingLines)
+        public List<Line> GetLinesByAddingCell(Cell cell, List<Line> existingLines, BoardCell cellType)
         {
             var lines = new List<Line>(existingLines.Select(existingLine => existingLine.Clone()));
-            FillLines(cell, lines);
+            FillLines(cell, lines, cellType, board);
             return lines;
         }
 
-        private static void FillLines(Cell cell, List<Line> lines)
+        private static void FillLines(Cell cell, List<Line> lines, BoardCell cellType, BoardCell[,] board)
         {
+            var adjustmentCells = cell.GetAdjustmentCells(board, cellType);
+            foreach (var adjustmentCell in adjustmentCells)
+            {
+                
+            }
+
             var cellsUsedInAdding = new HashSet<Cell>();
             var addedToSomeLine = false;
             var usedLines = new List<Line>();
@@ -292,6 +298,7 @@ namespace Gomoku2
             {
                 var line = lines[i];
                 if (!line.JoinIfPossible(cell)) continue;
+
                 cellsUsedInAdding.UnionWith(line);
                 addedToSomeLine = true;
                 MergeLines(lines, usedLines, line);
@@ -302,6 +309,7 @@ namespace Gomoku2
                 foreach (var lineCell in line)
                 {
                     if (lineCell.DistSqr(cell) > 2 || cellsUsedInAdding.Contains(lineCell)) continue;
+
                     var newLine = new Line(cell, lineCell);
                     if (!lines.Contains(newLine))
                     {

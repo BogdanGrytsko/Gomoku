@@ -27,7 +27,7 @@ namespace Gomoku2
             CalcProps();
         }
 
-        public void AddCell(Cell cell)
+        private void AddCell(Cell cell)
         {
             line.Add(cell);
             CalcProps();
@@ -149,7 +149,7 @@ namespace Gomoku2
 
         public bool JoinIfPossible(Cell cell)
         {
-            if (line.Count == 1 && line[0].DistSqr(cell) <= 2 && line[0] != cell)
+            if (line.Count == 1 && line[0].DistSqr(cell) <= 2)
             {
                 AddCell(cell);
                 return true;

@@ -10,6 +10,8 @@ namespace Gomoku2
         private readonly List<Cell> line = new List<Cell>();
         private readonly List<Cell> priorityCells = new List<Cell>();
         private LineType lineType;
+        //these cells are not null only if corresponding space is empty
+        private Cell next, prev, nextNext, prevPrev;
 
         public Line()
         {
@@ -17,7 +19,10 @@ namespace Gomoku2
 
         public Line(Cell cell)
         {
-            AddCell(cell);
+            line.Add(cell);
+            Start = cell;
+            End = cell;
+            Direction = CellManager.Get(0, 0);
         }
 
         public Line(Cell cell1, Cell cell2)
@@ -27,7 +32,7 @@ namespace Gomoku2
             CalcProps();
         }
 
-        public void AddCell(Cell cell)
+        private void AddCell(Cell cell)
         {
             line.Add(cell);
             CalcProps();
@@ -38,19 +43,27 @@ namespace Gomoku2
             CalcStart();
             CalcEnd();
             CalcDirection();
+            CalcNextCells();
         }
 
-        private void CalcDirection()
+        private void CalcStart()
         {
-            var dir = Start - End;
-            Direction = dir.Normalize();
+            var maxY = line.Max(c => c.Y);
+            var cells = line.Where(c => c.Y == maxY).ToList();
+            if (cells.Count == 1)
+            {
+                Start = cells[0];
+                return;
+            }
+            var maxX = line.Max(c => c.X);
+            Start = cells.First(c => c.X == maxX);
         }
 
         private void CalcEnd()
         {
             var minY = line.Min(c => c.Y);
             var cells = line.Where(c => c.Y == minY).ToList();
-            if (cells.Count() == 1)
+            if (cells.Count == 1)
             {
                 End = cells[0];
                 return;
@@ -58,18 +71,15 @@ namespace Gomoku2
             var minX = line.Min(c => c.X);
             End = cells.First(c => c.X == minX);
         }
-
-        private void CalcStart()
+        private void CalcDirection()
         {
-            var maxY = line.Max(c => c.Y);
-            var cells = line.Where(c => c.Y == maxY).ToList();
-            if (cells.Count() == 1)
-            {
-                Start = cells[0];
-                return;
-            }
-            var maxX = line.Max(c => c.X);
-            Start = cells.First(c => c.X == maxX);
+            var dir = Start - End;
+            Direction = dir.Normalize();
+        }
+
+        private void CalcNextCells()
+        {
+            //throw new NotImplementedException();
         }
 
         private Cell Start { get; set; }
@@ -131,6 +141,7 @@ namespace Gomoku2
 
         private Cell Direction { get; set; }
 
+        //todo update cloning accordingly
         public Line Clone()
         {
             var newLine = new Line();
@@ -149,7 +160,7 @@ namespace Gomoku2
 
         public bool JoinIfPossible(Cell cell)
         {
-            if (line.Count == 1 && line[0].DistSqr(cell) <= 2 && line[0] != cell)
+            if (line.Count == 1 && Start.DistSqr(cell) <= 2)
             {
                 AddCell(cell);
                 return true;
@@ -175,8 +186,7 @@ namespace Gomoku2
         {
             if (Start == End)
             {
-                Cell move;
-                if (LineOfOneCase(board, out move)) return new Tuple<Cell, Cell>(move, move);
+                return new Tuple<Cell, Cell>(null, null);
             }
 
             Cell first = null;
@@ -288,19 +298,7 @@ namespace Gomoku2
             return x >= 0 && x < 15 && y >= 0 && y < 15 && board[x, y] == cellType;
         }
 
-        private bool LineOfOneCase(BoardCell[,] board, out Cell findNextCell1)
-        {
-            findNextCell1 = null;
-            var cell = Start.GetAdjustmentEmptyCells(board).FirstOrDefault();
-            if (cell != null)
-            {
-                findNextCell1 = cell;
-                return true;
-            }
-            return false;
-        }
-
-        //todo maybe compare using not length but LineType
+        //todo maybe compare using not length but LineType. Find where sorting is used.
         public int CompareTo(Line other)
         {
             return -Count.CompareTo(other.Count);

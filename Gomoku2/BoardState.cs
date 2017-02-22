@@ -86,18 +86,32 @@ namespace Gomoku2
         {
             foreach (var myLine in MyLines)
             {
-                myLine.Estimate(Board, MyCellType);
+                myLine.Estimate(Board);
             }
             foreach (var oppLine in OppLines)
             {
-                oppLine.Estimate(Board, OpponentCellType);
+                oppLine.Estimate(Board);
             }
-            foreach (var cell in SelectManyPriorityCells(MyLines, type => type == LineType.StraightFour)) yield return cell;
-            foreach (var cell in SelectManyPriorityCells(OppLines, type => type == LineType.StraightFour)) yield return cell;
+            var myStraightFour = SelectManyPriorityCells(MyLines, type => type == LineType.StraightFour);
+            if (myStraightFour.Any())
+                return myStraightFour;
+            var oppStraightFour = SelectManyPriorityCells(OppLines, type => type == LineType.StraightFour);
+            if (oppStraightFour.Any())
+                return oppStraightFour;
 
-            foreach (var cell in SelectManyPriorityCells(MyLines, Game.ThreatOfFour)) yield return cell;
-            foreach (var cell in SelectManyPriorityCells(OppLines, Game.ThreatOfFour)) yield return cell;
-            foreach (var cell in SelectManyPriorityCells(MyLines, type => type == LineType.BlokedThree)) yield return cell;
+            var myThreatOfFour = SelectManyPriorityCells(MyLines, Game.ThreatOfFour);
+            if (myThreatOfFour.Any())
+                return myThreatOfFour;
+
+            var oppThreatOfFour = SelectManyPriorityCells(OppLines, Game.ThreatOfFour);
+            if (oppThreatOfFour.Any())
+                return oppThreatOfFour;
+
+            var myBlockedThree = SelectManyPriorityCells(MyLines, type => type == LineType.BlokedThree);
+            if (myBlockedThree.Any())
+                return myBlockedThree;
+
+            return new List<Cell>();
         }
 
         private static IEnumerable<Cell> SelectManyPriorityCells(IEnumerable<Line> lines, Predicate<LineType> predicate)
@@ -124,25 +138,9 @@ namespace Gomoku2
             return set;
         }
 
-        private IEnumerable<Cell> GetPriorityCells(IEnumerable<Line> lines)
+        private static IEnumerable<Cell> GetPriorityCells(IEnumerable<Line> lines)
         {
-            foreach (var line in lines)
-            {
-                var close = line.GetTwoNextCells(Board);
-                var next = line.GetTwoNextNextCells(Board);
-                if (close.Item1 != null)
-                {
-                    yield return close.Item1;
-                    if (next.Item1 != null)
-                        yield return next.Item1;
-                }
-                if (close.Item2 != null)
-                {
-                    yield return close.Item2;
-                    if (next.Item2 != null)
-                        yield return next.Item2;
-                }
-            }
+            return lines.SelectMany(line => line.GetNextCells(true));
         }
 
         public BoardState Clone()

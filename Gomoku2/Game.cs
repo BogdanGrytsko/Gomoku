@@ -84,15 +84,7 @@ namespace Gomoku2
             var oppLines = GetLines(boardCell.Opponent());
             if (!myLines.Any()) return FirstMoveCase();
             
-            BoardState state;
-            if (sw.Elapsed < TimeSpan.FromSeconds(5))
-                state = new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board);
-            else if (sw.Elapsed < TimeSpan.FromSeconds(6.6))
-                state = new BoardState(myLines, oppLines, boardCell, depth - 1, 0, maxWidth, board);
-            else
-                state = new BoardState(myLines, oppLines, boardCell, depth - 2, 0, maxWidth, board);
-
-            //if (GetBestFromNextMoves(state, out move)) return move;
+            BoardState state = new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board); ;
 
             //todo we may want to remember history for perf improvement
             gameStates.Clear();
@@ -193,9 +185,9 @@ namespace Gomoku2
             return board[7, 7] == BoardCell.None ? CellManager.Get(7, 7) : CellManager.Get(8, 8);
         }
 
-        private int SumLines(List<Line> lines, BoardCell type)
+        private int SumLines(List<Line> lines)
         {
-            var estims = lines.Select(l => l.Estimate(board, type)).ToList();
+            var estims = lines.Select(l => l.Estimate(board)).ToList();
             var sum = estims.Sum(es => (int) es);
             int killerLines = 0;
             foreach (var line in lines)
@@ -230,18 +222,18 @@ namespace Gomoku2
                 board[cell.X, cell.Y] = state.MyCellType;
                 var myNewLines = GetLinesByAddingCell(cell, state.MyLines, state.MyCellType);
                
-                list.Add(new EstimatedCell(cell, myNewLines, Estimate(myNewLines, state.MyCellType, state.OppLines, state.OpponentCellType)));
+                list.Add(new EstimatedCell(cell, myNewLines, Estimate(myNewLines, state.OppLines)));
                 board[cell.X, cell.Y] = BoardCell.None;
             }
             return list.OrderByDescending(ec => ec.Estimate);
         }
 
-        public int Estimate(List<Line> myLines, BoardCell myCellType, List<Line> oppLines, BoardCell opponentCellType)
+        public int Estimate(List<Line> myLines, List<Line> oppLines)
         {
-            var myEstim = SumLines(myLines, myCellType);
+            var myEstim = SumLines(myLines);
             if (FiveInRow(myEstim)) return myEstim;
 
-            var oppEstim = SumLines(oppLines, opponentCellType);
+            var oppEstim = SumLines(oppLines);
 
             if (oppLines.Any(line => FourCellLine(line.LineType)))
                 return -(int)LineType.FiveInRow;
@@ -271,15 +263,15 @@ namespace Gomoku2
                     FillLines(CellManager.Get(i, j), lines, type, board);
                 }
             }
-            var sorted = lines.ToList();
-            sorted.Sort();
-            return sorted;
+            lines.Sort();
+            return lines;
         }
 
         public List<Line> GetLinesByAddingCell(Cell cell, List<Line> existingLines, BoardCell cellType)
         {
             var lines = new List<Line>(existingLines.Select(existingLine => existingLine.Clone()));
             FillLines(cell, lines, cellType, board);
+            lines.Sort();
             return lines;
         }
 
@@ -297,11 +289,11 @@ namespace Gomoku2
             for (int i = lines.Count - 1; i >= 0; i--)
             {
                 var line = lines[i];
-                if (!line.JoinIfPossible(cell)) continue;
+                if (!line.JoinIfPossible(cell, board)) continue;
 
                 cellsUsedInAdding.UnionWith(line);
                 addedToSomeLine = true;
-                MergeLines(lines, usedLines, line);
+                MergeLines(lines, usedLines, line, board);
             }
             for (int i = lines.Count - 1; i >= 0; i--)
             {
@@ -310,30 +302,30 @@ namespace Gomoku2
                 {
                     if (lineCell.DistSqr(cell) > 2 || cellsUsedInAdding.Contains(lineCell)) continue;
 
-                    var newLine = new Line(cell, lineCell);
+                    var newLine = new Line(cell, lineCell, board, cellType);
                     if (!lines.Contains(newLine))
                     {
                         lines.Add(newLine);
                         addedToSomeLine = true;
                         cellsUsedInAdding.Add(lineCell);
-                        MergeLines(lines, usedLines, newLine);
+                        MergeLines(lines, usedLines, newLine, board);
                     }
                 }
             }
             if (!addedToSomeLine)
             {
-                lines.Add(new Line(cell));
+                lines.Add(new Line(cell, cellType));
             }
         }
 
-        private static void MergeLines(List<Line> lines, List<Line> usedLines, Line line)
+        private static void MergeLines(List<Line> lines, List<Line> usedLines, Line line, BoardCell[,] board)
         {
             Line mergedLine = null;
             foreach (var usedLine in usedLines.ToList())
             {
                 if (!usedLine.HasSameDirection(line)) continue;
 
-                mergedLine = usedLine.GetMergedLine(line);
+                mergedLine = usedLine.GetMergedLine(line, board);
                 usedLines.Remove(usedLine);
                 lines.Remove(usedLine);
                 lines.Remove(line);

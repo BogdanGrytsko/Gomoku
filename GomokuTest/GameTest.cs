@@ -17,6 +17,7 @@ namespace GomokuTest
         [TestMethod]
         public void StraightFiveIsNotCountered()
         {
+            //todo this has wrong estimate : -10000
             DoTest("StraightFiveIsNotCountered.txt", new Cell(8, 11));
         }
 

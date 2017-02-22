@@ -96,6 +96,8 @@ namespace Gomoku2
             return X >= 0 && X < 15 && Y >= 0 && Y < 15 && board[X, Y] == BoardCell.None;
         }
 
+        //TODO :do we need this? we should use reference comparision instead.
+        //maybe X == other.X && Y == other.Y; is never called, investigate
         public bool Equals(Cell other)
         {
             if (ReferenceEquals(null, other))
@@ -112,6 +114,11 @@ namespace Gomoku2
         public override string ToString()
         {
             return string.Format("{0} {1}", X, Y);
+        }
+
+        public bool IsType(BoardCell[,] board, BoardCell cellType)
+        {
+            return X >= 0 && X < 15 && Y >= 0 && Y < 15 && board[X, Y] == cellType;
         }
     }
 }

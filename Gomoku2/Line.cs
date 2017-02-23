@@ -8,13 +8,9 @@ namespace Gomoku2
     public class Line : IComparable<Line>, IEnumerable<Cell>, IEquatable<Line>
     {
         private readonly List<Cell> line = new List<Cell>();
-        private readonly List<Cell> priorityCells = new List<Cell>();
         private LineType lineType;
         private BoardCell owner;
-        //these cells are not null only if corresponding space is empty
-        private Cell next, prev;
-        //these cells can be either empty or "My" type
-        private Cell nextNext, prevPrev, nextNextNext, prevPrevPrev;
+        private Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev, brokenFourCell;
 
         public Line()
         {
@@ -93,26 +89,16 @@ namespace Gomoku2
 
         private void CalcNext(BoardCell[,] board)
         {
-            next = NextCell(1);
-            if (next.IsEmpty(board))
-            {
-                nextNext = NextCell(2);
-                if (!nextNext.IsEmpty(board)) nextNext = null;
-            }
-            else
-                next = null;
+            next = NextCellWithType(1, board);
+            nextNext = NextCellWithType(2, board);
+            nextNextNext = NextCellWithType(3, board);
         }
 
         private void CalcPrev(BoardCell[,] board)
         {
-            prev = NextCell(-1);
-            if (prev.IsEmpty(board))
-            {
-                prevPrev = NextCell(-2);
-                if (!prevPrev.IsEmpty(board)) prevPrev = null;
-            }
-            else
-                prev = null;
+            prev = NextCellWithType(-1, board);
+            prevPrev = NextCellWithType(-2, board);
+            prevPrevPrev = NextCellWithType(-3, board);
         }
 
         private Cell Start { get; set; }
@@ -123,75 +109,198 @@ namespace Gomoku2
 
         public LineType LineType { get { return lineType; } }
 
-        public List<Cell> PriorityCells { get { return priorityCells; } }
+        public IEnumerable<Cell> HighPriorityCells
+        {
+            get
+            {
+                if (lineType == LineType.BrokenFourInRow)
+                {
+                    yield return brokenFourCell;
+                    yield break;
+                }
+                switch (Count)
+                {
+                    case 3:
+                        foreach (var cell in GetNextCells(true))
+                        {
+                            yield return cell;
+                        }
+                        break;
+                    case 4:
+                    case 2:
+                        foreach (var cell in GetNextCells(false))
+                        {
+                            yield return cell;
+                        }
+                        break;
+                }
+            }
+        }
 
         public IEnumerable<Cell> GetNextCells(bool includeNextNext)
         {
-            if (next != null) yield return next;
-            if (prev != null) yield return prev;
-            if (!includeNextNext) yield break;
-
-            if (nextNext != null) yield return nextNext;
-            if (prevPrev != null) yield return prevPrev;
+            if (next.IsEmpty)
+            {
+                yield return next;
+                if (includeNextNext && nextNext.IsEmpty)
+                    yield return nextNext;
+            }
+            if (prev.IsEmpty)
+            {
+                yield return prev;
+                if (includeNextNext && prevPrev.IsEmpty)
+                    yield return prevPrev;
+            }
         }
 
         public LineType Estimate(BoardCell[,] board)
         {
-            priorityCells.Clear();
             CalcNext(board);
             CalcPrev(board);
-            return lineType = GetEstimate(board);
+            return lineType = GetEstimate();
         }
 
         private bool IsOpenFromBothSides
         {
-            get { return next != null && prev != null; }
+            get { return next.IsEmpty && prev.IsEmpty; }
         }
 
-        private LineType GetEstimate(BoardCell[,] board)
+        private bool IsDead
         {
-            int space;
+            get { return !next.IsEmpty && !prev.IsEmpty; }
+        }
+
+        private List<Cell> NextCells
+        {
+            get { return new List<Cell> {next, nextNext, nextNextNext}; }
+        }
+
+        private List<Cell> PrevCells
+        {
+            get { return new List<Cell> { prev, prevPrev, prevPrevPrev }; }
+        }
+
+        private LineType GetEstimate()
+        {
             switch (Count)
             {
                 case 5:
                     return LineType.FiveInRow;
                 case 4:
-                    space = OpenSpace(board);
+                    if (IsDead) return LineType.DeadFour;
                     if (IsOpenFromBothSides) return LineType.StraightFour;
-                    if (space == 1) return LineType.FourInRow;
-                    return LineType.DeadFour;
+                    return LineType.FourInRow;
                 case 3:
-                    space = OpenSpace(board);
-                    var nextThreeSpace = NextSpace(board, true);
-                    if (nextThreeSpace == 2) return LineType.StraightFour;
-                    if (nextThreeSpace == 1) return LineType.BrokenFourInRow;
-                    if (IsOpenFromBothSides) return LineType.ThreeInRow;
-                    if (space == 1 && priorityCells.Count == 2) return LineType.BlokedThree;
-                    return LineType.DeadThree;
+                    if (IsDead) return LineType.DeadThree;
+                    return ThreeInRowAnalysis();
                 case 2:
-                    space = OpenSpace(board);
-                    var nextSpace = NextSpace(board, false);
-                    if (HasBrokenFour(board))
-                        return LineType.BrokenFourInRow;
-                    if (IsOpenFromBothSides)
-                    {
-                        if (nextSpace == 2)
-                            return LineType.DoubleBrokenThree;
-                        if (nextSpace == 1)
-                            return LineType.BrokenThree;
-                        return LineType.TwoInRow;
-                    }
-                    if (space == 1) return LineType.BlockedTwo;
-                    return LineType.DeadTwo;
+                    if (IsDead) return LineType.DeadTwo;
+                    return TwoInRowAnalysis();
                 case 1:
                     return LineType.SingleMark;
             }
             return LineType.Useless;
         }
 
+        private LineType ThreeInRowAnalysis()
+        {
+            if (!next.IsEmpty && prev.IsEmpty)
+                return ThreeInRowOneSideOpened(PrevCells);
+            if (next.IsEmpty && !prev.IsEmpty)
+                return ThreeInRowOneSideOpened(NextCells);
+            return ThreeInRowTwoSidesOpened();
+        }
+
+        private LineType ThreeInRowOneSideOpened(List<Cell> cells)
+        {
+            //OXXX O
+            if (cells[1].BoardCell == owner.Opponent())
+                return LineType.DeadThree;
+            //OXXX X
+            if (cells[1].BoardCell == owner)
+            {
+                brokenFourCell = cells[0];
+                return LineType.BrokenFourInRow;
+            }
+            //OXXX  
+            return LineType.BlokedThree;
+        }
+
+        private LineType ThreeInRowTwoSidesOpened()
+        {
+            var nextResult = ThreeInRowOneSideOpened(NextCells);
+            var prevResult = ThreeInRowOneSideOpened(PrevCells);
+            //X XXX X
+            if (nextResult == LineType.BrokenFourInRow && prevResult == LineType.BrokenFourInRow)
+                return LineType.StraightFour;
+            //* XXX X
+            if (nextResult == LineType.BrokenFourInRow || prevResult == LineType.BrokenFourInRow)
+                return LineType.BrokenFourInRow;
+            // XXX 
+            return LineType.ThreeInRow;
+        }
+
+        private LineType TwoInRowAnalysis()
+        {
+            if (!next.IsEmpty && prev.IsEmpty)
+                return TwoInRowOneSideOpened(PrevCells);
+            if (next.IsEmpty && !prev.IsEmpty)
+                return TwoInRowOneSideOpened(NextCells);
+            return TwoInRowTwoSidesOpened();
+        }
+
+        private LineType TwoInRowOneSideOpened(List<Cell> cells)
+        {
+            //OXX *O
+            //OXX O*
+            if (cells[2].BoardCell == owner.Opponent() || cells[1].BoardCell == owner.Opponent())
+                return LineType.DeadTwo;
+            if (cells[1].BoardCell == owner)
+            {
+                //OXX XX
+                if (cells[2].BoardCell == owner)
+                {
+                    brokenFourCell = cells[0];
+                    return LineType.BrokenFourInRow;
+                }
+                //OXX X 
+                return LineType.BlokedThree;
+            }
+            //OXX  X
+            if (cells[2].BoardCell == owner)
+                return LineType.BlokedThree;
+            //OXX   
+            return LineType.BlockedTwo;
+        }
+
+        private LineType TwoInRowTwoSidesOpened()
+        {
+            //has bug - doesn't work with position like OX XX   
+            //estimates like TwoInRow while it is BlockedThree
+            var nextResult = TwoInRowOneSideOpened(NextCells);
+            var prevResult = TwoInRowOneSideOpened(PrevCells);
+            //XX XX XX
+            if (nextResult == LineType.BrokenFourInRow && prevResult == LineType.BrokenFourInRow)
+                return LineType.StraightFour;
+            //  XX XX
+            if (nextResult == LineType.BrokenFourInRow || prevResult == LineType.BrokenFourInRow)
+                return LineType.BrokenFourInRow;
+            // X XX  X
+            if (IsBrokenThree(nextResult) && IsBrokenThree(prevResult))
+                return LineType.DoubleBrokenThree;
+            // XX X 
+            if (IsBrokenThree(nextResult) || IsBrokenThree(prevResult))
+                return LineType.BrokenThree;
+            return LineType.TwoInRow;
+        }
+
+        private static bool IsBrokenThree(LineType type)
+        {
+            return type == LineType.BlokedThree;
+        }
+
         private Cell Direction { get; set; }
 
-        //todo update cloning accordingly
         public Line Clone()
         {
             var newLine = new Line();
@@ -201,6 +310,14 @@ namespace Gomoku2
             newLine.End = End;
             newLine.Direction = Direction;
             newLine.owner = owner;
+
+            newLine.next = next;
+            newLine.nextNext = nextNext;
+            newLine.nextNextNext = nextNextNext;
+            newLine.prev = prev;
+            newLine.prevPrev = prevPrev;
+            newLine.prevPrevPrev = prevPrevPrev;
+
             return newLine;
         }
 
@@ -235,13 +352,6 @@ namespace Gomoku2
             return false;
         }
 
-        private int OpenSpace(BoardCell[,] board)
-        {
-            if (next != null) priorityCells.Add(next);
-            if (prev != null) priorityCells.Add(prev);
-            return priorityCells.Count;
-        }
-
         private Cell NextCell(int i)
         {
             if (i >= 0)
@@ -249,58 +359,11 @@ namespace Gomoku2
             return End + i*Direction;
         }
 
-        private int NextSpace(BoardCell[,] board, bool addNextNextCellAsPriority)
+        private Cell NextCellWithType(int i, BoardCell[,] board)
         {
-            int space = 0;
-            if (next != null)
-            {
-                //todo use nextnext
-                var nextNextCell = NextCell(2);
-                if (CellIsDesiredType(board, nextNextCell, owner)) space++;
-                else if (addNextNextCellAsPriority && nextNext != null)
-                    priorityCells.Add(nextNext);
-            }
-            if (prev != null)
-            {
-                var nextNextCell = NextCell(-2);
-                if (CellIsDesiredType(board, nextNextCell, owner)) space++;
-                else if (addNextNextCellAsPriority && prevPrev != null)
-                    priorityCells.Add(prevPrev);
-            }
-            return space;
-        }
-
-        private bool HasBrokenFour(BoardCell[,] board)
-        {
-            if (next != null)
-            {
-                if (CellIsDesiredType(board, NextCell(2), owner) && CellIsDesiredType(board, NextCell(3), owner))
-                {
-                    priorityCells.Clear();
-                    priorityCells.Add(next);
-                    return true;
-                }
-            }
-            if (prev != null)
-            {
-                if (CellIsDesiredType(board, NextCell(-2), owner) && CellIsDesiredType(board, NextCell(-3), owner))
-                {
-                    priorityCells.Clear();
-                    priorityCells.Add(prev);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private static bool CellIsDesiredType(BoardCell[,] board, Cell cell, BoardCell type)
-        {
-            return CellIsDesiredType(board, cell.X, cell.Y, type);
-        }
-
-        private static bool CellIsDesiredType(BoardCell[,] board, int x, int y, BoardCell cellType)
-        {
-            return x >= 0 && x < 15 && y >= 0 && y < 15 && board[x, y] == cellType;
+            var cell = NextCell(i);
+            cell.BoardCell = !cell.InTheBoard ? BoardCell.Invalid : board[cell.X, cell.Y];
+            return cell;
         }
 
         public int CompareTo(Line other)

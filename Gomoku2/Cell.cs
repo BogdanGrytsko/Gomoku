@@ -91,9 +91,19 @@ namespace Gomoku2
             }
         }
 
-        public bool IsEmpty(BoardCell[,] board)
+        public bool IsEmptyWithBoard(BoardCell[,] board)
         {
-            return X >= 0 && X < 15 && Y >= 0 && Y < 15 && board[X, Y] == BoardCell.None;
+            return InTheBoard && board[X, Y] == BoardCell.None;
+        }
+
+        public bool IsEmpty
+        {
+            get { return BoardCell == BoardCell.None; }
+        }
+
+        public bool InTheBoard
+        {
+            get { return X >= 0 && X < 15 && Y >= 0 && Y < 15; }
         }
 
         //TODO :do we need this? we should use reference comparision instead.
@@ -118,7 +128,7 @@ namespace Gomoku2
 
         public bool IsType(BoardCell[,] board, BoardCell cellType)
         {
-            return X >= 0 && X < 15 && Y >= 0 && Y < 15 && board[X, Y] == cellType;
+            return InTheBoard && board[X, Y] == cellType;
         }
     }
 }

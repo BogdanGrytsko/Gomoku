@@ -17,8 +17,7 @@ namespace GomokuTest
         [TestMethod]
         public void DoubleThreatEstimatedAsLost()
         {
-            //todo fix
-            TestEstimation("DoubleThreatEstimatedAsLost.txt", est => est < 0 && est < (int)LineType.DoubleThreat);
+            TestEstimation("DoubleThreatEstimatedAsLost.txt", est => est == -(int)LineType.FiveInRow);
         }
 
         [TestMethod]
@@ -43,6 +42,18 @@ namespace GomokuTest
         public void FourInRowEstimatedAsWin()
         {
             TestEstimation("FourInRowEstimatedAsWin.txt", est => est > (int)LineType.StraightFour / 2);
+        }
+
+        [TestMethod]
+        public void BlockedThreeEstimatedAsBrokenThree()
+        {
+            TestEstimation("BlockedThreeEstimatedAsBrokenThree.txt", est => est > 0);
+        }
+
+        [TestMethod]
+        public void BlockedThreeAndThreeInRowEstimatedAsDoubleThreat()
+        {
+            TestEstimation("BlockedThreeAndThreeInRowEstimatedAsDoubleThreat.txt", est => est < (int)LineType.DoubleThreat);
         }
 
         private static void TestEstimation(string fileName, Predicate<int> predicate)

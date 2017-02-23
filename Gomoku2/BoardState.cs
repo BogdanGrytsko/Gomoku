@@ -116,7 +116,7 @@ namespace Gomoku2
 
         private static IEnumerable<Cell> SelectManyPriorityCells(IEnumerable<Line> lines, Predicate<LineType> predicate)
         {
-            return lines.Where(l => predicate(l.LineType)).SelectMany(l => l.PriorityCells);
+            return lines.Where(l => predicate(l.LineType)).SelectMany(l => l.HighPriorityCells);
         }
 
         public IEnumerable<Cell> GetNearEmptyCells()

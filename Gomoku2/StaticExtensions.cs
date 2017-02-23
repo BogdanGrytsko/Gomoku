@@ -57,7 +57,7 @@ namespace Gomoku2
 
         public static IEnumerable<Cell> GetAdjustmentEmptyCells(this Cell startCell, BoardCell[,] board)
         {
-            return GetAdjustmentCells(startCell).Where(cell => cell.IsEmpty(board));
+            return GetAdjustmentCells(startCell).Where(cell => cell.IsEmptyWithBoard(board));
         }
 
         public static IEnumerable<Cell> GetAdjustmentCells(this Cell startCell, BoardCell[,] board, BoardCell cellType)

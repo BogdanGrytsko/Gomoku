@@ -11,32 +11,31 @@ namespace GomokuTest
         [TestMethod]
         public void SecondHasWinningMove()
         {
-            DoTest("SecondHasWinningMove.txt", new Cell(4, 10), new Cell(9, 10) );
+            DoTestStraightFour("SecondHasWinningMove.txt", new Cell(4, 10), new Cell(9, 10) );
         }
 
         [TestMethod]
         public void StraightFiveIsNotCountered()
         {
-            //todo this has wrong estimate : -10000
-            DoTest("StraightFiveIsNotCountered.txt", new Cell(8, 11));
+            DoTestStraightFour("StraightFiveIsNotCountered.txt", new Cell(8, 11));
         }
 
         [TestMethod]
         public void FourInLineNotPriorityForDef()
         {
-            DoTest("FourInLineNotPriorityForDef.txt", new Cell(5, 9));
+            DoTestStraightFour("FourInLineNotPriorityForDef.txt", new Cell(5, 9));
         }
 
         [TestMethod]
         public void Board14HasWinningMove()
         {
-            DoTest("Board14HasWinningMove.txt", new Cell(8, 10), new Cell(8, 11));
+            DoTestStraightFour("Board14HasWinningMove.txt", new Cell(8, 10), new Cell(8, 11));
         }
 
         [TestMethod]
         public void Board16WinNotFound()
         {
-            DoTest("Board16WinNotFound.txt", new Cell(7, 10));
+            DoTestStraightFour("Board16WinNotFound.txt", new Cell(7, 10));
         }
 
         [TestMethod]
@@ -48,7 +47,7 @@ namespace GomokuTest
         [TestMethod]
         public void BlockedThreeIntoDeadFour()
         {
-            DoTest("BlockedThreeIntoDeadFour.txt", new Cell(7, 6));
+            DoTestStraightFour("BlockedThreeIntoDeadFour.txt", new Cell(7, 6));
         }
 
         [TestMethod]
@@ -57,7 +56,13 @@ namespace GomokuTest
             TestMove("LongRunningComplexPosition.txt", new Cell(9, 7));
         }
 
-        private static void DoTest(string boardName, params Cell[] correctMoves)
+        [TestMethod]
+        public void Board34WrongDefensiveMove()
+        {
+            TestMove("Board34WrongDefensiveMove.txt", new Cell(11, 6), new Cell(8, 9));
+        }
+
+        private static void DoTestStraightFour(string boardName, params Cell[] correctMoves)
         {
             var game = TestMove(boardName, correctMoves);
             var estimatedBoard = game.EstimatedBoard;

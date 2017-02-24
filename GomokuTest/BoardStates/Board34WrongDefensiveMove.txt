@@ -6,10 +6,10 @@
    OX X  O     
   X XXOXX      
   O XXOX       
-   XOOXOO      
+  OXOOXOO      
   O XXOXX      
   O OX XO      
-        O      
+  X     O      
                
                
                

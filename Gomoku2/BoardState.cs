@@ -92,22 +92,23 @@ namespace Gomoku2
             {
                 oppLine.Estimate(Board);
             }
-            var myStraightFour = SelectManyPriorityCells(MyLines, type => type == LineType.StraightFour);
+            var myStraightFour = SelectManyPriorityCells(MyLines, type => type.IsStraightFour());
             if (myStraightFour.Any())
                 return myStraightFour;
-            var oppStraightFour = SelectManyPriorityCells(OppLines, type => type == LineType.StraightFour);
+            var oppStraightFour = SelectManyPriorityCells(OppLines, type => type.IsStraightFour());
             if (oppStraightFour.Any())
                 return oppStraightFour;
 
-            var myThreatOfFour = SelectManyPriorityCells(MyLines, Game.ThreatOfFour);
+            var myThreatOfFour = SelectManyPriorityCells(MyLines, LineTypeExtensions.ThreatOfFour);
             if (myThreatOfFour.Any())
                 return myThreatOfFour;
 
-            var oppThreatOfFour = SelectManyPriorityCells(OppLines, Game.ThreatOfFour);
+            var oppThreatOfFour = SelectManyPriorityCells(OppLines, LineTypeExtensions.ThreatOfFour);
             if (oppThreatOfFour.Any())
                 return oppThreatOfFour;
 
-            var myBlockedThree = SelectManyPriorityCells(MyLines, type => type == LineType.BlokedThree);
+            //maybe we should enable more - like Threat of Three also?
+            var myBlockedThree = SelectManyPriorityCells(MyLines, type => type.IsBlokedThree());
             if (myBlockedThree.Any())
                 return myBlockedThree;
 
@@ -124,14 +125,15 @@ namespace Gomoku2
             var set = new HashSet<Cell>();
             set.UnionWith(GetPriorityCells(MyLines));
             set.UnionWith(GetPriorityCells(OppLines));
-            set.UnionWith(SelectManyPriorityCells(MyLines, Game.ThreatOfThree));
-            set.UnionWith(SelectManyPriorityCells(OppLines, Game.ThreatOfThree));
+            set.UnionWith(SelectManyPriorityCells(MyLines, LineTypeExtensions.ThreatOfThree));
+            set.UnionWith(SelectManyPriorityCells(OppLines, LineTypeExtensions.ThreatOfThree));
 
             for (int x = 0; x < 15; ++x)
             {
                 for (int y = 0; y < 15; ++y)
                 {
-                    if (Board[x, y] != BoardCell.None)
+                    //todo this is TOO MUCH. Decrease this number
+                    if (Board[x, y] == MyCellType)
                         set.UnionWith(CellManager.Get(x, y).GetAdjustmentEmptyCells(Board));
                 }
             }

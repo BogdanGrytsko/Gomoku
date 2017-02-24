@@ -84,7 +84,7 @@ namespace Gomoku2
             var oppLines = GetLines(boardCell.Opponent());
             if (!myLines.Any()) return FirstMoveCase();
             
-            BoardState state = new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board); ;
+            BoardState state = new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board);
 
             //todo we may want to remember history for perf improvement
             gameStates.Clear();
@@ -192,25 +192,10 @@ namespace Gomoku2
             int killerLines = 0;
             foreach (var line in lines)
             {
-                if (ThreatOfThree(line.LineType) || (ThreatOfFour(line.LineType) && line.Count > 2)) killerLines++;
+                if (line.LineType.ThreatOfThree() || (line.LineType.ThreatOfFour() && line.Count > 2)) killerLines++;
             }
             if (killerLines >= 2) return sum + (int)LineType.DoubleThreat;
             return sum;
-        }
-
-        private static bool FourCellLine(LineType lineType)
-        {
-            return ThreatOfFour(lineType) || lineType == LineType.StraightFour;
-        }
-
-        public static bool ThreatOfFour(LineType lineType)
-        {
-            return lineType == LineType.FourInRow || lineType == LineType.BrokenFourInRow;
-        }
-
-        public static bool ThreatOfThree(LineType lineType)
-        {
-            return lineType == LineType.ThreeInRow || lineType == LineType.BrokenThree || lineType == LineType.DoubleBrokenThree;
         }
 
         private IEnumerable<EstimatedCell> EstimateCells(BoardState state, IEnumerable<Cell> cells)
@@ -235,13 +220,13 @@ namespace Gomoku2
 
             var oppEstim = SumLines(oppLines);
 
-            if (oppLines.Any(line => FourCellLine(line.LineType)))
+            if (oppLines.Any(line => line.LineType.FourCellLine()))
                 return -(int)LineType.FiveInRow;
 
-            if (myLines.Any(line => FourCellLine(line.LineType)))
+            if (myLines.Any(line => line.LineType.FourCellLine()))
                 return myEstim - oppEstim;
 
-            if (oppLines.Any(line => ThreatOfThree(line.LineType)))
+            if (oppLines.Any(line => line.LineType.ThreatOfThree()))
                 return -(int)LineType.FiveInRow;
 
             return myEstim - oppEstim;

@@ -54,6 +54,7 @@
     <Compile Include="GameState.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="LineType.cs" />
+    <Compile Include="LineTypeExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StaticExtensions.cs" />

@@ -16,5 +16,10 @@ namespace Gomoku2
         public List<Line> MyLines { get; private set; }
 
         public int Estimate { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Cell} : {Estimate}";
+        }
     }
 }

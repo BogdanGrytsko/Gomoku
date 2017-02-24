@@ -155,6 +155,8 @@ namespace Gomoku2
 
         public LineType Estimate(BoardCell[,] board)
         {
+            //todo WHY THE FUCK this method doesn't work????
+            //CalcNextAndPrev(board);
             CalcNext(board);
             CalcPrev(board);
             return lineType = GetEstimate();
@@ -231,10 +233,10 @@ namespace Gomoku2
             var nextResult = ThreeInRowOneSideOpened(NextCells);
             var prevResult = ThreeInRowOneSideOpened(PrevCells);
             //X XXX X
-            if (nextResult == LineType.BrokenFourInRow && prevResult == LineType.BrokenFourInRow)
+            if (nextResult.IsBrokenFourInRow() && prevResult.IsBrokenFourInRow())
                 return LineType.StraightFour;
             //* XXX X
-            if (nextResult == LineType.BrokenFourInRow || prevResult == LineType.BrokenFourInRow)
+            if (nextResult.IsBrokenFourInRow()|| prevResult.IsBrokenFourInRow())
                 return LineType.BrokenFourInRow;
             // XXX 
             return LineType.ThreeInRow;
@@ -251,10 +253,10 @@ namespace Gomoku2
 
         private LineType TwoInRowOneSideOpened(List<Cell> cells)
         {
-            //OXX *O
             //OXX O*
-            if (cells[2].BoardCell == owner.Opponent() || cells[1].BoardCell == owner.Opponent())
+            if (cells[1].BoardCell == owner.Opponent())
                 return LineType.DeadTwo;
+            //OXX X*
             if (cells[1].BoardCell == owner)
             {
                 //OXX XX
@@ -263,6 +265,9 @@ namespace Gomoku2
                     brokenFourCell = cells[0];
                     return LineType.BrokenFourInRow;
                 }
+                //OXX XO
+                if (cells[2].BoardCell == owner.Opponent())
+                    return LineType.DeadThree;
                 //OXX X 
                 return LineType.BlokedThree;
             }
@@ -275,28 +280,28 @@ namespace Gomoku2
 
         private LineType TwoInRowTwoSidesOpened()
         {
-            //has bug - doesn't work with position like OX XX   
-            //estimates like TwoInRow while it is BlockedThree
             var nextResult = TwoInRowOneSideOpened(NextCells);
             var prevResult = TwoInRowOneSideOpened(PrevCells);
+            // O XX O 
+            if (nextResult.IsDeadTwo() && prevResult.IsDeadTwo())
+                return LineType.DeadTwo;
             //XX XX XX
-            if (nextResult == LineType.BrokenFourInRow && prevResult == LineType.BrokenFourInRow)
+            if (nextResult.IsBrokenFourInRow() && prevResult.IsBrokenFourInRow())
                 return LineType.StraightFour;
             //  XX XX
-            if (nextResult == LineType.BrokenFourInRow || prevResult == LineType.BrokenFourInRow)
+            if (nextResult.IsBrokenFourInRow() || prevResult.IsBrokenFourInRow())
                 return LineType.BrokenFourInRow;
             // X XX  X
-            if (IsBrokenThree(nextResult) && IsBrokenThree(prevResult))
+            if (nextResult.IsBlokedThree() && prevResult.IsBlokedThree())
                 return LineType.DoubleBrokenThree;
             // XX X 
-            if (IsBrokenThree(nextResult) || IsBrokenThree(prevResult))
+            if (nextResult.IsBlokedThree() || prevResult.IsBlokedThree())
                 return LineType.BrokenThree;
-            return LineType.TwoInRow;
-        }
+            //OX XX  
+            if (nextResult.IsDeadThree() || prevResult.IsDeadThree())
+                return LineType.BlokedThree;
 
-        private static bool IsBrokenThree(LineType type)
-        {
-            return type == LineType.BlokedThree;
+            return LineType.TwoInRow;
         }
 
         private Cell Direction { get; set; }

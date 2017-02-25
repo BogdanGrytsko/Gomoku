@@ -96,11 +96,10 @@ namespace Gomoku2
 
         private int AlphaBeta(BoardState state, int alpha, int beta, out Cell move, GameState parent)
         {
-            var nextCells = state.GetNextCells();
             move = null;
             int bestEstim = state.StartEstimate;
-           
-            foreach (var estimatedCell in EstimateCells(state, nextCells).Take(state.MaxWidth))
+
+            foreach (var estimatedCell in EstimateCells(state))
             {
                 //TODO
                 //for leaf case we probably don't even need to iterate - first (or last) one will be the result, since we order them.
@@ -108,7 +107,7 @@ namespace Gomoku2
                 Cell bestMove;
 
                 board[cell.X, cell.Y] = state.MyCellType;
-                var currEstim = estimatedCell.Estimate * state.Multiplier;
+                var currEstim = estimatedCell.Estimate*state.Multiplier;
 
                 var gameState = new GameState {BoardState = state.Clone(), Cell = cell, Estimate = currEstim};
                 OnStateChanged(gameState, parent);
@@ -117,7 +116,8 @@ namespace Gomoku2
                 //StraightFour comparison leds to invalid analysis. Can break on it only if oppent doesn't have broken/Blocked 4
                 //but after bug fixed it seems to work.
                 //TODO invesigate further
-                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) || StraightFourAndOpponentDoesntHaveThreatOfFour(estimatedCell.Estimate))
+                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) ||
+                    StraightFourAndOpponentDoesntHaveThreatOfFour(estimatedCell.Estimate))
                     minMax = currEstim;
                 else
                     minMax = AlphaBeta(state.GetNextState(estimatedCell.MyLines), alpha, beta, out bestMove, gameState);
@@ -198,20 +198,28 @@ namespace Gomoku2
             return sum;
         }
 
-        private IEnumerable<EstimatedCell> EstimateCells(BoardState state, IEnumerable<Cell> cells)
+        private IEnumerable<EstimatedCell> EstimateCells(BoardState state)
         {
-            var list = new List<EstimatedCell>();
+            var cells = state.GetNextCells();
+            var estimatedCells = GetEstimatedCells(state, cells);
+            if (state.IsTerminal)
+                return estimatedCells;
 
+            return estimatedCells.OrderByDescending(ec => ec.Estimate).Take(state.MaxWidth);
+        }
+
+        private IEnumerable<EstimatedCell> GetEstimatedCells(BoardState state, IEnumerable<Cell> cells)
+        {
             foreach (var cell in cells)
             {
                 board[cell.X, cell.Y] = state.MyCellType;
                 var myNewLines = GetLinesByAddingCell(cell, state.MyLines, state.MyCellType);
-               
-                list.Add(new EstimatedCell(cell, myNewLines, Estimate(myNewLines, state.OppLines)));
+                var estimate = Estimate(myNewLines, state.OppLines);
                 board[cell.X, cell.Y] = BoardCell.None;
+
+                yield return new EstimatedCell(cell, myNewLines, estimate);
             }
-            return list.OrderByDescending(ec => ec.Estimate);
-        }
+        } 
 
         public int Estimate(List<Line> myLines, List<Line> oppLines)
         {

@@ -107,7 +107,7 @@ namespace Gomoku2
             if (oppThreatOfFour.Any())
                 return oppThreatOfFour;
 
-            //maybe we should enable more - like Threat of Three also?
+            //todo maybe we should enable more - like Threat of Three also?
             var myBlockedThree = SelectManyPriorityCells(MyLines, type => type.IsBlokedThree());
             if (myBlockedThree.Any())
                 return myBlockedThree;
@@ -125,8 +125,6 @@ namespace Gomoku2
             var set = new HashSet<Cell>();
             set.UnionWith(GetPriorityCells(MyLines));
             set.UnionWith(GetPriorityCells(OppLines));
-            set.UnionWith(SelectManyPriorityCells(MyLines, LineTypeExtensions.ThreatOfThree));
-            set.UnionWith(SelectManyPriorityCells(OppLines, LineTypeExtensions.ThreatOfThree));
 
             for (int x = 0; x < 15; ++x)
             {

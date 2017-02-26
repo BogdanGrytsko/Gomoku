@@ -11,6 +11,7 @@ namespace Gomoku2
         private LineType lineType;
         private BoardCell owner;
         private Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev, brokenFourCell, longBrokenThreeCell1, longBrokenThreeCell2;
+        private List<Cell> twoInRowOpenedSide;
 
         public Line()
         {
@@ -120,6 +121,12 @@ namespace Gomoku2
                 }
                 switch (Count)
                 {
+                    case 4:
+                        foreach (var cell in GetNextCells(false))
+                        {
+                            yield return cell;
+                        }
+                        break;
                     case 3:
                         var includeNextNext = lineType.IsBlokedThree();
                         foreach (var cell in GetNextCells(includeNextNext))
@@ -127,7 +134,6 @@ namespace Gomoku2
                             yield return cell;
                         }
                         break;
-                    case 4:
                     case 2:
                         if (lineType.IsLongBrokenThree())
                         {
@@ -135,9 +141,28 @@ namespace Gomoku2
                             yield return longBrokenThreeCell2;
                             break;
                         }
-                        foreach (var cell in GetNextCells(lineType.IsTwoInRow()))
+                        //TwoInRow should return next cell only of next next is open
+                        if (lineType.IsTwoInRow())
                         {
-                            yield return cell;
+                            if (twoInRowOpenedSide != null)
+                            {
+                                yield return twoInRowOpenedSide[0];
+                                yield return twoInRowOpenedSide[1];
+                                break;
+                            }
+                            foreach (var cell in GetNextCells(true))
+                            {
+                                yield return cell;
+                            }
+                            break;
+                        }
+                        //broken three needs only next cells
+                        if (lineType.IsBrokenThree())
+                        {
+                            foreach (var cell in GetNextCells(false))
+                            {
+                                yield return cell;
+                            }
                         }
                         break;
                 }
@@ -296,6 +321,11 @@ namespace Gomoku2
             // O XX O 
             if (nextResult.IsDeadTwo() && prevResult.IsDeadTwo())
                 return LineType.DeadTwo;
+            if (nextResult.IsDeadTwo())
+                twoInRowOpenedSide = PrevCells;
+            if (prevResult.IsDeadTwo())
+                twoInRowOpenedSide = NextCells;
+
             //XX XX XX
             if (nextResult.IsBrokenFourInRow() && prevResult.IsBrokenFourInRow())
                 return LineType.StraightFour;

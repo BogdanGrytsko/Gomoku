@@ -69,6 +69,12 @@ namespace GomokuTest
             TestMove("ThreeInRowDefensiveMove.txt", new Cell(7, 5), new Cell(7, 9));
         }
 
+        [TestMethod]
+        public void LongBrokenThree()
+        {
+            TestMove("LongBrokenThree.txt", new Cell(7, 8), new Cell(5, 6));
+        }
+
         private static void DoTestStraightFour(string boardName, params Cell[] correctMoves)
         {
             var game = TestMove(boardName, correctMoves);

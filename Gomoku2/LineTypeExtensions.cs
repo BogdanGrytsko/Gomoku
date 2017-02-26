@@ -22,6 +22,21 @@
             return lineType == LineType.BlokedThree;
         }
 
+        public static bool IsLongBlockedThree(this LineType lineType)
+        {
+            return lineType == LineType.LongBlockedThree;
+        }
+
+        public static bool IsBrokenThree(this LineType lineType)
+        {
+            return lineType == LineType.BrokenThree;
+        }
+
+        public static bool IsLongBrokenThree(this LineType lineType)
+        {
+            return lineType == LineType.LongBrokenThree;
+        }
+
         public static bool IsDeadThree(this LineType lineType)
         {
             return lineType == LineType.DeadThree;
@@ -39,7 +54,7 @@
 
         public static bool ThreatOfThree(this LineType lineType)
         {
-            return lineType.IsThreeInRow()|| lineType == LineType.BrokenThree || lineType == LineType.DoubleBrokenThree;
+            return lineType.IsThreeInRow()|| lineType.IsBrokenThree() || lineType.IsLongBrokenThree() || lineType == LineType.DoubleBrokenThree;
         }
 
         public static bool IsThreeInRow(this LineType lineType)

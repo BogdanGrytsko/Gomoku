@@ -10,7 +10,7 @@ namespace Gomoku2
         private readonly List<Cell> line = new List<Cell>();
         private LineType lineType;
         private BoardCell owner;
-        private Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev, brokenFourCell;
+        private Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev, brokenFourCell, longBrokenThreeCell1, longBrokenThreeCell2;
 
         public Line()
         {
@@ -129,6 +129,12 @@ namespace Gomoku2
                         break;
                     case 4:
                     case 2:
+                        if (lineType.IsLongBrokenThree())
+                        {
+                            yield return longBrokenThreeCell1;
+                            yield return longBrokenThreeCell2;
+                            break;
+                        }
                         foreach (var cell in GetNextCells(lineType.IsTwoInRow()))
                         {
                             yield return cell;
@@ -274,7 +280,11 @@ namespace Gomoku2
             }
             //OXX  X
             if (cells[2].BoardCell == owner)
-                return LineType.BlokedThree;
+            {
+                longBrokenThreeCell1 = cells[0];
+                longBrokenThreeCell2 = cells[1];
+                return LineType.LongBlockedThree;
+            }
             //OXX   
             return LineType.BlockedTwo;
         }
@@ -298,6 +308,8 @@ namespace Gomoku2
             // XX X 
             if (nextResult.IsBlokedThree() || prevResult.IsBlokedThree())
                 return LineType.BrokenThree;
+            if (nextResult.IsLongBlockedThree() || prevResult.IsLongBlockedThree())
+                return LineType.LongBrokenThree;
             //OX XX  
             if (nextResult.IsDeadThree() || prevResult.IsDeadThree())
                 return LineType.BlokedThree;

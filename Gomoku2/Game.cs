@@ -189,18 +189,21 @@ namespace Gomoku2
         {
             var estims = lines.Select(l => l.Estimate(board)).ToList();
             var sum = estims.Sum(es => (int) es);
-            int killerLines = 0;
-            foreach (var line in lines)
-            {
-                if (line.LineType.ThreatOfThree() || (line.LineType.ThreatOfFour() && line.Count > 2)) killerLines++;
-            }
-            if (killerLines >= 2) return sum + (int)LineType.DoubleThreat;
+            if (HasDoubleThreat(lines))
+                sum += (int) LineType.DoubleThreat;
             return sum;
+        }
+
+        private static bool HasDoubleThreat(List<Line> lines)
+        {
+            int killerLines = lines.Count(line => line.LineType.ThreatOfThree() || (line.LineType.ThreatOfFour() && line.Count > 2));
+            return killerLines >= 2;
         }
 
         private IEnumerable<EstimatedCell> EstimateCells(BoardState state)
         {
             var cells = state.GetNextCells();
+            //todo we estimate leaf position we may consider to take ONLY GetPriorityCells(MyLines), without all near empty cells
             var estimatedCells = GetEstimatedCells(state, cells);
             if (state.IsTerminal)
                 return estimatedCells;
@@ -208,9 +211,9 @@ namespace Gomoku2
             return estimatedCells.OrderByDescending(ec => ec.Estimate).Take(state.MaxWidth);
         }
 
-        private IEnumerable<EstimatedCell> GetEstimatedCells(BoardState state, IEnumerable<Cell> cells)
+        private IEnumerable<EstimatedCell> GetEstimatedCells(BoardState state, NextCells nextCells)
         {
-            foreach (var cell in cells)
+            foreach (var cell in nextCells.MyNextCells)
             {
                 board[cell.X, cell.Y] = state.MyCellType;
                 var myNewLines = GetLinesByAddingCell(cell, state.MyLines, state.MyCellType);
@@ -218,6 +221,17 @@ namespace Gomoku2
                 board[cell.X, cell.Y] = BoardCell.None;
 
                 yield return new EstimatedCell(cell, myNewLines, estimate);
+            }
+
+            if (nextCells.OppNextCells == null)
+                yield break;
+            //todo consider if need to use it at all
+            foreach (var cell in nextCells.OppNextCells)
+            {
+                board[cell.X, cell.Y] = state.OpponentCellType;
+                var oppNewLines = GetLinesByAddingCell(cell, state.OppLines, state.OpponentCellType);
+                var estimate = Estimate(oppNewLines, state.MyLines);
+                board[cell.X, cell.Y] = BoardCell.None;
             }
         } 
 

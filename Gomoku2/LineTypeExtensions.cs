@@ -7,6 +7,11 @@
             return lineType == LineType.DeadTwo;
         }
 
+        public static bool IsTwoInRow(this LineType lineType)
+        {
+            return lineType == LineType.TwoInRow;
+        }
+
         public static bool IsBrokenFourInRow(this LineType lineType)
         {
             return lineType == LineType.BrokenFourInRow;
@@ -34,7 +39,12 @@
 
         public static bool ThreatOfThree(this LineType lineType)
         {
-            return lineType == LineType.ThreeInRow || lineType == LineType.BrokenThree || lineType == LineType.DoubleBrokenThree;
+            return lineType.IsThreeInRow()|| lineType == LineType.BrokenThree || lineType == LineType.DoubleBrokenThree;
+        }
+
+        public static bool IsThreeInRow(this LineType lineType)
+        {
+            return lineType == LineType.ThreeInRow;
         }
 
         public static bool IsStraightFour(this LineType lineType)

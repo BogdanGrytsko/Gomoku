@@ -113,7 +113,7 @@ namespace Gomoku2
         {
             get
             {
-                if (lineType == LineType.BrokenFourInRow)
+                if (lineType.IsBrokenFourInRow())
                 {
                     yield return brokenFourCell;
                     yield break;
@@ -121,14 +121,15 @@ namespace Gomoku2
                 switch (Count)
                 {
                     case 3:
-                        foreach (var cell in GetNextCells(true))
+                        var includeNextNext = lineType.IsBlokedThree();
+                        foreach (var cell in GetNextCells(includeNextNext))
                         {
                             yield return cell;
                         }
                         break;
                     case 4:
                     case 2:
-                        foreach (var cell in GetNextCells(false))
+                        foreach (var cell in GetNextCells(lineType.IsTwoInRow()))
                         {
                             yield return cell;
                         }

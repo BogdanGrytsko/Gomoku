@@ -29,6 +29,7 @@ namespace GomokuTest
         [TestMethod]
         public void Board14HasWinningMove()
         {
+            //todo analyze and refactor so total # of moves is lesser.
             DoTestStraightFour("Board14HasWinningMove.txt", new Cell(8, 10), new Cell(8, 11));
         }
 
@@ -60,6 +61,12 @@ namespace GomokuTest
         public void Board34WrongDefensiveMove()
         {
             TestMove("Board34WrongDefensiveMove.txt", new Cell(11, 6), new Cell(8, 9));
+        }
+
+        [TestMethod]
+        public void ThreeInRowDefensiveMove()
+        {
+            TestMove("ThreeInRowDefensiveMove.txt", new Cell(7, 5), new Cell(7, 9));
         }
 
         private static void DoTestStraightFour(string boardName, params Cell[] correctMoves)

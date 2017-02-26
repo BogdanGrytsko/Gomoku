@@ -61,13 +61,15 @@ namespace Gomoku2
             return new BoardState(OppLines, myNewLines, OpponentCellType, Depth - 1, MinDepth, MaxWidth, Board);
         }
 
-        public IEnumerable<Cell> GetNextCells()
+        public NextCells GetNextCells()
         {
-            var threatCells = GetPriorityThreatCells().ToList();
-            if (threatCells.Any())
+            const int minMinDepth = -16;
+            var threatCells = GetPriorityThreatCells();
+            if (threatCells.Cells.Any())
             {
-                MinDepth--;
-                return new HashSet<Cell>(threatCells);
+                if (threatCells.IncreasesDepth && MinDepth > minMinDepth)
+                    MinDepth--;
+                return new NextCells(threatCells.Cells);
             }
             return GetNearEmptyCells();
         }
@@ -82,7 +84,7 @@ namespace Gomoku2
             }
         }
 
-        private IEnumerable<Cell> GetPriorityThreatCells()
+        private PriorityCells GetPriorityThreatCells()
         {
             foreach (var myLine in MyLines)
             {
@@ -94,25 +96,45 @@ namespace Gomoku2
             }
             var myStraightFour = SelectManyPriorityCells(MyLines, type => type.IsStraightFour());
             if (myStraightFour.Any())
-                return myStraightFour;
+                return new PriorityCells(myStraightFour);
             var oppStraightFour = SelectManyPriorityCells(OppLines, type => type.IsStraightFour());
             if (oppStraightFour.Any())
-                return oppStraightFour;
+                return new PriorityCells(oppStraightFour);
 
             var myThreatOfFour = SelectManyPriorityCells(MyLines, LineTypeExtensions.ThreatOfFour);
             if (myThreatOfFour.Any())
-                return myThreatOfFour;
-
+                return new PriorityCells(myThreatOfFour);
             var oppThreatOfFour = SelectManyPriorityCells(OppLines, LineTypeExtensions.ThreatOfFour);
             if (oppThreatOfFour.Any())
-                return oppThreatOfFour;
+                return new PriorityCells(oppThreatOfFour);
 
-            //todo maybe we should enable more - like Threat of Three also?
+            //this forces immidiate analyzis on blocked three cells.
             var myBlockedThree = SelectManyPriorityCells(MyLines, type => type.IsBlokedThree());
             if (myBlockedThree.Any())
-                return myBlockedThree;
+                return new PriorityCells(myBlockedThree);
 
-            return new List<Cell>();
+            var myThreatOfThree = SelectManyPriorityCells(MyLines, type => type.ThreatOfThree());
+            if (myThreatOfThree.Any())
+                return new PriorityCells(myThreatOfThree, false);
+            var oppThreatOfThree = SelectManyPriorityCells(OppLines, type => type.ThreatOfThree());
+            if (oppThreatOfThree.Any())
+                return new PriorityCells(oppThreatOfThree, false);
+            //find double threat
+            var myDoubleThreat = DoubleThreatCells(MyLines);
+            if (myDoubleThreat.Any())
+                return new PriorityCells(myDoubleThreat, false);
+
+            var oppDoubleThreat = DoubleThreatCells(OppLines);
+            if (oppDoubleThreat.Any())
+                return new PriorityCells(oppDoubleThreat, false);
+
+            return new PriorityCells(new List<Cell>());
+        }
+
+        private static IEnumerable<Cell> DoubleThreatCells(IEnumerable<Line> lines)
+        {
+            var oppDoubleThreat = SelectManyPriorityCells(lines, type => type.IsBlokedThree() || type.IsTwoInRow());
+            return oppDoubleThreat.GroupBy(s => s).SelectMany(grp => grp.Skip(1));
         }
 
         private static IEnumerable<Cell> SelectManyPriorityCells(IEnumerable<Line> lines, Predicate<LineType> predicate)
@@ -120,11 +142,10 @@ namespace Gomoku2
             return lines.Where(l => predicate(l.LineType)).SelectMany(l => l.HighPriorityCells);
         }
 
-        public IEnumerable<Cell> GetNearEmptyCells()
+        public NextCells GetNearEmptyCells()
         {
             var set = new HashSet<Cell>();
             set.UnionWith(GetPriorityCells(MyLines));
-            set.UnionWith(GetPriorityCells(OppLines));
 
             for (int x = 0; x < 15; ++x)
             {
@@ -135,7 +156,7 @@ namespace Gomoku2
                         set.UnionWith(CellManager.Get(x, y).GetAdjustmentEmptyCells(Board));
                 }
             }
-            return set;
+            return new NextCells(set, GetPriorityCells(OppLines));
         }
 
         private static IEnumerable<Cell> GetPriorityCells(IEnumerable<Line> lines)

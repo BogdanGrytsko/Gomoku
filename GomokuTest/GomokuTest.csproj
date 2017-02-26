@@ -108,6 +108,9 @@
     <Content Include="Estimations\BlockedThreeEstimatedAsBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="BoardStates\ThreeInRowDefensiveMove.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Estimations\ThreeInRowEstimatedAsLost.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

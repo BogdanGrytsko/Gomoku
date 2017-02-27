@@ -32,7 +32,7 @@ namespace GomokuSimulator
 
                 var player2Move = player2.DoMove();
                 estimatedBoard.Board[player2Move.X, player2Move.Y] = BoardCell.Second;
-                estimatedBoard.Estimate = player2.LastEstimate ?? estimatedBoard.Estimate;
+                estimatedBoard.Estimate = -player2.LastEstimate ?? estimatedBoard.Estimate;
                 estimatedBoard.PlayerType = BoardCell.Second;
                 estimatedBoard.Elapsed = player2.Elapsed;
                 player1.DoOpponentMove(player2Move.X, player2Move.Y);

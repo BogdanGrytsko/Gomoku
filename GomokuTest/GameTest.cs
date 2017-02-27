@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Gomoku2;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,32 +12,32 @@ namespace GomokuTest
         [TestMethod]
         public void SecondHasWinningMove()
         {
-            DoTestStraightFour("SecondHasWinningMove.txt", new Cell(4, 10), new Cell(9, 10) );
+            DoTestWin("SecondHasWinningMove.txt", new Cell(4, 10), new Cell(9, 10) );
         }
 
         [TestMethod]
         public void StraightFiveIsNotCountered()
         {
-            DoTestStraightFour("StraightFiveIsNotCountered.txt", new Cell(8, 11));
+            DoTestWin("StraightFiveIsNotCountered.txt", new Cell(8, 11));
         }
 
         [TestMethod]
         public void FourInLineNotPriorityForDef()
         {
-            DoTestStraightFour("FourInLineNotPriorityForDef.txt", new Cell(5, 9));
+            DoTestWin("FourInLineNotPriorityForDef.txt", new Cell(5, 9));
         }
 
         [TestMethod]
         public void Board14HasWinningMove()
         {
             //todo analyze and refactor so total # of moves is lesser.
-            DoTestStraightFour("Board14HasWinningMove.txt", new Cell(8, 10), new Cell(8, 11));
+            DoTestWin("Board14HasWinningMove.txt", new Cell(8, 10), new Cell(8, 11));
         }
 
         [TestMethod]
         public void Board16WinNotFound()
         {
-            DoTestStraightFour("Board16WinNotFound.txt", new Cell(7, 10));
+            DoTestWin("Board16WinNotFound.txt", new Cell(7, 10));
         }
 
         [TestMethod]
@@ -48,7 +49,7 @@ namespace GomokuTest
         [TestMethod]
         public void BlockedThreeIntoDeadFour()
         {
-            DoTestStraightFour("BlockedThreeIntoDeadFour.txt", new Cell(7, 6));
+            DoTestWin("BlockedThreeIntoDeadFour.txt", new Cell(7, 6));
         }
 
         [TestMethod]
@@ -87,11 +88,22 @@ namespace GomokuTest
             TestMove("Board06WrongDefence.txt", new Cell(5, 9));
         }
 
-        private static void DoTestStraightFour(string boardName, params Cell[] correctMoves)
+        [TestMethod]
+        public void Board09FirstWon()
+        {
+            DoTestWin("Board09FirstWon.txt", new Cell(4, 8));
+        }
+
+        private static void DoTestWin(string boardName, params Cell[] correctMoves)
         {
             var game = TestMove(boardName, correctMoves);
             var estimatedBoard = game.EstimatedBoard;
-            Assert.IsTrue(Game.StraightFour(estimatedBoard.Estimate));
+            Assert.IsTrue(Win(estimatedBoard.Estimate));
+        }
+
+        private static bool Win(int estim)
+        {
+            return Math.Abs(estim) >= (int)LineType.DoubleThreat;
         }
 
         private static Game TestMove(string boardName, int depth, params Cell[] correctMoves)

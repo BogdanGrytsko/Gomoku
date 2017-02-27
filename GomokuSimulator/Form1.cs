@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Windows.Forms;
 using Gomoku2;
 
@@ -7,7 +8,7 @@ namespace GomokuSimulator
 {
     public partial class Form1 : Form
     {
-        private readonly GamePlayer gamePlayer = new GamePlayer("Gomoku2.Game", "Gomoku.Game");
+        private readonly GamePlayer gamePlayer = new GamePlayer("Gomoku2.Game", "Gomoku2.Game");
         private readonly List<EstimatedBoard> boards = new List<EstimatedBoard>();
         private EstimatedBoard currentBoard;
         private int currState;
@@ -88,6 +89,18 @@ namespace GomokuSimulator
                 UpdateGrid(board);
                 currState++;
                 Application.DoEvents();
+            }
+            OutPutEstimations();
+        }
+
+        private void OutPutEstimations()
+        {
+            using (var sw = new StreamWriter("Estimations.txt"))
+            {
+                for (int i = 0; i < boards.Count; i++)
+                {
+                    sw.WriteLine("{0};{1}", i, boards[i].Estimate);
+                }
             }
         }
 

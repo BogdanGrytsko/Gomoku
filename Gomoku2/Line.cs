@@ -249,17 +249,17 @@ namespace Gomoku2
 
         private LineType ThreeInRowOneSideOpened(List<Cell> cells)
         {
-            //OXXX O
-            if (cells[1].BoardCell == owner.Opponent())
-                return LineType.DeadThree;
+            //OXXX  
+            if (cells[1].IsEmpty)
+                return LineType.BlokedThree;
             //OXXX X
             if (cells[1].BoardCell == owner)
             {
                 brokenFourCell = cells[0];
                 return LineType.BrokenFourInRow;
             }
-            //OXXX  
-            return LineType.BlokedThree;
+            //OXXX O
+            return LineType.DeadThree;
         }
 
         private LineType ThreeInRowTwoSidesOpened()

@@ -24,6 +24,8 @@ namespace Gomoku2
             End = cell;
             this.owner = owner;
             Direction = CellManager.Get(0, 0);
+            next = prev = CellManager.Get(-1, -1);
+            next.BoardCell = BoardCell.Invalid;
         }
 
         public Line(Cell cell1, Cell cell2, BoardCell[,] board, BoardCell owner)
@@ -351,6 +353,8 @@ namespace Gomoku2
 
         public Line Clone()
         {
+            //todo MemberwiseClone doesn't work. Investigate
+            //return (Line)MemberwiseClone();
             var newLine = new Line();
             newLine.line.AddRange(line);
 
@@ -359,12 +363,17 @@ namespace Gomoku2
             newLine.Direction = Direction;
             newLine.owner = owner;
 
+            newLine.lineType = lineType;
             newLine.next = next;
             newLine.nextNext = nextNext;
             newLine.nextNextNext = nextNextNext;
             newLine.prev = prev;
             newLine.prevPrev = prevPrev;
             newLine.prevPrevPrev = prevPrevPrev;
+
+            newLine.brokenFourCell = brokenFourCell;
+            newLine.longBrokenThreeCell1 = longBrokenThreeCell1;
+            newLine.longBrokenThreeCell2 = longBrokenThreeCell2;
 
             return newLine;
         }

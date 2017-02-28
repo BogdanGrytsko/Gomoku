@@ -86,6 +86,7 @@ namespace Gomoku2
 
         private PriorityCells GetPriorityThreatCells()
         {
+            //todo have to fix bug and finally comment this
             foreach (var myLine in MyLines)
             {
                 myLine.Estimate(Board);

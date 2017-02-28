@@ -101,8 +101,6 @@ namespace Gomoku2
 
             foreach (var estimatedCell in EstimateCells(state))
             {
-                //TODO
-                //for leaf case we probably don't even need to iterate - first (or last) one will be the result, since we order them.
                 var cell = estimatedCell.Cell;
                 Cell bestMove;
 
@@ -112,15 +110,11 @@ namespace Gomoku2
                 var gameState = new GameState {BoardState = state.Clone(), Cell = cell, Estimate = currEstim};
                 OnStateChanged(gameState, parent);
                 int minMax;
-                //make sure we terminate in case of win\loose
-                //StraightFour comparison leds to invalid analysis. Can break on it only if oppent doesn't have broken/Blocked 4
-                //but after bug fixed it seems to work.
-                //TODO invesigate further
                 if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) ||
                     StraightFourAndOpponentDoesntHaveThreatOfFour(estimatedCell.Estimate))
                     minMax = currEstim;
                 else
-                    minMax = AlphaBeta(state.GetNextState(estimatedCell.MyLines), alpha, beta, out bestMove, gameState);
+                    minMax = AlphaBeta(state.GetNextState(estimatedCell.MyLines, estimatedCell.OppLines), alpha, beta, out bestMove, gameState);
 
                 gameState.Estimate = minMax;
 
@@ -185,12 +179,18 @@ namespace Gomoku2
             return board[7, 7] == BoardCell.None ? CellManager.Get(7, 7) : CellManager.Get(8, 8);
         }
 
-        private int SumLines(List<Line> lines)
+        private int EstimateAndSum(List<Line> lines)
         {
-            var estims = lines.Select(l => l.Estimate(board)).ToList();
-            var sum = estims.Sum(es => (int) es);
+            lines.ForEach(l => l.Estimate(board));
+            return Sum(lines);
+        }
+
+        private static int Sum(List<Line> lines)
+        {
+            var estims = lines.Select(l => l.LineType).ToList();
+            var sum = estims.Sum(es => (int)es);
             if (HasDoubleThreat(lines))
-                sum += (int) LineType.DoubleThreat;
+                sum += (int)LineType.DoubleThreat;
             return sum;
         }
 
@@ -217,30 +217,31 @@ namespace Gomoku2
             {
                 board[cell.X, cell.Y] = state.MyCellType;
                 var myNewLines = GetLinesByAddingCell(cell, state.MyLines, state.MyCellType);
-                var estimate = Estimate(myNewLines, state.OppLines);
+                var oppClonedLines = new List<Line>(state.OppLines.Select(l => l.Clone()));
+                var estimate = Estimate(myNewLines, oppClonedLines);
                 board[cell.X, cell.Y] = BoardCell.None;
 
-                yield return new EstimatedCell(cell, myNewLines, estimate);
+                yield return new EstimatedCell(cell, myNewLines, oppClonedLines, estimate);
             }
 
             if (nextCells.OppNextCells == null)
                 yield break;
             //todo consider if need to use it at all
-            foreach (var cell in nextCells.OppNextCells)
-            {
-                board[cell.X, cell.Y] = state.OpponentCellType;
-                var oppNewLines = GetLinesByAddingCell(cell, state.OppLines, state.OpponentCellType);
-                var estimate = Estimate(oppNewLines, state.MyLines);
-                board[cell.X, cell.Y] = BoardCell.None;
-            }
+            //foreach (var cell in nextCells.OppNextCells)
+            //{
+            //    board[cell.X, cell.Y] = state.OpponentCellType;
+            //    var oppNewLines = GetLinesByAddingCell(cell, state.OppLines, state.OpponentCellType);
+            //    var estimate = Estimate(oppNewLines, state.MyLines);
+            //    board[cell.X, cell.Y] = BoardCell.None;
+            //}
         } 
 
         public int Estimate(List<Line> myLines, List<Line> oppLines)
         {
-            var myEstim = SumLines(myLines);
+            var myEstim = EstimateAndSum(myLines);
             if (FiveInRow(myEstim)) return myEstim;
 
-            var oppEstim = SumLines(oppLines);
+            var oppEstim = EstimateAndSum(oppLines);
 
             if (oppLines.Any(line => line.LineType.FourCellLine()))
                 return -(int)LineType.FiveInRow;
@@ -270,11 +271,12 @@ namespace Gomoku2
                     FillLines(CellManager.Get(i, j), lines, type, board);
                 }
             }
+            lines.ForEach(l => l.Estimate(board));
             lines.Sort();
             return lines;
         }
 
-        public List<Line> GetLinesByAddingCell(Cell cell, List<Line> existingLines, BoardCell cellType)
+        private List<Line> GetLinesByAddingCell(Cell cell, List<Line> existingLines, BoardCell cellType)
         {
             var lines = new List<Line>(existingLines.Select(existingLine => existingLine.Clone()));
             FillLines(cell, lines, cellType, board);
@@ -284,11 +286,12 @@ namespace Gomoku2
 
         private static void FillLines(Cell cell, List<Line> lines, BoardCell cellType, BoardCell[,] board)
         {
-            var adjustmentCells = cell.GetAdjustmentCells(board, cellType);
-            foreach (var adjustmentCell in adjustmentCells)
-            {
+            //todo use for better join\merge algorithm;
+            //var adjustmentCells = cell.GetAdjustmentCells(board, cellType);
+            //foreach (var adjustmentCell in adjustmentCells)
+            //{
                 
-            }
+            //}
 
             var cellsUsedInAdding = new HashSet<Cell>();
             var addedToSomeLine = false;

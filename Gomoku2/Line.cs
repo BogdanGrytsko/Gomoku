@@ -48,6 +48,7 @@ namespace Gomoku2
             CalcEnd();
             CalcDirection();
             CalcNextAndPrev(board);
+            SetEstimate();
         }
 
         private void CalcStart()
@@ -189,11 +190,13 @@ namespace Gomoku2
 
         public LineType Estimate(BoardCell[,] board)
         {
-            //todo WHY THE FUCK this method doesn't work????
-            //CalcNextAndPrev(board);
-            CalcNext(board);
-            CalcPrev(board);
+            CalcNextAndPrev(board);
             return lineType = GetEstimate();
+        }
+
+        public void SetEstimate()
+        {
+            lineType = GetEstimate();
         }
 
         private bool IsOpenFromBothSides
@@ -374,6 +377,7 @@ namespace Gomoku2
             newLine.brokenFourCell = brokenFourCell;
             newLine.longBrokenThreeCell1 = longBrokenThreeCell1;
             newLine.longBrokenThreeCell2 = longBrokenThreeCell2;
+            newLine.twoInRowOpenedSide = twoInRowOpenedSide;
 
             return newLine;
         }
@@ -396,6 +400,7 @@ namespace Gomoku2
                 line.Add(cell);
                 Start = cell;
                 CalcNext(board);
+                SetEstimate();
                 return true;
             }
             if (NextCell(-1) == cell)
@@ -403,6 +408,7 @@ namespace Gomoku2
                 line.Add(cell);
                 End = cell;
                 CalcPrev(board);
+                SetEstimate();
                 return true;
             }
 

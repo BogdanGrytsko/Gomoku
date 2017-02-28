@@ -56,9 +56,9 @@ namespace Gomoku2
             }
         }
 
-        public BoardState GetNextState(List<Line> myNewLines)
+        public BoardState GetNextState(List<Line> myNewLines, List<Line> oppNewLines)
         {
-            return new BoardState(OppLines, myNewLines, OpponentCellType, Depth - 1, MinDepth, MaxWidth, Board);
+            return new BoardState(oppNewLines, myNewLines, OpponentCellType, Depth - 1, MinDepth, MaxWidth, Board);
         }
 
         public NextCells GetNextCells()
@@ -86,15 +86,6 @@ namespace Gomoku2
 
         private PriorityCells GetPriorityThreatCells()
         {
-            //todo have to fix bug and finally comment this
-            foreach (var myLine in MyLines)
-            {
-                myLine.Estimate(Board);
-            }
-            foreach (var oppLine in OppLines)
-            {
-                oppLine.Estimate(Board);
-            }
             var stratighFour = GetPriorityThreatCells(type => type.IsStraightFour());
             if (stratighFour.Any())
                 return new PriorityCells(stratighFour);
@@ -156,7 +147,7 @@ namespace Gomoku2
             {
                 for (int y = 0; y < 15; ++y)
                 {
-                    //todo this is TOO MUCH. Decrease this number
+                    //todo this is TOO MUCH. Decrease this number. At least for leafs
                     if (Board[x, y] == MyCellType)
                         set.UnionWith(CellManager.Get(x, y).GetAdjustmentEmptyCells(Board));
                 }

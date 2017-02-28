@@ -4,18 +4,21 @@ namespace Gomoku2
 {
     public class EstimatedCell
     {
-        public EstimatedCell(Cell cell, List<Line> myLines, int estimate)
+        public EstimatedCell(Cell cell, List<Line> myLines, List<Line> oppLines, int estimate)
         {
             Cell = cell;
             MyLines = myLines;
             Estimate = estimate;
+            OppLines = oppLines;
         }
 
-        public Cell Cell { get; private set; }
+        public Cell Cell { get; }
 
-        public List<Line> MyLines { get; private set; }
+        public List<Line> MyLines { get; }
 
-        public int Estimate { get; set; }
+        public List<Line> OppLines { get; }
+
+        public int Estimate { get; }
 
         public override string ToString()
         {

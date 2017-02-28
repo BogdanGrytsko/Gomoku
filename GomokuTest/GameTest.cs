@@ -30,7 +30,6 @@ namespace GomokuTest
         [TestMethod]
         public void Board14HasWinningMove()
         {
-            //todo analyze and refactor so total # of moves is lesser.
             DoTestWin("Board14HasWinningMove.txt", new Cell(8, 10), new Cell(8, 11));
         }
 

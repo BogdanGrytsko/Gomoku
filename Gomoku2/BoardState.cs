@@ -94,31 +94,18 @@ namespace Gomoku2
             {
                 oppLine.Estimate(Board);
             }
-            var myStraightFour = SelectManyHighPriorityCells(MyLines, type => type.IsStraightFour());
-            if (myStraightFour.Any())
-                return new PriorityCells(myStraightFour);
-            var oppStraightFour = SelectManyHighPriorityCells(OppLines, type => type.IsStraightFour());
-            if (oppStraightFour.Any())
-                return new PriorityCells(oppStraightFour);
+            var stratighFour = GetPriorityThreatCells(type => type.IsStraightFour());
+            if (stratighFour.Any())
+                return new PriorityCells(stratighFour);
 
-            var myThreatOfFour = SelectManyHighPriorityCells(MyLines, LineTypeExtensions.ThreatOfFour);
-            if (myThreatOfFour.Any())
-                return new PriorityCells(myThreatOfFour);
-            var oppThreatOfFour = SelectManyHighPriorityCells(OppLines, LineTypeExtensions.ThreatOfFour);
-            if (oppThreatOfFour.Any())
-                return new PriorityCells(oppThreatOfFour);
+            var threatOfFour = GetPriorityThreatCells(LineTypeExtensions.ThreatOfFour);
+            if (threatOfFour.Any())
+                return new PriorityCells(threatOfFour);
 
-            //this forces immidiate analyzis on blocked three cells.
-            var myBlockedThree = SelectManyHighPriorityCells(MyLines, type => type.IsBlokedThree());
-            if (myBlockedThree.Any())
-                return new PriorityCells(myBlockedThree);
+            var threatOfThree = GetPriorityThreatCells(type => type.ThreatOfThree());
+            if (threatOfThree.Any())
+                return new PriorityCells(threatOfThree, false);
 
-            var myThreatOfThree = SelectManyHighPriorityCells(MyLines, type => type.ThreatOfThree());
-            if (myThreatOfThree.Any())
-                return new PriorityCells(myThreatOfThree, false);
-            var oppThreatOfThree = SelectManyHighPriorityCells(OppLines, type => type.ThreatOfThree());
-            if (oppThreatOfThree.Any())
-                return new PriorityCells(oppThreatOfThree, false);
             //find double threat
             var myDoubleThreat = DoubleThreatCells(MyLines);
             if (myDoubleThreat.Any())
@@ -128,7 +115,24 @@ namespace Gomoku2
             if (oppDoubleThreat.Any())
                 return new PriorityCells(oppDoubleThreat, false);
 
+            //this forces immidiate analyzis on blocked three cells.
+            var myBlockedThree = SelectManyHighPriorityCells(MyLines, type => type.IsBlokedThree());
+            if (myBlockedThree.Any())
+                return new PriorityCells(myBlockedThree);
+
             return new PriorityCells(new List<Cell>());
+        }
+
+        private IList<Cell> GetPriorityThreatCells(Predicate<LineType> func)
+        {
+            var myThreat = SelectManyHighPriorityCells(MyLines, func).ToList();
+            if (myThreat.Any())
+                return myThreat;
+            var oppThreat = SelectManyHighPriorityCells(OppLines, func).ToList();
+            if (oppThreat.Any())
+                return oppThreat;
+
+            return new List<Cell>();
         }
 
         private static IEnumerable<Cell> DoubleThreatCells(IEnumerable<Line> lines)

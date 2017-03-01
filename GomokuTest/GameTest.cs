@@ -84,7 +84,7 @@ namespace GomokuTest
         [TestMethod]
         public void Board06WrongDefence()
         {
-            TestMove("Board06WrongDefence.txt", new Cell(5, 9));
+            TestMove("Board06WrongDefence.txt", 5, new Cell(5, 9));
         }
 
         [TestMethod]

@@ -108,9 +108,9 @@ namespace Gomoku2
                 return new PriorityCells(oppDoubleThreat, false);
 
             //this forces immidiate analyzis on blocked three cells.
-            var myBlockedThree = SelectManyHighPriorityCells(MyLines, type => type.IsBlokedThree());
-            if (myBlockedThree.Any())
-                return new PriorityCells(myBlockedThree);
+            var myBlockedThree = MyLines.FirstOrDefault(l => l.LineType.IsBlokedThree());
+            if (myBlockedThree != null)
+                return new PriorityCells(myBlockedThree.HighPriorityCells);
 
             return new PriorityCells(new List<Cell>());
         }

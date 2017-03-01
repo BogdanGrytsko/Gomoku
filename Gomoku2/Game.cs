@@ -226,7 +226,7 @@ namespace Gomoku2
 
         public int Estimate(List<Line> myLines, List<Line> oppLines)
         {
-            var myEstim = EstimateAndSum(myLines);
+            var myEstim = Sum(myLines);
             if (FiveInRow(myEstim)) return myEstim;
 
             var oppEstim = EstimateAndSum(oppLines);

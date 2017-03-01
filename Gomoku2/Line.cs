@@ -26,6 +26,7 @@ namespace Gomoku2
             Direction = CellManager.Get(0, 0);
             next = prev = CellManager.Get(-1, -1);
             next.BoardCell = BoardCell.Invalid;
+            lineType = LineType.SingleMark;
         }
 
         public Line(Cell cell1, Cell cell2, BoardCell[,] board, BoardCell owner)
@@ -410,6 +411,16 @@ namespace Gomoku2
                 CalcPrev(board);
                 SetEstimate();
                 return true;
+            }
+            if (NextCell(2) == cell)
+            {
+                CalcNext(board);
+                SetEstimate();
+            }
+            if (NextCell(-2) == cell)
+            {
+                CalcPrev(board);
+                SetEstimate();
             }
 
             return false;

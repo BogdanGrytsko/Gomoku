@@ -10,7 +10,7 @@ namespace GomokuSimulator
         private readonly object player;
         private readonly MethodInfo doMove;
         private readonly MethodInfo doOpponentMove;
-        private readonly PropertyInfo lastEstimate;
+        private readonly PropertyInfo lastEstimate, depth;
         private readonly Stopwatch sw = new Stopwatch();
 
         public PlayerWrapper(string playerGameName)
@@ -20,6 +20,7 @@ namespace GomokuSimulator
             doMove = type.GetMethod("DoMove", new Type[] { });
             doOpponentMove = type.GetMethod("DoOpponentMove", new [] { typeof(int), typeof(int) });
             lastEstimate = type.GetProperty("LastEstimate");
+            depth = type.GetProperty("Depth");
         }
 
         public Cell DoMove()
@@ -30,21 +31,22 @@ namespace GomokuSimulator
             return new Cell(GetPropertyValue(cell, "X"), GetPropertyValue(cell, "Y"));
         }
 
+        public int Depth
+        {
+            set
+            {
+                depth?.SetValue(player, value);
+            }
+        }
+
         private static int GetPropertyValue(object obj, string propName)
         {
             return (int)obj.GetType().GetProperty(propName).GetValue(obj, null);
         }
 
-        public int? LastEstimate
-        {
-            get
-            {
-                if (lastEstimate == null) return null;
-                return (int)lastEstimate.GetValue(player, null);
-            }
-        }
+        public int? LastEstimate => (int?) lastEstimate?.GetValue(player, null);
 
-        public TimeSpan Elapsed { get { return sw.Elapsed; } }
+        public TimeSpan Elapsed => sw.Elapsed;
 
         public void DoOpponentMove(int x, int y)
         {

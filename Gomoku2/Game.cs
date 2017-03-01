@@ -23,6 +23,7 @@ namespace Gomoku2
             this.board = (BoardCell[,])board.Clone();
             sw = new Stopwatch();
             gameStates = new List<GameState>();
+            Depth = DefaultDepth;
         }
 
         public Game(int width, int height)
@@ -32,6 +33,7 @@ namespace Gomoku2
             board = new BoardCell[width, height];
             sw = new Stopwatch();
             gameStates = new List<GameState>();
+            Depth = DefaultDepth;
         }
 
         public TimeSpan Elapsed { get { return sw.Elapsed; } }
@@ -42,6 +44,8 @@ namespace Gomoku2
         {
             get { return gameStates; }
         }
+
+        public int Depth { private get; set; }
 
         public void DoOpponentMove(int x, int y)
         {
@@ -55,7 +59,7 @@ namespace Gomoku2
 
         public Cell DoMove()
         {
-            return DoMove(BoardCell.First, DefaultDepth, DefaultWidth);
+            return DoMove(BoardCell.First, Depth, DefaultWidth);
         }
 
         public Cell DoMove(BoardCell boardCell, int depth, int treeMaxWidth)

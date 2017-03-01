@@ -96,8 +96,7 @@ namespace GomokuTest
         private static void DoTestWin(string boardName, params Cell[] correctMoves)
         {
             var game = TestMove(boardName, correctMoves);
-            var estimatedBoard = game.EstimatedBoard;
-            Assert.IsTrue(Win(estimatedBoard.Estimate));
+            Assert.IsTrue(Win(game.LastEstimate));
         }
 
         private static bool Win(int estim)

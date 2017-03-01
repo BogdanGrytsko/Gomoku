@@ -34,18 +34,6 @@ namespace Gomoku2
             gameStates = new List<GameState>();
         }
 
-        public EstimatedBoard EstimatedBoard
-        {
-            get
-            {
-                return new EstimatedBoard
-                {
-                    Board = (BoardCell[,]) board.Clone(),
-                    Estimate = lastEstimate
-                };
-            }
-        }
-        
         public TimeSpan Elapsed { get { return sw.Elapsed; } }
 
         public int LastEstimate { get { return lastEstimate; } }
@@ -170,7 +158,7 @@ namespace Gomoku2
             }
             else
             {
-                parentState.Children.Add(gameState);
+                parentState.AddChild(gameState);
             }
         }
 

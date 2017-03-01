@@ -152,7 +152,7 @@ namespace GomokuSimulator
         private void BindGameTextBoxValues(Game game)
         {
             elapsedTxtBox.Text = game.Elapsed.TotalSeconds.ToString(CultureInfo.InvariantCulture);
-            minMaxTxtBox.Text = game.EstimatedBoard.Estimate.ToString();
+            minMaxTxtBox.Text = game.LastEstimate.ToString();
             totalStateCountTxtBox.Text = game.GameStates.TotalStateCount().ToString();
         }
 

@@ -65,10 +65,10 @@
     <Content Include="31MovesGame\31MoveGameBoard11IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard15IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard18IsLost.txt" />
-    <Content Include="31MovesGame\67MovesGameBoard56Takes14Sec.txt" />
     <Content Include="BoardStates\BlockedThreeIntoDeadFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="BoardStates\BlockedThreeNotCountedInThreat.txt" />
     <Content Include="BoardStates\Board06WrongDefence.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

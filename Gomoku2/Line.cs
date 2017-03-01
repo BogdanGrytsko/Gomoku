@@ -10,8 +10,8 @@ namespace Gomoku2
         private readonly List<Cell> line = new List<Cell>();
         private LineType lineType;
         private BoardCell owner;
-        private Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev, brokenFourCell, longBrokenThreeCell1, longBrokenThreeCell2;
-        private List<Cell> twoInRowOpenedSide;
+        private Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev;
+        private List<Cell> openedSide;
 
         public Line()
         {
@@ -120,7 +120,7 @@ namespace Gomoku2
             {
                 if (lineType.IsBrokenFourInRow())
                 {
-                    yield return brokenFourCell;
+                    yield return openedSide[0];
                     yield break;
                 }
                 switch (Count)
@@ -139,19 +139,28 @@ namespace Gomoku2
                         }
                         break;
                     case 2:
-                        if (lineType.IsLongBrokenThree())
+                        // XX  X OR OXX  X
+                        if (lineType.IsLongBrokenThree() || lineType.IsLongBlockedThree())
                         {
-                            yield return longBrokenThreeCell1;
-                            yield return longBrokenThreeCell2;
+                            yield return openedSide[0];
+                            yield return openedSide[1];
+                            break;
+                        }
+                        //OXX X 
+                        //todo investigate why it is null sometimes. Investigate this is correct. Maybe uncomment.
+                        if (lineType.IsBlokedThree() && openedSide != null)
+                        {
+                            //yield return openedSide[0];
+                            //yield return openedSide[2];
                             break;
                         }
                         //TwoInRow should return next cell only of next next is open
                         if (lineType.IsTwoInRow())
                         {
-                            if (twoInRowOpenedSide != null)
+                            if (openedSide != null)
                             {
-                                yield return twoInRowOpenedSide[0];
-                                yield return twoInRowOpenedSide[1];
+                                yield return openedSide[0];
+                                yield return openedSide[1];
                                 break;
                             }
                             foreach (var cell in GetNextCells(true))
@@ -259,7 +268,7 @@ namespace Gomoku2
             //OXXX X
             if (cells[1].BoardCell == owner)
             {
-                brokenFourCell = cells[0];
+                openedSide = cells;
                 return LineType.BrokenFourInRow;
             }
             //OXXX O
@@ -300,20 +309,20 @@ namespace Gomoku2
                 //OXX XX
                 if (cells[2].BoardCell == owner)
                 {
-                    brokenFourCell = cells[0];
+                    openedSide = cells;
                     return LineType.BrokenFourInRow;
                 }
                 //OXX XO
                 if (cells[2].BoardCell == owner.Opponent())
                     return LineType.DeadThree;
                 //OXX X 
+                openedSide = cells;
                 return LineType.BlokedThree;
             }
             //OXX  X
             if (cells[2].BoardCell == owner)
             {
-                longBrokenThreeCell1 = cells[0];
-                longBrokenThreeCell2 = cells[1];
+                openedSide = cells;
                 return LineType.LongBlockedThree;
             }
             //OXX   
@@ -328,9 +337,9 @@ namespace Gomoku2
             if (nextResult.IsDeadTwo() && prevResult.IsDeadTwo())
                 return LineType.DeadTwo;
             if (nextResult.IsDeadTwo())
-                twoInRowOpenedSide = PrevCells;
+                openedSide = PrevCells;
             if (prevResult.IsDeadTwo())
-                twoInRowOpenedSide = NextCells;
+                openedSide = NextCells;
 
             //XX XX XX
             if (nextResult.IsBrokenFourInRow() && prevResult.IsBrokenFourInRow())
@@ -375,10 +384,7 @@ namespace Gomoku2
             newLine.prevPrev = prevPrev;
             newLine.prevPrevPrev = prevPrevPrev;
 
-            newLine.brokenFourCell = brokenFourCell;
-            newLine.longBrokenThreeCell1 = longBrokenThreeCell1;
-            newLine.longBrokenThreeCell2 = longBrokenThreeCell2;
-            newLine.twoInRowOpenedSide = twoInRowOpenedSide;
+            newLine.openedSide = openedSide;
 
             return newLine;
         }
@@ -412,12 +418,12 @@ namespace Gomoku2
                 SetEstimate();
                 return true;
             }
-            if (NextCell(2) == cell)
+            if (NextCell(2) == cell || NextCell(3) == cell)
             {
                 CalcNext(board);
                 SetEstimate();
             }
-            if (NextCell(-2) == cell)
+            if (NextCell(-2) == cell || NextCell(-3) == cell)
             {
                 CalcPrev(board);
                 SetEstimate();

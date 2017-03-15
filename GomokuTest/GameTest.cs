@@ -93,6 +93,12 @@ namespace GomokuTest
             DoTestWin("Board09FirstWon.txt", new Cell(4, 8));
         }
 
+        [TestMethod]
+        public void Board05CorrectMove()
+        {
+            TestMove("Board05CorrectMove.txt", new Cell(7, 6), new Cell(6, 8));
+        }
+
         private static void DoTestWin(string boardName, params Cell[] correctMoves)
         {
             var game = TestMove(boardName, correctMoves);
@@ -108,7 +114,7 @@ namespace GomokuTest
         {
             var board = BoardExportImport.Import(Path.Combine("BoardStates", boardName)).Board;
             var game = new Game(board);
-            var move = game.DoMove(board.WhoMovesNext(), depth, 20);
+            var move = game.DoMove(board.WhoMovesNext(), depth, Game.DefaultWidth);
             Assert.IsTrue(correctMoves.Any(cm => cm == move));
             return game;
         }

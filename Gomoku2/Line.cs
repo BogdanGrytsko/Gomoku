@@ -147,7 +147,7 @@ namespace Gomoku2
                             break;
                         }
                         //OXX X 
-                        //todo investigate why it is null sometimes. Investigate this is correct. Maybe uncomment.
+                        //todo investigate why it is null sometimes. Investigate if this is correct. Maybe uncomment.
                         if (lineType.IsBlokedThree() && openedSide != null)
                         {
                             //yield return openedSide[0];
@@ -169,7 +169,8 @@ namespace Gomoku2
                             }
                             break;
                         }
-                        //broken three needs only next cells
+                        //TODO: Return cell marked as "A", not B
+                        // BXXAXB
                         if (lineType.IsBrokenThree())
                         {
                             foreach (var cell in GetNextCells(false))
@@ -353,6 +354,7 @@ namespace Gomoku2
             // XX X 
             if (nextResult.IsBlokedThree() || prevResult.IsBlokedThree())
                 return LineType.BrokenThree;
+            // XX  X
             if (nextResult.IsLongBlockedThree() || prevResult.IsLongBlockedThree())
                 return LineType.LongBrokenThree;
             //OX XX  

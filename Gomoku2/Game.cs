@@ -7,14 +7,13 @@ namespace Gomoku2
 {
     public class Game
     {
-        public const int DefaultDepth = 4, DefaultWidth = 20;
+        public const int DefaultDepth = 4, DefaultWidth = 15;
 
         private readonly int width;
         private readonly int height;
         private readonly BoardCell[,] board;
         private readonly Stopwatch sw;
-        private readonly List<GameState> gameStates;
-        private int lastEstimate;
+        private GameState currentState;
 
         public Game(BoardCell[,] board)
         {
@@ -22,28 +21,20 @@ namespace Gomoku2
             height = board.GetLength(1);
             this.board = (BoardCell[,])board.Clone();
             sw = new Stopwatch();
-            gameStates = new List<GameState>();
+            GameStates = new List<GameState>();
             Depth = DefaultDepth;
         }
 
         public Game(int width, int height)
+            :this(new BoardCell[width, height])
         {
-            this.width = width;
-            this.height = height;
-            board = new BoardCell[width, height];
-            sw = new Stopwatch();
-            gameStates = new List<GameState>();
-            Depth = DefaultDepth;
         }
 
-        public TimeSpan Elapsed { get { return sw.Elapsed; } }
+        public TimeSpan Elapsed => sw.Elapsed;
 
-        public int LastEstimate { get { return lastEstimate; } }
+        public int LastEstimate { get; private set; }
 
-        public List<GameState> GameStates
-        {
-            get { return gameStates; }
-        }
+        public List<GameState> GameStates { get; }
 
         public int Depth { private get; set; }
 
@@ -55,6 +46,8 @@ namespace Gomoku2
         public void DoOpponentMove(int x, int y, BoardCell boardCell)
         {
             board[x, y] = boardCell;
+            if (currentState != null)
+                currentState = currentState.Children.FirstOrDefault(gs => gs.Cell == new Cell(x, y));
         }
 
         public Cell DoMove()
@@ -66,22 +59,33 @@ namespace Gomoku2
         {
             var move = DoMoveInternal(boardCell, depth, treeMaxWidth);
             board[move.X, move.Y] = boardCell;
+            currentState = GameStates.FirstOrDefault(gs => gs.Cell == move);
             return move;
         }
 
         private Cell DoMoveInternal(BoardCell boardCell, int depth, int maxWidth)
         {
             sw.Start();
-            var myLines = GetLines(boardCell);
-            var oppLines = GetLines(boardCell.Opponent());
-            if (!myLines.Any()) return FirstMoveCase();
-            
-            BoardState state = new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board);
+            BoardState state;
+            if (currentState != null)
+            {
+                var bs = currentState.BoardState;
+                //lines are swaped - analyzis was made from 2nd viewpoint.
+                state = new BoardState(bs.OppLines, bs.MyLines, boardCell, depth, 0, maxWidth, board);
+            }
+            else
+            {
+                var myLines = GetLines(boardCell);
+                var oppLines = GetLines(boardCell.Opponent());
+                if (!myLines.Any()) return FirstMoveCase();
+
+                state = new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board);
+            }
 
             //todo we may want to remember history for perf improvement
-            gameStates.Clear();
+            GameStates.Clear();
             Cell move;
-            lastEstimate = AlphaBeta(state, int.MinValue, int.MaxValue, out move, null);
+            LastEstimate = AlphaBeta(state, int.MinValue, int.MaxValue, out move, null);
             sw.Stop();
             return move;
         }
@@ -99,7 +103,7 @@ namespace Gomoku2
                 board[cell.X, cell.Y] = state.MyCellType;
                 var currEstim = estimatedCell.Estimate*state.Multiplier;
 
-                var gameState = new GameState {BoardState = state.Clone(), Cell = cell, Estimate = currEstim};
+                var gameState = new GameState {BoardState = state.GetThisState(estimatedCell.MyLines, estimatedCell.OppLines), Cell = cell, Estimate = currEstim};
                 OnStateChanged(gameState, parent);
                 int minMax;
                 if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) ||
@@ -158,7 +162,7 @@ namespace Gomoku2
         {
             if (parentState == null)
             {
-                gameStates.Add(gameState);
+                GameStates.Add(gameState);
             }
             else
             {

@@ -35,30 +35,20 @@ namespace Gomoku2
             MinDepth = minDepth;
         }
 
-        public bool ItIsFirstsTurn
-        {
-            get
-            {
-                return MyCellType == BoardCell.First;
-            }
-        }
+        public bool ItIsFirstsTurn => MyCellType == BoardCell.First;
 
-        public int Multiplier
-        {
-            get { return ItIsFirstsTurn ? 1 : -1; }
-        }
+        public int Multiplier => ItIsFirstsTurn ? 1 : -1;
 
-        public int StartEstimate
-        {
-            get
-            {
-                return ItIsFirstsTurn ? int.MinValue : int.MaxValue;
-            }
-        }
+        public int StartEstimate => ItIsFirstsTurn ? int.MinValue : int.MaxValue;
 
         public BoardState GetNextState(List<Line> myNewLines, List<Line> oppNewLines)
         {
             return new BoardState(oppNewLines, myNewLines, OpponentCellType, Depth - 1, MinDepth, MaxWidth, Board);
+        }
+
+        public BoardState GetThisState(List<Line> myNewLines, List<Line> oppNewLines)
+        {
+            return new BoardState(myNewLines, oppNewLines, MyCellType, Depth, MinDepth, MaxWidth, (BoardCell[,])Board.Clone());
         }
 
         public NextCells GetNextCells()
@@ -76,13 +66,7 @@ namespace Gomoku2
 
         private int MinDepth { get; set; }
 
-        public bool IsTerminal
-        {
-            get
-            {
-                return Depth == MinDepth;
-            }
-        }
+        public bool IsTerminal => Depth == MinDepth;
 
         private PriorityCells GetPriorityThreatCells()
         {
@@ -158,11 +142,6 @@ namespace Gomoku2
         private static IEnumerable<Cell> GetPriorityCells(IEnumerable<Line> lines)
         {
             return lines.SelectMany(line => line.GetNextCells(true));
-        }
-
-        public BoardState Clone()
-        {
-            return new BoardState(MyLines, OppLines, MyCellType, Depth, MinDepth, MaxWidth, (BoardCell[,])Board.Clone());
         }
     }
 }

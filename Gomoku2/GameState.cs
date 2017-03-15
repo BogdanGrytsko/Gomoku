@@ -22,16 +22,10 @@ namespace Gomoku2
             gameState.Parent = this;
         }
 
-        public EstimatedBoard EstimatedBoard
+        public EstimatedBoard EstimatedBoard => new EstimatedBoard
         {
-            get
-            {
-                return new EstimatedBoard
-                {
-                    Board = BoardState.Board,
-                    Estimate = Estimate
-                };
-            }
-        }
+            Board = BoardState.Board,
+            Estimate = Estimate
+        };
     }
 }

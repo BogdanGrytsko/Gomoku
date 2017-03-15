@@ -8,7 +8,7 @@ namespace GomokuSimulator
 {
     public partial class Form1 : Form
     {
-        private readonly GamePlayer gamePlayer = new GamePlayer("Gomoku2.Game", "Gomoku2.Game");
+        private readonly GamePlayer gamePlayer = new GamePlayer("Gomoku2.Game", "Gomoku.Game");
         private readonly List<EstimatedBoard> boards = new List<EstimatedBoard>();
         private EstimatedBoard currentBoard;
         private int currState;

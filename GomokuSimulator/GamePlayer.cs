@@ -12,7 +12,7 @@ namespace GomokuSimulator
         public GamePlayer(string player1GameName, string player2GameName)
         {
             player1 = new PlayerWrapper(player1GameName);
-            player2 = new PlayerWrapper(player2GameName) { Depth = Game.DefaultDepth + 1 };
+            player2 = new PlayerWrapper(player2GameName) { Depth = Game.DefaultDepth };
             estimatedBoard = new EstimatedBoard();
         }
 

@@ -99,6 +99,18 @@ namespace GomokuTest
             TestMove("Board05CorrectMove.txt", new Cell(7, 6), new Cell(6, 8));
         }
 
+        [TestMethod]
+        public void Board14SecondCantFindWin()
+        {
+            DoTestWin("Board14SecondCantFindWin.txt", new Cell(6, 9));
+        }
+
+        [TestMethod]
+        public void Board13FirstDontDefend()
+        {
+            DoTestWin("Board13FirstDontDefend.txt", new Cell(6, 9));
+        }
+
         private static void DoTestWin(string boardName, params Cell[] correctMoves)
         {
             var game = TestMove(boardName, correctMoves);

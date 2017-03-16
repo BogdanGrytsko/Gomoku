@@ -126,24 +126,17 @@ namespace Gomoku2
                 switch (Count)
                 {
                     case 4:
-                        foreach (var cell in GetNextCells(false))
-                        {
-                            yield return cell;
-                        }
+                        foreach (var cell in GetNextCells(false)) yield return cell;
                         break;
                     case 3:
                         var includeNextNext = lineType.IsBlokedThree();
-                        foreach (var cell in GetNextCells(includeNextNext))
-                        {
-                            yield return cell;
-                        }
+                        foreach (var cell in GetNextCells(includeNextNext)) yield return cell;
                         break;
                     case 2:
                         // XX  X OR OXX  X
                         if (lineType.IsLongBrokenThree() || lineType.IsLongBlockedThree())
                         {
-                            yield return priorityCells[0];
-                            yield return priorityCells[1];
+                            foreach (var cell in priorityCells) yield return cell;
                             break;
                         }
                         //OXX X 
@@ -158,24 +151,16 @@ namespace Gomoku2
                         {
                             if (priorityCells != null)
                             {
-                                yield return priorityCells[0];
-                                yield return priorityCells[1];
+                                foreach (var cell in priorityCells) yield return cell;
                                 break;
                             }
-                            foreach (var cell in GetNextCells(true))
-                            {
-                                yield return cell;
-                            }
+                            foreach (var cell in GetNextCells(true)) yield return cell;
                             break;
                         }
-                        //TODO: Return cell marked as A and B
-                        // BXXAXB
                         if (lineType.IsBrokenThree())
                         {
-                            foreach (var cell in GetNextCells(false))
-                            {
-                                yield return cell;
-                            }
+                            foreach (var cell in priorityCells) yield return cell;
+                            break;
                         }
                         break;
                 }
@@ -322,7 +307,7 @@ namespace Gomoku2
             //OXX  X
             if (cells[2].BoardCell == owner)
             {
-                priorityCells = cells;
+                priorityCells = new List<Cell> {cells[0], cells[1]};
                 return LineType.LongBlockedThree;
             }
             //OXX   
@@ -336,10 +321,11 @@ namespace Gomoku2
             // O XX O 
             if (nextResult.IsDeadTwo() && prevResult.IsDeadTwo())
                 return LineType.DeadTwo;
+            //todo : can be extended to third cell
             if (nextResult.IsDeadTwo())
-                priorityCells = PrevCells;
+                priorityCells = new List<Cell> {prev, prevPrev};
             if (prevResult.IsDeadTwo())
-                priorityCells = NextCells;
+                priorityCells = new List<Cell> {next, nextNext};
 
             //XX XX XX
             if (nextResult.IsBrokenFourInRow() && prevResult.IsBrokenFourInRow())
@@ -351,15 +337,23 @@ namespace Gomoku2
             if (nextResult.IsBlokedThree() && prevResult.IsBlokedThree())
                 return LineType.DoubleBrokenThree;
             // XX X 
-            if (nextResult.IsBlokedThree() || prevResult.IsBlokedThree())
+            if (nextResult.IsBlokedThree())
+            {
+                priorityCells = new List<Cell> { next, prev, nextNextNext };
                 return LineType.BrokenThree;
+            }
+            if (prevResult.IsBlokedThree())
+            {
+                priorityCells = new List<Cell> { next, prev, prevPrevPrev };
+                return LineType.BrokenThree;
+            }
             // XX  X
             if (nextResult.IsLongBlockedThree() || prevResult.IsLongBlockedThree())
                 return LineType.LongBrokenThree;
             //OX XX  
             if (nextResult.IsDeadThree() || prevResult.IsDeadThree())
             {
-                priorityCells = new List<Cell> { NextCells[0], PrevCells[0] };
+                priorityCells = new List<Cell> { next, prev };
                 return LineType.BlokedThree;
             }
 

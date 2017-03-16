@@ -11,7 +11,7 @@ namespace Gomoku2
         private LineType lineType;
         private BoardCell owner;
         private Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev;
-        private List<Cell> openedSide;
+        private List<Cell> priorityCells;
 
         public Line()
         {
@@ -120,7 +120,7 @@ namespace Gomoku2
             {
                 if (lineType.IsBrokenFourInRow())
                 {
-                    yield return openedSide[0];
+                    foreach (var cell in priorityCells) yield return cell;
                     yield break;
                 }
                 switch (Count)
@@ -142,25 +142,24 @@ namespace Gomoku2
                         // XX  X OR OXX  X
                         if (lineType.IsLongBrokenThree() || lineType.IsLongBlockedThree())
                         {
-                            yield return openedSide[0];
-                            yield return openedSide[1];
+                            yield return priorityCells[0];
+                            yield return priorityCells[1];
                             break;
                         }
                         //OXX X 
-                        //todo investigate why it is null sometimes. Investigate if this is correct. Maybe uncomment.
-                        if (lineType.IsBlokedThree() && openedSide != null)
+                        //todo investigate why need to have check on null and remove it.
+                        if (lineType.IsBlokedThree() && priorityCells != null)
                         {
-                            //yield return openedSide[0];
-                            //yield return openedSide[2];
+                            foreach (var cell in priorityCells) yield return cell;
                             break;
                         }
                         //TwoInRow should return next cell only of next next is open
                         if (lineType.IsTwoInRow())
                         {
-                            if (openedSide != null)
+                            if (priorityCells != null)
                             {
-                                yield return openedSide[0];
-                                yield return openedSide[1];
+                                yield return priorityCells[0];
+                                yield return priorityCells[1];
                                 break;
                             }
                             foreach (var cell in GetNextCells(true))
@@ -169,7 +168,7 @@ namespace Gomoku2
                             }
                             break;
                         }
-                        //TODO: Return cell marked as "A", not B
+                        //TODO: Return cell marked as A and B
                         // BXXAXB
                         if (lineType.IsBrokenThree())
                         {
@@ -232,6 +231,7 @@ namespace Gomoku2
 
         private LineType GetEstimate()
         {
+            priorityCells = null;
             switch (Count)
             {
                 case 5:
@@ -269,7 +269,7 @@ namespace Gomoku2
             //OXXX X
             if (cells[1].BoardCell == owner)
             {
-                openedSide = cells;
+                priorityCells = new List<Cell> {cells[0]};
                 return LineType.BrokenFourInRow;
             }
             //OXXX O
@@ -284,7 +284,7 @@ namespace Gomoku2
             if (nextResult.IsBrokenFourInRow() && prevResult.IsBrokenFourInRow())
                 return LineType.StraightFour;
             //* XXX X
-            if (nextResult.IsBrokenFourInRow()|| prevResult.IsBrokenFourInRow())
+            if (nextResult.IsBrokenFourInRow() || prevResult.IsBrokenFourInRow())
                 return LineType.BrokenFourInRow;
             // XXX 
             return LineType.ThreeInRow;
@@ -310,20 +310,19 @@ namespace Gomoku2
                 //OXX XX
                 if (cells[2].BoardCell == owner)
                 {
-                    openedSide = cells;
+                    priorityCells = new List<Cell> {cells[0]};
                     return LineType.BrokenFourInRow;
                 }
                 //OXX XO
                 if (cells[2].BoardCell == owner.Opponent())
                     return LineType.DeadThree;
                 //OXX X 
-                openedSide = cells;
                 return LineType.BlokedThree;
             }
             //OXX  X
             if (cells[2].BoardCell == owner)
             {
-                openedSide = cells;
+                priorityCells = cells;
                 return LineType.LongBlockedThree;
             }
             //OXX   
@@ -338,9 +337,9 @@ namespace Gomoku2
             if (nextResult.IsDeadTwo() && prevResult.IsDeadTwo())
                 return LineType.DeadTwo;
             if (nextResult.IsDeadTwo())
-                openedSide = PrevCells;
+                priorityCells = PrevCells;
             if (prevResult.IsDeadTwo())
-                openedSide = NextCells;
+                priorityCells = NextCells;
 
             //XX XX XX
             if (nextResult.IsBrokenFourInRow() && prevResult.IsBrokenFourInRow())
@@ -359,7 +358,10 @@ namespace Gomoku2
                 return LineType.LongBrokenThree;
             //OX XX  
             if (nextResult.IsDeadThree() || prevResult.IsDeadThree())
+            {
+                priorityCells = new List<Cell> { NextCells[0], PrevCells[0] };
                 return LineType.BlokedThree;
+            }
 
             return LineType.TwoInRow;
         }
@@ -386,7 +388,7 @@ namespace Gomoku2
             newLine.prevPrev = prevPrev;
             newLine.prevPrevPrev = prevPrevPrev;
 
-            newLine.openedSide = openedSide;
+            newLine.priorityCells = priorityCells;
 
             return newLine;
         }

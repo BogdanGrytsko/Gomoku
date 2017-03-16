@@ -113,8 +113,8 @@ namespace Gomoku2
 
         private static IEnumerable<Cell> DoubleThreatCells(IEnumerable<Line> lines)
         {
-            var oppDoubleThreat = SelectManyHighPriorityCells(lines, type => type.IsBlokedThree() || type.IsTwoInRow());
-            return oppDoubleThreat.GroupBy(s => s).SelectMany(grp => grp.Skip(1));
+            var doubleThreat = SelectManyHighPriorityCells(lines, type => type.IsBlokedThree() || type.IsTwoInRow());
+            return doubleThreat.GroupBy(s => s).SelectMany(grp => grp.Skip(1));
         }
 
         private static IEnumerable<Cell> SelectManyHighPriorityCells(IEnumerable<Line> lines, Predicate<LineType> predicate)

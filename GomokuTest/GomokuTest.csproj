@@ -65,7 +65,7 @@
     <Content Include="31MovesGame\31MoveGameBoard11IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard15IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard18IsLost.txt" />
-    <Content Include="31MovesGame\40MoveGameBoard32OnlyOneDefenceMove.txt" />
+    <Content Include="31MovesGame\40MoveGameBoard32TwoDefenceMoves.txt" />
     <Content Include="BoardStates\BlockedThreeIntoDeadFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -125,6 +125,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="BoardStates\ThreeInRowDefensiveMove.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Estimations\BlockedThreeHighPriorityCellsWrong.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Estimations\ThreeInRowEstimatedAsLost.txt">

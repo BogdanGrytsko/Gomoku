@@ -90,7 +90,7 @@ namespace GomokuTest
         [TestMethod]
         public void Board09FirstWon()
         {
-            DoTestWin("Board09FirstWon.txt", new Cell(4, 8));
+            DoTestWin("Board09FirstWon.txt", new Cell(6, 9), new Cell(4, 8));
         }
 
         [TestMethod]

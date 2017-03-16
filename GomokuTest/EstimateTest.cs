@@ -56,6 +56,12 @@ namespace GomokuTest
             TestEstimation("BlockedThreeAndThreeInRowEstimatedAsDoubleThreat.txt", est => est < (int)LineType.DoubleThreat);
         }
 
+        [TestMethod]
+        public void BlockedThreeHighPriorityCellsWrong()
+        {
+            TestEstimation("BlockedThreeHighPriorityCellsWrong.txt", est => est < (int)LineType.DoubleThreat);
+        }
+
         private static void TestEstimation(string fileName, Predicate<int> predicate)
         {
             var board = BoardExportImport.Import(Path.Combine("Estimations", fileName)).Board;

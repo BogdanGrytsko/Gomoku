@@ -18,7 +18,7 @@ namespace GomokuSimulator
             InitializeComponent();
             widthTxtBox.Text = Game.DefaultWidth.ToString();
             depthTextBox.Text = Game.DefaultDepth.ToString();
-            DrawGrid(15,15);
+            DrawGrid(16,16);
         }
 
         private void DrawGrid(int xcount, int ycount)
@@ -71,6 +71,10 @@ namespace GomokuSimulator
                 Height = buttonHeight,
                 Name = GetName(x,y)
             };
+            if (x == 15)
+                tmpButton.Text = y.ToString();
+            if (y == 15)
+                tmpButton.Text = x.ToString();
             return tmpButton;
         }
 

@@ -8,6 +8,8 @@ namespace GomokuTest
     [TestClass]
     public class EstimateTest
     {
+        private const string folder = "Estimations";
+
         [TestMethod]
         public void BrokenFourEstimatedTwice()
         {
@@ -64,7 +66,7 @@ namespace GomokuTest
 
         private static void TestEstimation(string fileName, Predicate<int> predicate)
         {
-            var board = BoardExportImport.Import(Path.Combine("Estimations", fileName)).Board;
+            var board = BoardExportImport.Import(Path.Combine(folder, fileName)).Board;
             var game = new Game(board);
             var opponent = board.WhoMovesNext();
             var linesOwner = opponent.Opponent();

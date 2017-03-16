@@ -9,6 +9,8 @@ namespace GomokuTest
     [TestClass]
     public class GameTest
     {
+        private const string folder = "BoardStates";
+
         [TestMethod]
         public void SecondHasWinningMove()
         {
@@ -124,7 +126,7 @@ namespace GomokuTest
 
         private static Game TestMove(string boardName, int depth, params Cell[] correctMoves)
         {
-            var board = BoardExportImport.Import(Path.Combine("BoardStates", boardName)).Board;
+            var board = BoardExportImport.Import(Path.Combine(folder, boardName)).Board;
             var game = new Game(board);
             var move = game.DoMove(board.WhoMovesNext(), depth, Game.DefaultWidth);
             Assert.IsTrue(correctMoves.Any(cm => cm == move));

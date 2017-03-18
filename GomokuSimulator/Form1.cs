@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Gomoku2;
 
@@ -8,7 +9,7 @@ namespace GomokuSimulator
 {
     public partial class Form1 : Form
     {
-        private readonly GamePlayer gamePlayer = new GamePlayer("Gomoku2.Game", "Gomoku.Game");
+        private GamePlayer gamePlayer = new GamePlayer("Gomoku2.Game", "Gomoku.Game");
         private readonly List<EstimatedBoard> boards = new List<EstimatedBoard>();
         private EstimatedBoard currentBoard;
         private int currState;
@@ -19,6 +20,25 @@ namespace GomokuSimulator
             widthTxtBox.Text = Game.DefaultWidth.ToString();
             depthTextBox.Text = Game.DefaultDepth.ToString();
             DrawGrid(16,16);
+            var players = PossiblePlayers().ToArray();
+            SetComboBox(player1Box, players);
+            SetComboBox(player2Box, players);
+            player1Box.SelectedItem = players[0];
+            player2Box.SelectedItem = players[1];
+        }
+
+        private static void SetComboBox(ComboBox comboBox, object[] players)
+        {
+            comboBox.Items.AddRange(players);
+            comboBox.DisplayMember = "Text";
+            comboBox.ValueMember = "Value";
+        }
+
+        private IEnumerable<object> PossiblePlayers()
+        {
+            yield return new ComboBoxItem {Text = "Gomoku2", Value = "Gomoku2.Game"};
+            yield return new ComboBoxItem { Text = "Gomoku", Value = "Gomoku.Game"};
+            yield return new ComboBoxItem { Text = "Human", Value = "Human" };
         }
 
         private void DrawGrid(int xcount, int ycount)
@@ -188,6 +208,19 @@ namespace GomokuSimulator
         {
             var gameState = (GameState) e.Node.Tag;
             UpdateGrid(gameState.EstimatedBoard);
+        }
+
+        private void player1Box_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            var item1 = (ComboBoxItem) player1Box.SelectedItem;
+            var item2 = (ComboBoxItem) player2Box.SelectedItem;
+            if (item1 != null && item2 != null)
+                gamePlayer = new GamePlayer(item1.Value, item2.Value);
+        }
+
+        private void player2Box_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            player1Box_SelectedIndexChanged(sender, e);
         }
     }
 }

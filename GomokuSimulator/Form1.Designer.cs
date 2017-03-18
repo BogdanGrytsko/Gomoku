@@ -54,6 +54,8 @@ namespace GomokuSimulator
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.totalElapsedPlayer2TxtBox = new System.Windows.Forms.TextBox();
+            this.player1Box = new System.Windows.Forms.ComboBox();
+            this.player2Box = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // button1
@@ -226,7 +228,7 @@ namespace GomokuSimulator
             // 
             // totalElapsedPlayer1TxtBox
             // 
-            this.totalElapsedPlayer1TxtBox.Location = new System.Drawing.Point(754, 79);
+            this.totalElapsedPlayer1TxtBox.Location = new System.Drawing.Point(900, 82);
             this.totalElapsedPlayer1TxtBox.Name = "totalElapsedPlayer1TxtBox";
             this.totalElapsedPlayer1TxtBox.ReadOnly = true;
             this.totalElapsedPlayer1TxtBox.Size = new System.Drawing.Size(75, 20);
@@ -235,7 +237,7 @@ namespace GomokuSimulator
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(670, 86);
+            this.label6.Location = new System.Drawing.Point(816, 89);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(67, 13);
             this.label6.TabIndex = 21;
@@ -244,7 +246,7 @@ namespace GomokuSimulator
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(670, 119);
+            this.label7.Location = new System.Drawing.Point(816, 122);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(67, 13);
             this.label7.TabIndex = 23;
@@ -252,17 +254,37 @@ namespace GomokuSimulator
             // 
             // totalElapsedPlayer2TxtBox
             // 
-            this.totalElapsedPlayer2TxtBox.Location = new System.Drawing.Point(754, 112);
+            this.totalElapsedPlayer2TxtBox.Location = new System.Drawing.Point(900, 115);
             this.totalElapsedPlayer2TxtBox.Name = "totalElapsedPlayer2TxtBox";
             this.totalElapsedPlayer2TxtBox.ReadOnly = true;
             this.totalElapsedPlayer2TxtBox.Size = new System.Drawing.Size(75, 20);
             this.totalElapsedPlayer2TxtBox.TabIndex = 22;
+            // 
+            // player1Box
+            // 
+            this.player1Box.FormattingEnabled = true;
+            this.player1Box.Location = new System.Drawing.Point(673, 86);
+            this.player1Box.Name = "player1Box";
+            this.player1Box.Size = new System.Drawing.Size(121, 21);
+            this.player1Box.TabIndex = 24;
+            this.player1Box.SelectedIndexChanged += new System.EventHandler(this.player1Box_SelectedIndexChanged);
+            // 
+            // player2Box
+            // 
+            this.player2Box.FormattingEnabled = true;
+            this.player2Box.Location = new System.Drawing.Point(673, 119);
+            this.player2Box.Name = "player2Box";
+            this.player2Box.Size = new System.Drawing.Size(121, 21);
+            this.player2Box.TabIndex = 25;
+            this.player2Box.SelectedIndexChanged += new System.EventHandler(this.player2Box_SelectedIndexChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(993, 675);
+            this.Controls.Add(this.player2Box);
+            this.Controls.Add(this.player1Box);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.totalElapsedPlayer2TxtBox);
             this.Controls.Add(this.label6);
@@ -317,6 +339,8 @@ namespace GomokuSimulator
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox totalElapsedPlayer2TxtBox;
+        private System.Windows.Forms.ComboBox player1Box;
+        private System.Windows.Forms.ComboBox player2Box;
     }
 }
 

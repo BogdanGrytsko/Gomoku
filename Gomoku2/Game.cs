@@ -68,7 +68,8 @@ namespace Gomoku2
         {
             sw.Start();
             BoardState state;
-            if (currentState != null)
+            //todo make it work.
+            if (currentState != null && false)
             {
                 var bs = currentState.BoardState;
                 //lines are swaped - analyzis was made from 2nd viewpoint.

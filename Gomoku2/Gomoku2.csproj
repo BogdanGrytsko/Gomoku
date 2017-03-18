@@ -52,14 +52,18 @@
     <Compile Include="EstimatedCell.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameState.cs" />
-    <Compile Include="Line.cs" />
-    <Compile Include="LineType.cs" />
-    <Compile Include="LineTypeExtensions.cs" />
+    <Compile Include="LineCore\Line.cs" />
+    <Compile Include="LineAnalyzer\AnalyzerBase.cs" />
+    <Compile Include="LineAnalyzer\BrokenTwoInRowAnalyzer.cs" />
+    <Compile Include="LineCore\LineType.cs" />
+    <Compile Include="LineCore\LineTypeExtensions.cs" />
     <Compile Include="NextCells.cs" />
     <Compile Include="PriorityCells.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StaticExtensions.cs" />
+    <Compile Include="LineAnalyzer\ThreeInRowAnalyzer.cs" />
+    <Compile Include="LineAnalyzer\TwoInRowAnalyzer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

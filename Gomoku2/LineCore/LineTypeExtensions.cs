@@ -1,4 +1,4 @@
-﻿namespace Gomoku2
+﻿namespace Gomoku2.LineCore
 {
     public static class LineTypeExtensions
     {
@@ -54,7 +54,7 @@
 
         public static bool ThreatOfThree(this LineType lineType)
         {
-            return lineType.IsThreeInRow()|| lineType.IsBrokenThree() || lineType.IsLongBrokenThree() || lineType == LineType.DoubleBrokenThree;
+            return lineType.IsThreeInRow() || lineType.IsBrokenThree() || lineType == LineType.DoubleBrokenThree;
         }
 
         public static bool IsThreeInRow(this LineType lineType)

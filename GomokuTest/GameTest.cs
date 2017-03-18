@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Gomoku2;
+using Gomoku2.LineCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GomokuTest

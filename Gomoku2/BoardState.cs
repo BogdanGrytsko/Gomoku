@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gomoku2.LineCore;
 
 namespace Gomoku2
 {
@@ -78,7 +79,7 @@ namespace Gomoku2
             if (threatOfFour.Any())
                 return new PriorityCells(threatOfFour);
 
-            var threatOfThree = GetPriorityThreatCells(type => type.ThreatOfThree());
+            var threatOfThree = GetPriorityThreatCells(type => type.ThreatOfThree() || type.IsLongBrokenThree());
             if (threatOfThree.Any())
                 return new PriorityCells(threatOfThree, false);
 

@@ -32,6 +32,11 @@ namespace Gomoku2
             return firstMoves > secondMoves ? BoardCell.Second : BoardCell.First;
         }
 
+        public static BoardCell WhoMovedLast(this BoardCell[,] board)
+        {
+            return WhoMovesNext(board).Opponent();
+        }
+
         private static IEnumerable<Cell> GetAdjustmentCells(this Cell startCell)
         {
             var x = startCell.X;

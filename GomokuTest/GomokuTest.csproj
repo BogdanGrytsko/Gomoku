@@ -53,6 +53,7 @@
     <Compile Include="EstimateTest.cs" />
     <Compile Include="GameTest.cs" />
     <Compile Include="LineDeterminationTest.cs" />
+    <Compile Include="PriorityCellsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,7 +67,12 @@
     <Content Include="31MovesGame\31MoveGameBoard11IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard15IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard18IsLost.txt" />
-    <Content Include="31MovesGame\40MoveGameBoard32TwoDefenceMoves.txt" />
+    <Content Include="LineDetermination\LongBrokenThreeInRowAndBrokenThreeInRow.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PriorityCells\DoubleThreatDefenceMoves.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="BoardStates\BlockedThreeIntoDeadFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -137,6 +143,9 @@
     <Content Include="Estimations\BlockedThreeHighPriorityCellsWrong.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Estimations\DoubleLongBrokenThree.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Estimations\ThreeInRowEstimatedAsLost.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -144,6 +153,24 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Estimations\DoubleThreatEstimatedAsLost.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\DeadTwo2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\DeadTwo.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\BlockedTwoInRow2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\BrokenFourInRow.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\BlockedTwoInRow.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\LongBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\TwoInRow.txt">

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Gomoku2.LineCore;
 
 namespace Gomoku2
 {
@@ -75,12 +76,10 @@ namespace Gomoku2
             }
             else
             {
-                var myLines = GetLines(boardCell);
-                var oppLines = GetLines(boardCell.Opponent());
-                if (!myLines.Any()) return FirstMoveCase();
-
-                state = new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board);
+                state = GetBoardState(boardCell, depth, maxWidth);
             }
+            if (!state.MyLines.Any())
+                return FirstMoveCase();
 
             //todo we may want to remember history for perf improvement
             GameStates.Clear();
@@ -88,6 +87,13 @@ namespace Gomoku2
             LastEstimate = AlphaBeta(state, int.MinValue, int.MaxValue, out move, null);
             sw.Stop();
             return move;
+        }
+
+        public BoardState GetBoardState(BoardCell boardCell, int depth, int maxWidth)
+        {
+            var myLines = GetLines(boardCell);
+            var oppLines = GetLines(boardCell.Opponent());
+            return new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board);
         }
 
         private int AlphaBeta(BoardState state, int alpha, int beta, out Cell move, GameState parent)
@@ -222,7 +228,7 @@ namespace Gomoku2
 
             if (nextCells.OppNextCells == null)
                 yield break;
-            //todo consider if need to use it at all
+            //todo use it to fix Board13FirstDontDefend bug
             //foreach (var cell in nextCells.OppNextCells)
             //{
             //    board[cell.X, cell.Y] = state.OpponentCellType;
@@ -230,7 +236,7 @@ namespace Gomoku2
             //    var estimate = Estimate(oppNewLines, state.MyLines);
             //    board[cell.X, cell.Y] = BoardCell.None;
             //}
-        } 
+        }
 
         public int Estimate(List<Line> myLines, List<Line> oppLines)
         {

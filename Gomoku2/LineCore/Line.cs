@@ -180,6 +180,8 @@ namespace Gomoku2.LineCore
 
         public IEnumerable<Cell> GetNextCells(bool includeNextNext)
         {
+            if (lineType.IsSingleMark())
+                yield break;
             if (next.IsEmpty)
             {
                 yield return next;

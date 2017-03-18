@@ -43,22 +43,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoardCell.cs" />
+    <Compile Include="CellObjects\BoardCell.cs" />
     <Compile Include="BoardExportImport.cs" />
     <Compile Include="BoardState.cs" />
-    <Compile Include="Cell.cs" />
-    <Compile Include="CellManager.cs" />
+    <Compile Include="CellObjects\Cell.cs" />
+    <Compile Include="CellObjects\CellManager.cs" />
     <Compile Include="EstimatedBoard.cs" />
-    <Compile Include="EstimatedCell.cs" />
+    <Compile Include="CellObjects\EstimatedCell.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="LineCore\Line.cs" />
     <Compile Include="LineAnalyzer\AnalyzerBase.cs" />
     <Compile Include="LineAnalyzer\BrokenTwoInRowAnalyzer.cs" />
+    <Compile Include="LineCore\LineFactory.cs" />
     <Compile Include="LineCore\LineType.cs" />
     <Compile Include="LineCore\LineTypeExtensions.cs" />
-    <Compile Include="NextCells.cs" />
-    <Compile Include="PriorityCells.cs" />
+    <Compile Include="CellObjects\NextCells.cs" />
+    <Compile Include="CellObjects\PriorityCells.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StaticExtensions.cs" />

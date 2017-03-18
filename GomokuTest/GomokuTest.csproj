@@ -68,6 +68,15 @@
     <Content Include="31MovesGame\31MoveGameBoard11IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard15IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard18IsLost.txt" />
+    <Content Include="LineDetermination\BlockedTwoAnd2TwoInRow.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\BrokenTwoAndBrokenTwo2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\LongBrokenTwo.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="LineDetermination\LongBrokenThreeInRowAndBrokenThreeInRow.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -80,6 +89,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PlaysSecond\Board11IsWon.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PriorityCells\BrokenTwoAndBrokenTwo2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PriorityCells\BrokenTwoAndBrokenTwo.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PriorityCells\DoubleThreatDefenceMoves.txt">
@@ -104,7 +119,7 @@
     <Content Include="BoardStates\Board13FirstDontDefend.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\Board14SecondCantFindWin.txt">
+    <Content Include="PriorityCells\LongBrokenTwoIntoDoubleThreat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="BoardStates\LongBrokenThree.txt">
@@ -186,6 +201,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\TwoInRow.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PriorityCells\BrokenTwoAndLongBrokenTwo.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

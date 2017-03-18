@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Gomoku2
+namespace Gomoku2.CellObjects
 {
     public class NextCells
     {

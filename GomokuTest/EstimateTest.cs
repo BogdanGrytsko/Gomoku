@@ -1,6 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Gomoku2;
+using Gomoku2.CellObjects;
 using Gomoku2.LineCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

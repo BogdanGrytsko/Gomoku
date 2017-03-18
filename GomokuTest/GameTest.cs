@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Gomoku2;
+using Gomoku2.CellObjects;
 using Gomoku2.LineCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -94,12 +95,6 @@ namespace GomokuTest
         public void Board05CorrectMove()
         {
             TestMove("Board05CorrectMove.txt", new Cell(7, 6), new Cell(6, 8));
-        }
-
-        [TestMethod]
-        public void Board14SecondCantFindWin()
-        {
-            DoTestWin("Board14SecondCantFindWin.txt", new Cell(6, 9));
         }
 
         [TestMethod]

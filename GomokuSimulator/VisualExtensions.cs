@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using Gomoku2;
+using Gomoku2.CellObjects;
 
 namespace GomokuSimulator
 {

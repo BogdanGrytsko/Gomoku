@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Gomoku2;
+using Gomoku2.CellObjects;
 
 namespace GomokuSimulator
 {

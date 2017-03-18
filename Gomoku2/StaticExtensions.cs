@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gomoku2.CellObjects;
+using Gomoku2.LineCore;
 
 namespace Gomoku2
 {
@@ -91,7 +93,7 @@ namespace Gomoku2
 
         public static bool HasFiveInARow(this BoardCell[,] board, BoardCell cellType)
         {
-            var lines = Game.GetLines(board, cellType);
+            var lines = LineFactory.GetLines(board, cellType);
             return lines.Any(l => l.Count >= 5);
         }
     }

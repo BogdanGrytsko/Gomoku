@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Gomoku2.CellObjects;
 using Gomoku2.LineAnalyzer;
 
 namespace Gomoku2.LineCore
@@ -165,6 +166,14 @@ namespace Gomoku2.LineCore
                             break;
                         }
                         break;
+                    case 1:
+                        if (lineType.IsTwoInRow())
+                        {
+                            foreach (var cell in GetNextCells(false)) yield return cell;
+                            yield return middle1;
+                            break;
+                        }
+                        break;
                 }
             }
         }
@@ -302,6 +311,11 @@ namespace Gomoku2.LineCore
             return Direction == other.Direction;
         }
 
+        public static bool IsBrokenTwoDistance(int dist)
+        {
+            return dist == 4 || dist == 16;
+        }
+
         public bool JoinIfPossible(Cell cell, BoardCell[,] board)
         {
             if (line.Count == 1 && middle1 == null)
@@ -312,7 +326,7 @@ namespace Gomoku2.LineCore
                     AddCell(cell, board);
                     return true;
                 }
-                if (dist == 4 || dist == 16)
+                if (IsBrokenTwoDistance(dist))
                 {
                     var dir = (Start - cell).Normalize();
                     var tmpNext = cell + dir;

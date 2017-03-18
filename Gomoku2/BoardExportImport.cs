@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Gomoku2.CellObjects;
 
 namespace Gomoku2
 {

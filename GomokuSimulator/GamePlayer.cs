@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Gomoku2;
+using Gomoku2.CellObjects;
 
 namespace GomokuSimulator
 {

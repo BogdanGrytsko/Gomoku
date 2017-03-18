@@ -1,4 +1,5 @@
 ﻿using System;
+using Gomoku2.CellObjects;
 
 namespace Gomoku2
 {

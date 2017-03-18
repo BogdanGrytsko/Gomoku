@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using Gomoku2;
+using Gomoku2.CellObjects;
 
 namespace GomokuSimulator
 {

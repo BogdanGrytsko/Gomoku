@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gomoku2.CellObjects;
 using Gomoku2.LineCore;
 
 namespace Gomoku2

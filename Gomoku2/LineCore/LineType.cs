@@ -14,7 +14,7 @@
         LongBrokenThree = 16,
         TwoInRow = 13,
         DeadFour = 12,
-        LongBrokenTwoInRow = 8,
+        LongBrokenTwo = 8,
         BlokedThree = 6,
         LongBlockedThree = 5,
         BlockedTwo = 4,

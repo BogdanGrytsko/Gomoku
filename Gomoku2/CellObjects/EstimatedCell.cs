@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Gomoku2.LineCore;
 
-namespace Gomoku2
+namespace Gomoku2.CellObjects
 {
     public class EstimatedCell
     {

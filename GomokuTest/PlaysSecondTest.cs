@@ -1,4 +1,5 @@
 ﻿using Gomoku2;
+using Gomoku2.CellObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GomokuTest

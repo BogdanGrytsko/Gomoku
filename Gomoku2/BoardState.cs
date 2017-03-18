@@ -89,14 +89,14 @@ namespace Gomoku2
             if (myDoubleThreat.Any())
                 return new PriorityCells(myDoubleThreat, false);
 
-            var oppDoubleThreat = DoubleThreatCells(OppLines);
-            if (oppDoubleThreat.Any())
-                return new PriorityCells(oppDoubleThreat, false);
-
             //this forces immidiate analyzis on blocked three cells.
             var myBlockedThree = MyLines.FirstOrDefault(l => l.LineType.IsBlokedThree());
             if (myBlockedThree != null)
                 return new PriorityCells(myBlockedThree.HighPriorityCells);
+
+            var oppDoubleThreat = DoubleThreatCells(OppLines);
+            if (oppDoubleThreat.Any())
+                return new PriorityCells(oppDoubleThreat, false);
 
             return new PriorityCells(new List<Cell>());
         }

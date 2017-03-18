@@ -52,10 +52,20 @@ namespace Gomoku2.LineCore
                     var dist = lineCell.DistSqr(cell);
                     if (Line.IsBrokenTwoDistance(dist))
                     {
-
-                        //magic
+                        var brokenTwoLine = new Line(cell, cellType);
+                        if (brokenTwoLine.JoinIfPossible(lineCell, board) && !lines.Contains(brokenTwoLine))
+                        {
+                            lines.Add(brokenTwoLine);
+                            //todo not sure how much of this is needed
+                            addedToSomeLine = true;
+                            cellsUsedInAdding.Add(lineCell);
+                            MergeLines(lines, usedLines, brokenTwoLine, board);
+                            continue;
+                        }
                     }
 
+                    //todo this shouldn't happen but it happens. Investigate and remove
+                    if (dist == 0) continue;
                     if (dist > 2) continue;
 
                     var newLine = new Line(cell, lineCell, board, cellType);

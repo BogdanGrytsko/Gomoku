@@ -66,5 +66,10 @@
         {
             return lineType == LineType.StraightFour;
         }
+
+        public static bool IsSingleMark(this LineType lineType)
+        {
+            return lineType == LineType.SingleMark;
+        }
     }
 }

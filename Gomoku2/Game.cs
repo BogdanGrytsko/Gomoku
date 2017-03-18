@@ -137,6 +137,7 @@ namespace Gomoku2
                     move = cell;
                 }
                 board[cell.X, cell.Y] = BoardCell.None;
+                //todo consider also Double Threat as exit condition
                 if (BreakOnFive(state.ItIsFirstsTurn, minMax) || BreakOnStraightFour(state.ItIsFirstsTurn, minMax)
                     || beta <= alpha) break;
             }

@@ -43,15 +43,9 @@ namespace GomokuTest
         }
 
         [TestMethod]
-        public void Board07IsLost()
-        {
-            TestMove("Board07IsLost.txt", new Cell(8, 6));
-        }
-
-        [TestMethod]
         public void BlockedThreeIntoDeadFour()
         {
-            DoTestWin("BlockedThreeIntoDeadFour.txt", new Cell(7, 6));
+            DoTestWin("BlockedThreeIntoDeadFour.txt", new Cell(7, 6), new Cell(3, 9));
         }
 
         [TestMethod]
@@ -120,21 +114,26 @@ namespace GomokuTest
             Assert.IsTrue(Win(game.LastEstimate));
         }
 
-        private static bool Win(int estim)
+        public static bool Win(int estim)
         {
             return Math.Abs(estim) >= (int)LineType.DoubleThreat;
         }
 
-        private static Game TestMove(string boardName, int depth, params Cell[] correctMoves)
+        public static Game TestMove(string boardName, int depth, params Cell[] correctMoves)
         {
-            var board = BoardExportImport.Import(Path.Combine(folder, boardName)).Board;
+            return TestMove(folder, boardName, depth, correctMoves);
+        }
+
+        public static Game TestMove(string folderPath, string boardName, int depth, params Cell[] correctMoves)
+        {
+            var board = BoardExportImport.Import(Path.Combine(folderPath, boardName)).Board;
             var game = new Game(board);
             var move = game.DoMove(board.WhoMovesNext(), depth, Game.DefaultWidth);
             Assert.IsTrue(correctMoves.Any(cm => cm == move));
             return game;
         }
 
-        private static Game TestMove(string boardName, params Cell[] correctMoves)
+        public static Game TestMove(string boardName, params Cell[] correctMoves)
         {
             return TestMove(boardName, Game.DefaultDepth, correctMoves);
         }

@@ -114,7 +114,9 @@ namespace Gomoku2
                 OnStateChanged(gameState, parent);
                 int minMax;
                 if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) ||
-                    StraightFourAndOpponentDoesntHaveThreatOfFour(estimatedCell.Estimate))
+                    StraightFour(estimatedCell.Estimate) ||
+                    DoubleThreat(estimatedCell.Estimate))
+                    //todo consider also Double Threat as exit condition
                     minMax = currEstim;
                 else
                     minMax = AlphaBeta(state.GetNextState(estimatedCell.MyLines, estimatedCell.OppLines), alpha, beta, out bestMove, gameState);
@@ -140,10 +142,12 @@ namespace Gomoku2
             return bestEstim;
         }
 
-        private static bool StraightFourAndOpponentDoesntHaveThreatOfFour(int estimate)
+        private static bool DoubleThreat(int estimate)
         {
-            return StraightFour(estimate);
+            return false;
+            return Math.Abs(estimate) >= (int)LineType.DoubleThreat / 2;
         }
+
 
         private static bool FiveInRow(int estim)
         {

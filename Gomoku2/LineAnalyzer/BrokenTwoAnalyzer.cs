@@ -4,11 +4,11 @@ using Gomoku2.LineCore;
 
 namespace Gomoku2.LineAnalyzer
 {
-    public class BrokenTwoInRowAnalyzer : AnalyzerBase
+    public class BrokenTwoAnalyzer : AnalyzerBase
     {
         private readonly Cell middle1;
 
-        public BrokenTwoInRowAnalyzer(List<Cell> nextCells, List<Cell> prevCells, BoardCell owner, Cell middle1)
+        public BrokenTwoAnalyzer(List<Cell> nextCells, List<Cell> prevCells, BoardCell owner, Cell middle1)
             : base(nextCells, prevCells, owner)
         {
             this.middle1 = middle1;

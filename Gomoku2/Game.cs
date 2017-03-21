@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Gomoku2.CellObjects;
 using Gomoku2.LineCore;
+using Gomoku2.StateCache;
 
 namespace Gomoku2
 {
@@ -220,17 +221,16 @@ namespace Gomoku2
             return estimatedCells.OrderByDescending(ec => ec.Estimate).Take(state.MaxWidth);
         }
 
-        private IEnumerable<EstimatedCell> GetEstimatedCells(BoardState state, NextCells nextCells)
+        private IEnumerable<EstimatedCell> GetEstimatedCells(BoardStateBase state, NextCells nextCells)
         {
             foreach (var cell in nextCells.MyNextCells)
             {
                 board[cell.X, cell.Y] = state.MyCellType;
-                var myNewLines = GetLinesByAddingCell(cell, state.MyLines, state.MyCellType);
-                var oppClonedLines = new List<Line>(state.OppLines.Select(l => l.Clone()));
-                var estimate = Estimate(myNewLines, oppClonedLines);
+                var newState = GetLinesByAddingCell(cell, state);
+                var estimate = Estimate(newState.MyLines, newState.OppLines);
                 board[cell.X, cell.Y] = BoardCell.None;
 
-                yield return new EstimatedCell(cell, myNewLines, oppClonedLines, estimate);
+                yield return new EstimatedCell(cell, newState.MyLines, newState.OppLines, estimate);
             }
 
             if (nextCells.OppNextCells == null)
@@ -269,12 +269,12 @@ namespace Gomoku2
             return LineFactory.GetLines(board, cellType);
         }
 
-        private List<Line> GetLinesByAddingCell(Cell cell, List<Line> existingLines, BoardCell cellType)
+        private static BoardStateBase GetLinesByAddingCell(Cell cell, BoardStateBase state)
         {
-            var lines = new List<Line>(existingLines.Select(existingLine => existingLine.Clone()));
-            LineFactory.FillLines(cell, lines, cellType, board);
-            lines.Sort();
-            return lines;
+            var clonedState = state.Clone();
+            LineFactory.FillLines(cell, clonedState);
+            state.MyLines.Sort();
+            return clonedState;
         }
     }
 }

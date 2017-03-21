@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Gomoku2.CellObjects;
 
-namespace Gomoku2
+namespace Gomoku2.StateCache
 {
     public class GameState
     {

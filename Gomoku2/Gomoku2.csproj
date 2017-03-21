@@ -45,16 +45,20 @@
   <ItemGroup>
     <Compile Include="CellObjects\BoardCell.cs" />
     <Compile Include="BoardExportImport.cs" />
-    <Compile Include="BoardState.cs" />
+    <Compile Include="CellObjects\CellDirection.cs" />
+    <Compile Include="LineCore\LineModifier.cs" />
+    <Compile Include="StateCache\BoardState.cs" />
     <Compile Include="CellObjects\Cell.cs" />
     <Compile Include="CellObjects\CellManager.cs" />
     <Compile Include="EstimatedBoard.cs" />
     <Compile Include="CellObjects\EstimatedCell.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="GameState.cs" />
+    <Compile Include="StateCache\BoardStateBase.cs" />
+    <Compile Include="StateCache\GameState.cs" />
+    <Compile Include="LineAnalyzer\LongBrokenTwoAnalyzer.cs" />
     <Compile Include="LineCore\Line.cs" />
     <Compile Include="LineAnalyzer\AnalyzerBase.cs" />
-    <Compile Include="LineAnalyzer\BrokenTwoInRowAnalyzer.cs" />
+    <Compile Include="LineAnalyzer\BrokenTwoAnalyzer.cs" />
     <Compile Include="LineCore\LineFactory.cs" />
     <Compile Include="LineCore\LineType.cs" />
     <Compile Include="LineCore\LineTypeExtensions.cs" />

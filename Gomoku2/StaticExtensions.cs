@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gomoku2.CellObjects;
 using Gomoku2.LineCore;
+using Gomoku2.StateCache;
 
 namespace Gomoku2
 {
@@ -95,6 +96,19 @@ namespace Gomoku2
         {
             var lines = LineFactory.GetLines(board, cellType);
             return lines.Any(l => l.Count >= 5);
+        }
+
+        public static Line Filter(this List<Line> lines, Cell analyzedCell, Cell direction)
+        {
+            foreach (var line in lines)
+            {
+                foreach (var lineCell in line)
+                {
+                    if (lineCell == analyzedCell && (line.Direction == direction || line.Direction == -direction))
+                        return line;
+                }
+            }
+            return null;
         }
     }
 }

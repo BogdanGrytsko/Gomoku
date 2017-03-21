@@ -1,35 +1,77 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Gomoku2.CellObjects;
+using Gomoku2.StateCache;
 
 namespace Gomoku2.LineCore
 {
     public class LineFactory
     {
-        public static List<Line> GetLines(BoardCell[,] board, BoardCell type)
+        private readonly HashSet<Cell> usedCells = new HashSet<Cell>();
+        private readonly BoardCell[,] board;
+        private readonly BoardCell type;
+
+        public LineFactory(BoardCell[,] board, BoardCell type)
         {
-            var lines = new List<Line>();
+            this.board = board;
+            this.type = type;
+        }
+
+        //todo change to return whole state
+        private List<Line> GetState()
+        {
+            var state = new BoardStateBase(new List<Line>(), new List<Line>(), type, board);
             for (int i = 0; i < board.GetLength(0); i++)
             {
                 for (int j = 0; j < board.GetLength(1); j++)
                 {
-                    if (board[i, j] != type) continue;
-                    FillLines(CellManager.Get(i, j), lines, type, board);
+                    var cell = CellManager.Get(i, j);
+                    if (board[i, j] != type || usedCells.Contains(cell)) continue;
+                    var factory = new LineModifier(cell, state);
+                    factory.AddCellToLines();
+                    foreach (var lineCell in state.MyLines.SelectMany(l => l))
+                        usedCells.Add(lineCell);
+                    //triangle case
+                    //  X  
+                    // X X 
+                    if (factory.AddedLines.Count == 2 && factory.AddedLines.All(l => l.Contains(cell)))
+                    {
+                        var triangleCells = factory.AddedLines.SelectMany(l => l).Where(c => c != cell).ToList();
+                        var first = triangleCells[0];
+                        var second = triangleCells[1];
+                        var dir = (second - first).Normalize();
+                        for (int dist = 1; dist <= 3; dist++)
+                        {
+                            var cellDir = new CellDirection(first, dir, dist);
+                            if (cellDir.AnalyzedCell.IsType(state.Board, state.OpponentCellType)) break;
+                            if (cellDir.AnalyzedCell == second)
+                                state.MyLines.Add(new Line(cellDir, state.Board, state.MyCellType));
+                        }
+                    }
+                    //FillLines(CellManager.Get(i, j), state);
                 }
             }
-            lines.ForEach(l => l.Estimate(board));
-            lines.Sort();
-            return lines;
+            state.MyLines.Sort();
+            return state.MyLines;
         }
 
-        public static void FillLines(Cell cell, List<Line> lines, BoardCell cellType, BoardCell[,] board)
+        public static List<Line> GetLines(BoardCell[,] board, BoardCell type)
         {
-            //todo use for better join\merge algorithm;
-            //var adjustmentCells = cell.GetAdjustmentCells(board, cellType);
-            //foreach (var adjustmentCell in adjustmentCells)
-            //{
+            var factory = new LineFactory(board, type);
+            return factory.GetState();
+        }
 
-            //}
+        public static void AddCellToLines(Cell cell, BoardStateBase state)
+        {
+            var factory = new LineModifier(cell, state);
+            factory.AddCellToLines();
+        }
+
+        public static void FillLines(Cell cell, BoardStateBase state)
+        {
+            var lines = state.MyLines;
+            var board = state.Board;
+            var cellType = state.MyCellType;
 
             var cellsUsedInAdding = new HashSet<Cell>();
             var addedToSomeLine = false;
@@ -40,7 +82,8 @@ namespace Gomoku2.LineCore
                 if (!line.JoinIfPossible(cell, board)) continue;
 
                 cellsUsedInAdding.UnionWith(line);
-                addedToSomeLine = true;
+                if (!line.IsBrokenTwo)
+                    addedToSomeLine = true;
                 MergeLines(lines, usedLines, line, board);
             }
             for (int i = lines.Count - 1; i >= 0; i--)
@@ -53,11 +96,11 @@ namespace Gomoku2.LineCore
                     if (Line.IsBrokenTwoDistance(dist))
                     {
                         var brokenTwoLine = new Line(cell, cellType);
+                        //todo rewrite in a way that lines.Contains(brokenTwoLine) is never true
                         if (brokenTwoLine.JoinIfPossible(lineCell, board) && !lines.Contains(brokenTwoLine))
                         {
                             lines.Add(brokenTwoLine);
                             //todo not sure how much of this is needed
-                            addedToSomeLine = true;
                             cellsUsedInAdding.Add(lineCell);
                             MergeLines(lines, usedLines, brokenTwoLine, board);
                             continue;

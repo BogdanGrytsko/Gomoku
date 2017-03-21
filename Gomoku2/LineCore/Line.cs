@@ -9,10 +9,12 @@ namespace Gomoku2.LineCore
 {
     public class Line : IComparable<Line>, IEnumerable<Cell>, IEquatable<Line>
     {
-        private readonly List<Cell> line = new List<Cell>();
+        private readonly List<Cell> cells = new List<Cell>();
         private LineType lineType;
         private BoardCell owner;
-        private Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev, middle1;
+        private Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev, middle1, middle2;
+        //is used for broken lines
+        private Cell lonelyCell;
         private List<Cell> priorityCells;
 
         public Line()
@@ -21,7 +23,7 @@ namespace Gomoku2.LineCore
 
         public Line(Cell cell, BoardCell owner)
         {
-            line.Add(cell);
+            cells.Add(cell);
             Start = cell;
             End = cell;
             this.owner = owner;
@@ -33,16 +35,40 @@ namespace Gomoku2.LineCore
 
         public Line(Cell cell1, Cell cell2, BoardCell[,] board, BoardCell owner)
         {
-            line.Add(cell1);
-            line.Add(cell2);
+            cells.Add(cell1);
+            cells.Add(cell2);
             this.owner = owner;
-            CalcProps(board);
+            CalcPropsAndEstimate(board);
         }
 
-        private void AddCell(Cell cell, BoardCell[,] board)
+        public Line(Cell cell1, Cell cell2, Cell cell3, BoardCell owner, BoardCell[,] board)
         {
-            line.Add(cell);
+            cells.Add(cell1);
+            cells.Add(cell2);
+            cells.Add(cell3);
+            this.owner = owner;
+            CalcPropsAndEstimate(board);
+        }
+
+        public Line(CellDirection cellDir, BoardCell[,] board, BoardCell owner)
+        {
+            cells.Add(cellDir.Cell);
+            cells.Add(cellDir.AnalyzedCell);
+            this.owner = owner;
             CalcProps(board);
+            RemoveCell(cellDir);
+        }
+
+        public void AddCells(BoardCell[,] board, params Cell[] cell)
+        {
+            cells.AddRange(cell);
+            CalcPropsAndEstimate(board);
+        }
+
+        private void CalcPropsAndEstimate(BoardCell[,] board)
+        {
+            CalcProps(board);
+            SetEstimate();
         }
 
         private void CalcProps(BoardCell[,] board)
@@ -51,32 +77,31 @@ namespace Gomoku2.LineCore
             CalcEnd();
             CalcDirection();
             CalcNextAndPrev(board);
-            SetEstimate();
         }
 
         private void CalcStart()
         {
-            var maxY = line.Max(c => c.Y);
-            var cells = line.Where(c => c.Y == maxY).ToList();
+            var maxY = this.cells.Max(c => c.Y);
+            var cells = this.cells.Where(c => c.Y == maxY).ToList();
             if (cells.Count == 1)
             {
                 Start = cells[0];
                 return;
             }
-            var maxX = line.Max(c => c.X);
+            var maxX = this.cells.Max(c => c.X);
             Start = cells.First(c => c.X == maxX);
         }
 
         private void CalcEnd()
         {
-            var minY = line.Min(c => c.Y);
-            var cells = line.Where(c => c.Y == minY).ToList();
+            var minY = this.cells.Min(c => c.Y);
+            var cells = this.cells.Where(c => c.Y == minY).ToList();
             if (cells.Count == 1)
             {
                 End = cells[0];
                 return;
             }
-            var minX = line.Min(c => c.X);
+            var minX = this.cells.Min(c => c.X);
             End = cells.First(c => c.X == minX);
         }
         private void CalcDirection()
@@ -112,7 +137,7 @@ namespace Gomoku2.LineCore
 
         private Cell End { get; set; }
 
-        public int Count { get { return line.Count; } }
+        public int Count { get { return cells.Count; } }
 
         public LineType LineType { get { return lineType; } }
 
@@ -169,8 +194,9 @@ namespace Gomoku2.LineCore
                     case 1:
                         if (lineType.IsTwoInRow())
                         {
-                            foreach (var cell in GetNextCells(false)) yield return cell;
-                            yield return middle1;
+                            //todo uncomment
+                            //foreach (var cell in GetNextCells(false)) yield return cell;
+                            //yield return middle1;
                             break;
                         }
                         break;
@@ -180,6 +206,7 @@ namespace Gomoku2.LineCore
 
         public IEnumerable<Cell> GetNextCells(bool includeNextNext)
         {
+            //todo for some reason next was null for single mark. investigate.
             if (lineType.IsSingleMark())
                 yield break;
             if (next.IsEmpty)
@@ -243,6 +270,8 @@ namespace Gomoku2.LineCore
                 case 2:
                     return TwoInRowAnalysis();
                 case 1:
+                    if (middle2 != null)
+                        return LongBrokenTwoAnalysis();
                     if (middle1 != null)
                         return BrokenTwoInRowAnalsis();
                     return LineType.SingleMark;
@@ -250,10 +279,17 @@ namespace Gomoku2.LineCore
             return LineType.Useless;
         }
 
+        private LineType LongBrokenTwoAnalysis()
+        {
+            if (IsDead) return LineType.DeadTwo;
+            var analyzer = new LongBrokenTwoAnalyzer(NextCells, PrevCells, owner, middle1, middle2);
+            return DoAnalysis(analyzer);
+        }
+
         private LineType BrokenTwoInRowAnalsis()
         {
             if (IsDead) return LineType.DeadTwo;
-            var analyzer = new BrokenTwoInRowAnalyzer(NextCells, PrevCells, owner, middle1);
+            var analyzer = new BrokenTwoAnalyzer(NextCells, PrevCells, owner, middle1);
             return DoAnalysis(analyzer);
         }
 
@@ -280,14 +316,14 @@ namespace Gomoku2.LineCore
             return DoAnalysis(analyzer);
         }
 
-        private Cell Direction { get; set; }
+        public Cell Direction { get; set; }
 
         public Line Clone()
         {
             //todo MemberwiseClone doesn't work. Investigate
             //return (Line)MemberwiseClone();
             var newLine = new Line();
-            newLine.line.AddRange(line);
+            newLine.cells.AddRange(cells);
 
             newLine.Start = Start;
             newLine.End = End;
@@ -302,6 +338,8 @@ namespace Gomoku2.LineCore
             newLine.prevPrev = prevPrev;
             newLine.prevPrevPrev = prevPrevPrev;
             newLine.middle1 = middle1;
+            newLine.middle2 = middle2;
+            newLine.lonelyCell = lonelyCell;
 
             newLine.priorityCells = priorityCells;
 
@@ -315,17 +353,27 @@ namespace Gomoku2.LineCore
 
         public static bool IsBrokenTwoDistance(int dist)
         {
-            return dist == 4 || dist == 16;
+            return dist == 4 || dist == 8;
+        }
+
+        public static bool IsLongBrokenTwoDistance(int dist)
+        {
+            return dist == 9 || dist == 18;
+        }
+
+        public bool IsBrokenTwo
+        {
+            get { return middle1 != null; }
         }
 
         public bool JoinIfPossible(Cell cell, BoardCell[,] board)
         {
-            if (line.Count == 1 && middle1 == null)
+            if (cells.Count == 1 && middle1 == null)
             {
                 var dist = Start.DistSqr(cell);
                 if (dist <= 2)
                 {
-                    AddCell(cell, board);
+                    AddCells(board, cell);
                     return true;
                 }
                 if (IsBrokenTwoDistance(dist))
@@ -336,8 +384,8 @@ namespace Gomoku2.LineCore
                     if (tmpNext.IsEmptyWithBoard(board) && !tmpNextNext.IsType(board, owner))
                     {
                         middle1 = tmpNext;
-                        AddCell(cell, board);
-                        line.Remove(cell);
+                        AddCells(board, cell);
+                        cells.Remove(cell);
                         return true;
                     }
                 }
@@ -351,7 +399,7 @@ namespace Gomoku2.LineCore
                     middle1 = null;
                 }
 
-                line.Add(cell);
+                cells.Add(cell);
                 Start = cell;
                 CalcNext(board);
                 SetEstimate();
@@ -365,7 +413,7 @@ namespace Gomoku2.LineCore
                     middle1 = null;
                 }
 
-                line.Add(cell);
+                cells.Add(cell);
                 End = cell;
                 CalcPrev(board);
                 SetEstimate();
@@ -406,10 +454,11 @@ namespace Gomoku2.LineCore
 
         public IEnumerator<Cell> GetEnumerator()
         {
-            foreach (var cell in line)
+            foreach (var cell in cells)
             {
                 yield return cell;
             }
+            if (lonelyCell != null) yield return lonelyCell;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -446,14 +495,30 @@ namespace Gomoku2.LineCore
         public Line GetMergedLine(Line otherLine, BoardCell[,] board)
         {
             var cells = new HashSet<Cell>();
-            cells.UnionWith(line);
+            cells.UnionWith(this.cells);
             cells.UnionWith(otherLine);
             var mergedLine = new Line();
-            mergedLine.line.AddRange(cells);
+            mergedLine.cells.AddRange(cells);
             mergedLine.owner = owner;
             //TODO maybe we don't need to recalculate all props
-            mergedLine.CalcProps(board);
+            mergedLine.CalcPropsAndEstimate(board);
             return mergedLine;
+        }
+
+        private void RemoveCell(CellDirection cellDir)
+        {
+            var cell = cellDir.Cell;
+            cells.Remove(cell);
+            lonelyCell = cell;
+            middle1 = cell + cellDir.Direction;
+            if (cellDir.Distance == 3)
+                middle2 = cell + 2*cellDir.Direction;
+            SetEstimate();
+        }
+
+        public void AddLonelyCell(CellDirection cellDir)
+        {
+            lonelyCell = cellDir.Cell;
         }
     }
 }

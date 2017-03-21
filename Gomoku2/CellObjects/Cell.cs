@@ -43,6 +43,11 @@ namespace Gomoku2.CellObjects
             return CellManager.Get(first.X - second.X, first.Y - second.Y);
         }
 
+        public static Cell operator -(Cell first)
+        {
+            return CellManager.Get(-first.X, -first.Y);
+        }
+
         public static Cell operator *(int a, Cell cell)
         {
             return CellManager.Get(cell.X * a, cell.Y * a);

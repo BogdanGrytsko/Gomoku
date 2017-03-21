@@ -1034,7 +1034,7 @@ namespace Gomoku
             return LineType.Useless;
         }
 
-        private Cell Direction { get; set; }
+        public Cell Direction { get; set; }
 
         public Line Clone()
         {

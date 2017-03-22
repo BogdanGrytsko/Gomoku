@@ -17,8 +17,10 @@
             Distance = distance;
         }
 
+        public Cell MirrorDirection => -Direction;
+
         public Cell AnalyzedCell => analyzedCell ?? (analyzedCell = Cell + Distance*Direction);
 
-        public Cell MirrorAnalyzedCell => mirrorAnalyzedCell ?? (mirrorAnalyzedCell = Cell - Distance*Direction);
+        public Cell MirrorAnalyzedCell => mirrorAnalyzedCell ?? (mirrorAnalyzedCell = Cell + Distance*MirrorDirection);
     }
 }

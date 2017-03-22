@@ -78,6 +78,9 @@
     <Content Include="LineChange\BrokenThreeIntoBrokenFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="LineChange\BrokenTwoIntoThree.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="LineChange\LongBrokenTwoIntoLongBrokenThree2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -87,7 +90,7 @@
     <Content Include="LineChange\LongBrokenTwoIntoBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="LineChange\BrokenTwoIntoThree.txt">
+    <Content Include="LineChange\TwoIntoBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineChange\BrokenFourIntoFive2.txt">
@@ -99,7 +102,10 @@
     <Content Include="LineDetermination\BlockedTwoAnd2TwoInRow.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="LineDetermination\BrokenFourInRow2.txt">
+    <Content Include="LineDetermination\BrokenFour2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\BrokenThree2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\BrokenTwoAndBrokenTwo2.txt">
@@ -111,7 +117,16 @@
     <Content Include="LineDetermination\BrokenTwoAndBlockedThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="LineDetermination\LongBrokenThree3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\LongBrokenThree2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="LineDetermination\StraightFour.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\BrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\ThreeInRow.txt">
@@ -249,7 +264,7 @@
     <Content Include="LineDetermination\BlockedTwoInRow2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="LineDetermination\BrokenFourInRow.txt">
+    <Content Include="LineDetermination\BrokenFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\BlockedTwoInRow.txt">

@@ -104,7 +104,7 @@ namespace Gomoku2
             {
                 foreach (var lineCell in line)
                 {
-                    if (lineCell == analyzedCell && (line.Direction == direction || line.Direction == -direction))
+                    if (lineCell == analyzedCell && (line.Count == 1 || line.Direction == direction || line.Direction == -direction))
                         return line;
                 }
             }

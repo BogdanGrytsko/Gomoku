@@ -14,7 +14,7 @@
 
         public static bool IsBrokenFourInRow(this LineType lineType)
         {
-            return lineType == LineType.BrokenFourInRow;
+            return lineType == LineType.BrokenFour;
         }
 
         public static bool IsBlokedThree(this LineType lineType)
@@ -44,7 +44,7 @@
 
         public static bool ThreatOfFour(this LineType lineType)
         {
-            return lineType == LineType.FourInRow || lineType == LineType.BrokenFourInRow;
+            return lineType == LineType.FourInRow || lineType == LineType.BrokenFour;
         }
 
         public static bool FourCellLine(this LineType lineType)

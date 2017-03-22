@@ -27,7 +27,7 @@ namespace Gomoku2.LineCore
                 {
                     var cell = CellManager.Get(i, j);
                     if (board[i, j] != type || usedCells.Contains(cell)) continue;
-                    var factory = new LineModifier(cell, state);
+                    var factory = new LineModifier(cell, state, GetBackwardsDirections());
                     factory.AddCellToLines();
                     foreach (var lineCell in state.MyLines.SelectMany(l => l))
                         usedCells.Add(lineCell);
@@ -53,6 +53,13 @@ namespace Gomoku2.LineCore
             }
             state.MyLines.Sort();
             return state.MyLines;
+        }
+
+        private IEnumerable<Cell> GetBackwardsDirections()
+        {
+            yield return new Cell(-1, 0);
+            yield return new Cell(-1, -1);
+            yield return new Cell(0, -1);
         }
 
         public static List<Line> GetLines(BoardCell[,] board, BoardCell type)

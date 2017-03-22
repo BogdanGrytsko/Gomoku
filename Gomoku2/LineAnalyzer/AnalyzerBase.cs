@@ -9,11 +9,11 @@ namespace Gomoku2.LineAnalyzer
         protected readonly List<Cell> nextCells, prevCells;
         protected readonly BoardCell owner;
 
-        protected AnalyzerBase(List<Cell> nextCells, List<Cell> prevCells, BoardCell owner)
+        protected AnalyzerBase(Line line)
         {
-            this.nextCells = nextCells;
-            this.prevCells = prevCells;
-            this.owner = owner;
+            nextCells = line.NextCells;
+            prevCells = line.PrevCells;
+            owner = line.owner;
         }
 
         public LineType PrevOpened(ref List<Cell> priorityCells)
@@ -29,5 +29,6 @@ namespace Gomoku2.LineAnalyzer
         protected abstract LineType OneSideOpened(List<Cell> cells, ref List<Cell> priorityCells);
 
         public abstract LineType TwoSidesOpened(ref List<Cell> priorityCells);
+        public abstract LineType Dead();
     }
 }

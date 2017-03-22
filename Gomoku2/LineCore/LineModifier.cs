@@ -11,14 +11,21 @@ namespace Gomoku2.LineCore
         private readonly Cell cell;
         private readonly BoardStateBase state;
         private readonly List<Cell> skipDirections = new List<Cell>();
+        private readonly IList<Cell> directions; 
         
-        public List<Line> AddedLines { get; private set; } 
+        public List<Line> AddedLines { get; private set; }
 
         public LineModifier(Cell cell, BoardStateBase state)
+            : this(cell, state, GetDirections())
+        {
+        }
+
+        public LineModifier(Cell cell, BoardStateBase state, IEnumerable<Cell> directions)
         {
             addedToSomeLine = false;
             this.cell = cell;
             this.state = state;
+            this.directions = directions.ToList();
             AddedLines = new List<Line>();
         }
 
@@ -43,7 +50,7 @@ namespace Gomoku2.LineCore
             //4. Cell combines 2 lines into one | X XX => XXXX | XX XX => XXXXX| X X => XXX|
             //5. Cell Creates 2 new 2-cell lines. "Triangle"
 
-            foreach (var direction in GetDirections())
+            foreach (var direction in directions)
             {
                 if (skipDirections.Contains(direction)) continue;
                 for (int distance = 1; distance <= 3; distance++)
@@ -61,6 +68,7 @@ namespace Gomoku2.LineCore
             var analyzedCell = cellDir.AnalyzedCell;
             if (analyzedCell.IsType(state.Board, state.OpponentCellType))
             {
+                //todo hanle case when my cell breaks opp line. Remove cells from it
                 var sameDirOppLine = state.OppLines.Filter(analyzedCell, cellDir.Direction);
                 sameDirOppLine?.Estimate(state.Board);
                 return true;
@@ -80,7 +88,10 @@ namespace Gomoku2.LineCore
 
         private void SolidCase(CellDirection cellDir, Line sameDirLine)
         {
-            var mirrorAnalyzedCell = cellDir.MirrorAnalyzedCell;
+            //do mirror analyzis only when asked to.
+            var mirrorAnalyzedCell = directions.Contains(cellDir.MirrorDirection)
+                ? cellDir.MirrorAnalyzedCell
+                : new Cell(-1, -1);
             //?X*X?
             if (mirrorAnalyzedCell.IsType(state.Board, state.MyCellType))
                 SolidMirrorCase(cellDir, sameDirLine);
@@ -104,28 +115,16 @@ namespace Gomoku2.LineCore
         private void SolidMirrorCase(CellDirection cellDir, Line sameDirLine)
         {
             skipDirections.Add(-cellDir.Direction);
-            var mirrorDirLine = state.MyLines.Filter(cellDir.MirrorAnalyzedCell, cellDir.Direction);
-            // X X 
-            if (mirrorDirLine == null && sameDirLine == null)
-            {
-                //create a three cell line
-                var line = new Line(cellDir.AnalyzedCell, cellDir.Cell, cellDir.MirrorAnalyzedCell, state.MyCellType, state.Board);
-                AddLine(line);
-                return;
-            }
-            if (sameDirLine == null)
-                mirrorDirLine.AddCells(state.Board, cellDir.Cell, cellDir.AnalyzedCell);
-            if (mirrorDirLine == null)
-                sameDirLine.AddCells(state.Board, cellDir.Cell, cellDir.MirrorAnalyzedCell);
-
-            //XX XX
-            if (mirrorDirLine != null && sameDirLine != null)
-            {
-                state.MyLines.Remove(mirrorDirLine);
-                var cells = mirrorDirLine.ToList();
-                cells.Add(cellDir.Cell);
-                sameDirLine.AddCells(state.Board, cells.ToArray());
-            }
+            //todo remove
+            //this fix is need only for "Create all lines" case. We can refactor it if we want
+            //if (sameDirLine == null)
+            //{
+            //    //create a three cell line
+            //    var line = new Line(cellDir.AnalyzedCell, cellDir.Cell, cellDir.MirrorAnalyzedCell, state.MyCellType, state.Board);
+            //    AddLine(line);
+            //    return;
+            //}
+            sameDirLine.AddMissingCell(cellDir.Cell);
         }
 
         private void BrokenCase(CellDirection cellDir, Line sameDirLine)

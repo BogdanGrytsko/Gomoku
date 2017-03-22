@@ -7,7 +7,7 @@
         DoubleThreat = 1000,
         DoubleBrokenThree = 40,
         FourInRow = 35,
-        BrokenFourInRow = 28,
+        BrokenFour = 28,
         ThreeInRow = 25,
         //todo set to ThreeInRow
         BrokenThree = 20,

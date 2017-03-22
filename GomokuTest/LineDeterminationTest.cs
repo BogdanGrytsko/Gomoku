@@ -95,20 +95,20 @@ namespace GomokuTest
         }
 
         [TestMethod]
-        public void BrokenFourInRow()
+        public void BrokenFour()
         {
-            var lines = GetLines("BrokenFourInRow.txt");
+            var lines = GetLines("BrokenFour.txt");
             Assert.AreEqual(1, lines.Count);
-            Assert.AreEqual(LineType.BrokenFourInRow, lines[0].LineType);
+            Assert.AreEqual(LineType.BrokenFour, lines[0].LineType);
         }
 
         [TestMethod]
-        public void BrokenFourInRow2()
+        public void BrokenFour2()
         {
-            var lines = GetLines("BrokenFourInRow2.txt");
+            var lines = GetLines("BrokenFour2.txt");
             //todo fix - there are 2 lines like that. leads to bad estimation
             Assert.AreEqual(1, lines.Count);
-            Assert.AreEqual(LineType.BrokenFourInRow, lines[0].LineType);
+            Assert.AreEqual(LineType.BrokenFour, lines[0].LineType);
         }
 
         [TestMethod]
@@ -117,6 +117,8 @@ namespace GomokuTest
             var lines = GetLines("LongBrokenThree.txt");
             Assert.AreEqual(1, lines.Count);
             Assert.AreEqual(LineType.LongBrokenThree, lines[0].LineType);
+            Assert.IsNotNull(lines[0].Middle1);
+            Assert.IsNotNull(lines[0].Middle2);
         }
 
         [TestMethod]
@@ -195,6 +197,44 @@ namespace GomokuTest
             Assert.AreEqual(2, lines.Count);
             Assert.AreEqual(LineType.TwoInRow, lines[0].LineType);
             Assert.AreEqual(LineType.TwoInRow, lines[1].LineType);
+        }
+
+        [TestMethod]
+        public void BrokenThree()
+        {
+            var lines = GetLines("BrokenThree.txt");
+            Assert.AreEqual(1, lines.Count);
+            Assert.AreEqual(LineType.BrokenThree, lines[0].LineType);
+            Assert.IsNotNull(lines[0].Middle1);
+        }
+
+        [TestMethod]
+        public void BrokenThree2()
+        {
+            var lines = GetLines("BrokenThree2.txt");
+            Assert.AreEqual(1, lines.Count);
+            Assert.AreEqual(LineType.BrokenThree, lines[0].LineType);
+            Assert.IsNotNull(lines[0].Middle1);
+        }
+
+        [TestMethod]
+        public void LongBrokenThree2()
+        {
+            var lines = GetLines("LongBrokenThree2.txt");
+            Assert.AreEqual(1, lines.Count);
+            Assert.AreEqual(LineType.LongBrokenThree, lines[0].LineType);
+            Assert.IsNotNull(lines[0].Middle1);
+            Assert.IsNotNull(lines[0].Middle2);
+        }
+
+        [TestMethod]
+        public void LongBrokenThree3()
+        {
+            var lines = GetLines("LongBrokenThree2.txt");
+            Assert.AreEqual(1, lines.Count);
+            Assert.AreEqual(LineType.LongBrokenThree, lines[0].LineType);
+            Assert.IsNotNull(lines[0].Middle1);
+            Assert.IsNotNull(lines[0].Middle2);
         }
 
         private static List<Line> GetLines(string fileName)

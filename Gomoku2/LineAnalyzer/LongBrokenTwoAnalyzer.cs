@@ -4,16 +4,11 @@ using Gomoku2.LineCore;
 
 namespace Gomoku2.LineAnalyzer
 {
-    public class LongBrokenTwoAnalyzer : AnalyzerBase
+    public class LongBrokenTwoAnalyzer : TwoCellAnalyzer
     {
-        private readonly Cell middle1, middle2;
-
-        public LongBrokenTwoAnalyzer(
-            List<Cell> nextCells, List<Cell> prevCells, BoardCell owner, Cell middle1, Cell middle2)
-            : base(nextCells, prevCells, owner)
+        public LongBrokenTwoAnalyzer(Line line)
+            : base(line)
         {
-            this.middle1 = middle1;
-            this.middle2 = middle2;
         }
 
         protected override LineType OneSideOpened(List<Cell> cells, ref List<Cell> priorityCells)
@@ -22,7 +17,7 @@ namespace Gomoku2.LineAnalyzer
             if (cells[1].BoardCell == owner.Opponent())
                 return LineType.DeadTwo;
             //OX  X  
-            priorityCells = new List<Cell> { middle1, middle2 };
+            //priorityCells = new List<Cell> { middle1, middle2 };
             return LineType.BlockedTwo;
         }
 

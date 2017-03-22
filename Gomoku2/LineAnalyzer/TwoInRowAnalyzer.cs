@@ -4,9 +4,9 @@ using Gomoku2.LineCore;
 
 namespace Gomoku2.LineAnalyzer
 {
-    public class TwoInRowAnalyzer : AnalyzerBase
+    public class TwoInRowAnalyzer : TwoCellAnalyzer
     {
-        public TwoInRowAnalyzer(List<Cell> nextCells, List<Cell> prevCells, BoardCell owner) : base(nextCells, prevCells, owner)
+        public TwoInRowAnalyzer(Line line) : base(line)
         {
         }
 
@@ -18,12 +18,12 @@ namespace Gomoku2.LineAnalyzer
             //OXX X*
             if (cells[1].BoardCell == owner)
             {
-                //OXX XX
-                if (cells[2].BoardCell == owner)
-                {
-                    priorityCells = new List<Cell> { cells[0] };
-                    return LineType.BrokenFourInRow;
-                }
+                ////OXX XX
+                //if (cells[2].BoardCell == owner)
+                //{
+                //    priorityCells = new List<Cell> { cells[0] };
+                //    return LineType.BrokenFour;
+                //}
                 //OXX XO
                 if (cells[2].BoardCell == owner.Opponent())
                     return LineType.DeadThree;
@@ -57,7 +57,7 @@ namespace Gomoku2.LineAnalyzer
                 return LineType.StraightFour;
             //  XX XX
             if (nextResult.IsBrokenFourInRow() || prevResult.IsBrokenFourInRow())
-                return LineType.BrokenFourInRow;
+                return LineType.BrokenFour;
             // X XX  X
             if (nextResult.IsBlokedThree() && prevResult.IsBlokedThree())
                 return LineType.DoubleBrokenThree;

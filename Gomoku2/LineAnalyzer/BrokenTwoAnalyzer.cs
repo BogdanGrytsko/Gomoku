@@ -4,14 +4,11 @@ using Gomoku2.LineCore;
 
 namespace Gomoku2.LineAnalyzer
 {
-    public class BrokenTwoAnalyzer : AnalyzerBase
+    public class BrokenTwoAnalyzer : TwoCellAnalyzer
     {
-        private readonly Cell middle1;
-
-        public BrokenTwoAnalyzer(List<Cell> nextCells, List<Cell> prevCells, BoardCell owner, Cell middle1)
-            : base(nextCells, prevCells, owner)
+        public BrokenTwoAnalyzer(Line line)
+            : base(line)
         {
-            this.middle1 = middle1;
         }
 
         protected override LineType OneSideOpened(List<Cell> cells, ref List<Cell> priorityCells)
@@ -22,7 +19,7 @@ namespace Gomoku2.LineAnalyzer
             //OX X X*
             if (cells[1].BoardCell == owner)
             {
-                priorityCells = new List<Cell> {middle1, cells[0]};
+                //priorityCells = new List<Cell> {middle1, cells[0]};
                 return LineType.BlokedThree;
             }
             //OX X   
@@ -37,9 +34,9 @@ namespace Gomoku2.LineAnalyzer
             if (nextResult.IsDeadTwo() && prevResult.IsDeadTwo())
                 return LineType.DeadTwo;
             if (nextResult.IsDeadTwo())
-                priorityCells = new List<Cell> { prevCells[0], prevCells[1], middle1 };
+                //priorityCells = new List<Cell> { prevCells[0], prevCells[1], middle1 };
             if (prevResult.IsDeadTwo())
-                priorityCells = new List<Cell> { nextCells[0], nextCells[1], middle1 };
+                //priorityCells = new List<Cell> { nextCells[0], nextCells[1], middle1 };
 
             // X X X 
             if (nextResult.IsBlokedThree() || prevResult.IsBlokedThree())

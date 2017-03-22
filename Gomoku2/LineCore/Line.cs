@@ -11,10 +11,11 @@ namespace Gomoku2.LineCore
     {
         private readonly List<Cell> cells = new List<Cell>();
         private LineType lineType;
-        private BoardCell owner;
-        private Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev, middle1, middle2;
+        //todo fix public => private
+        public BoardCell owner;
+        public Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev, middle1, middle2;
         //is used for broken lines
-        private Cell lonelyCell;
+        //private Cell lonelyCell;
         private List<Cell> priorityCells;
 
         public Line()
@@ -78,6 +79,9 @@ namespace Gomoku2.LineCore
             CalcDirection();
             CalcNextAndPrev(board);
         }
+
+        public Cell Middle1 => middle1;
+        public Cell Middle2 => middle2;
 
         private void CalcStart()
         {
@@ -239,17 +243,17 @@ namespace Gomoku2.LineCore
             get { return next.IsEmpty && prev.IsEmpty; }
         }
 
-        private bool IsDead
+        public bool IsDead
         {
             get { return !next.IsEmpty && !prev.IsEmpty; }
         }
 
-        private List<Cell> NextCells
+        public List<Cell> NextCells
         {
             get { return new List<Cell> {next, nextNext, nextNextNext}; }
         }
 
-        private List<Cell> PrevCells
+        public List<Cell> PrevCells
         {
             get { return new List<Cell> { prev, prevPrev, prevPrevPrev }; }
         }
@@ -257,63 +261,52 @@ namespace Gomoku2.LineCore
         private LineType GetEstimate()
         {
             priorityCells = null;
+            var analyzer = GetAnalyzer();
+            if (analyzer != null)
+                return DoAnalysis(analyzer);
             switch (Count)
             {
                 case 5:
                     return LineType.FiveInRow;
-                case 4:
-                    if (IsDead) return LineType.DeadFour;
-                    if (IsOpenFromBothSides) return LineType.StraightFour;
-                    return LineType.FourInRow;
-                case 3:
-                    return ThreeInRowAnalysis();
-                case 2:
-                    return TwoInRowAnalysis();
                 case 1:
-                    if (middle2 != null)
-                        return LongBrokenTwoAnalysis();
-                    if (middle1 != null)
-                        return BrokenTwoInRowAnalsis();
                     return LineType.SingleMark;
             }
             return LineType.Useless;
         }
 
-        private LineType LongBrokenTwoAnalysis()
+        private AnalyzerBase GetAnalyzer()
         {
-            if (IsDead) return LineType.DeadTwo;
-            var analyzer = new LongBrokenTwoAnalyzer(NextCells, PrevCells, owner, middle1, middle2);
-            return DoAnalysis(analyzer);
-        }
-
-        private LineType BrokenTwoInRowAnalsis()
-        {
-            if (IsDead) return LineType.DeadTwo;
-            var analyzer = new BrokenTwoAnalyzer(NextCells, PrevCells, owner, middle1);
-            return DoAnalysis(analyzer);
-        }
-
-        private LineType ThreeInRowAnalysis()
-        {
-            if (IsDead) return LineType.DeadThree;
-            var analyzer = new ThreeInRowAnalyzer(NextCells, PrevCells, owner);
-            return DoAnalysis(analyzer);
+            switch (Count)
+            {
+                case 4:
+                    if (middle1 != null)
+                        return new BrokenFourAnalyzer(this);
+                    return new FourInRowAnalyzer(this);
+                case 3:
+                    if (middle2 != null)
+                        return new LongBrokenThreeAnalyzer(this);
+                    if (middle1 != null)
+                        return new BrokenThreeAnalyzer(this);
+                    return new ThreeInRowAnalyzer(this);
+                case 2:
+                    if (middle2 != null)
+                        return new LongBrokenTwoAnalyzer(this);
+                    if (middle1 != null)
+                        return new BrokenTwoAnalyzer(this);
+                    return new TwoInRowAnalyzer(this);
+            }
+            return null;
         }
 
         private LineType DoAnalysis(AnalyzerBase analyzer)
         {
+            if (IsDead)
+                return analyzer.Dead();
             if (!next.IsEmpty && prev.IsEmpty)
                 return analyzer.PrevOpened(ref priorityCells);
             if (next.IsEmpty && !prev.IsEmpty)
                 return analyzer.NextOpened(ref priorityCells);
             return analyzer.TwoSidesOpened(ref priorityCells);
-        }
-
-        private LineType TwoInRowAnalysis()
-        {
-            if (IsDead) return LineType.DeadTwo;
-            var analyzer = new TwoInRowAnalyzer(NextCells, PrevCells, owner);
-            return DoAnalysis(analyzer);
         }
 
         public Cell Direction { get; set; }
@@ -339,7 +332,7 @@ namespace Gomoku2.LineCore
             newLine.prevPrevPrev = prevPrevPrev;
             newLine.middle1 = middle1;
             newLine.middle2 = middle2;
-            newLine.lonelyCell = lonelyCell;
+            //newLine.lonelyCell = lonelyCell;
 
             newLine.priorityCells = priorityCells;
 
@@ -458,7 +451,7 @@ namespace Gomoku2.LineCore
             {
                 yield return cell;
             }
-            if (lonelyCell != null) yield return lonelyCell;
+            //if (lonelyCell != null) yield return lonelyCell;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -507,18 +500,36 @@ namespace Gomoku2.LineCore
 
         private void RemoveCell(CellDirection cellDir)
         {
-            var cell = cellDir.Cell;
-            cells.Remove(cell);
-            lonelyCell = cell;
-            middle1 = cell + cellDir.Direction;
-            if (cellDir.Distance == 3)
-                middle2 = cell + 2*cellDir.Direction;
+            cells.Remove(cellDir.Cell);
+            SetLonelyAndMiddleCells(cellDir);
             SetEstimate();
+        }
+
+        private void SetLonelyAndMiddleCells(CellDirection cellDir)
+        {
+            cells.Add(cellDir.Cell);
+            //lonelyCell = cellDir.Cell;
+            middle1 = cellDir.Cell + cellDir.Direction;
+            if (cellDir.Distance == 3)
+                middle2 = cellDir.Cell + 2*cellDir.Direction;
         }
 
         public void AddLonelyCell(CellDirection cellDir)
         {
-            lonelyCell = cellDir.Cell;
+            SetLonelyAndMiddleCells(cellDir);
+        }
+
+        public void AddMissingCell(Cell cell)
+        {
+            cells.Add(cell);
+            if (middle1 == cell)
+            {
+                //if (lonelyCell != null)
+                //    cells.Add(lonelyCell);
+                //lonelyCell = null;
+                middle1 = null;
+            }
+            SetEstimate();
         }
     }
 }

@@ -14,8 +14,6 @@ namespace Gomoku2.LineCore
         //todo fix public => private
         public BoardCell owner;
         public Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev, middle1, middle2;
-        //is used for broken lines
-        //private Cell lonelyCell;
         private List<Cell> priorityCells;
 
         public Line()
@@ -451,7 +449,6 @@ namespace Gomoku2.LineCore
             {
                 yield return cell;
             }
-            //if (lonelyCell != null) yield return lonelyCell;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -507,16 +504,19 @@ namespace Gomoku2.LineCore
 
         private void SetLonelyAndMiddleCells(CellDirection cellDir)
         {
-            cells.Add(cellDir.Cell);
-            //lonelyCell = cellDir.Cell;
+            if (!cells.Contains(cellDir.Cell))
+                cells.Add(cellDir.Cell);
             middle1 = cellDir.Cell + cellDir.Direction;
             if (cellDir.Distance == 3)
                 middle2 = cellDir.Cell + 2*cellDir.Direction;
+            else
+                middle2 = null;
         }
 
-        public void AddLonelyCell(CellDirection cellDir)
+        public void AddLonelyCell(CellDirection cellDir, BoardCell[,] board)
         {
             SetLonelyAndMiddleCells(cellDir);
+            CalcPropsAndEstimate(board);
         }
 
         public void AddMissingCell(Cell cell)
@@ -524,9 +524,6 @@ namespace Gomoku2.LineCore
             cells.Add(cell);
             if (middle1 == cell)
             {
-                //if (lonelyCell != null)
-                //    cells.Add(lonelyCell);
-                //lonelyCell = null;
                 middle1 = null;
             }
             SetEstimate();

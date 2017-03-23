@@ -72,6 +72,9 @@
     <Content Include="LineChange\BrokenThreeIntoStraightFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="LineChange\BrokenTwoIntoLongBrokenThree.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="LineChange\BrokenTwoIntoBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -79,9 +82,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineChange\BrokenTwoIntoThree.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="LineChange\LongBrokenTwoIntoLongBrokenThree2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineChange\LongBrokenTwoIntoLongBrokenThree.txt">

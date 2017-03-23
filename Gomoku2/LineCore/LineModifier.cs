@@ -13,8 +13,6 @@ namespace Gomoku2.LineCore
         private readonly List<Cell> skipDirections = new List<Cell>();
         private readonly IList<Cell> directions; 
         
-        public List<Line> AddedLines { get; private set; }
-
         public LineModifier(Cell cell, BoardStateBase state)
             : this(cell, state, GetDirections())
         {
@@ -26,7 +24,6 @@ namespace Gomoku2.LineCore
             this.cell = cell;
             this.state = state;
             this.directions = directions.ToList();
-            AddedLines = new List<Line>();
         }
 
         private static IEnumerable<Cell> GetDirections()
@@ -115,15 +112,6 @@ namespace Gomoku2.LineCore
         private void SolidMirrorCase(CellDirection cellDir, Line sameDirLine)
         {
             skipDirections.Add(-cellDir.Direction);
-            //todo remove
-            //this fix is need only for "Create all lines" case. We can refactor it if we want
-            //if (sameDirLine == null)
-            //{
-            //    //create a three cell line
-            //    var line = new Line(cellDir.AnalyzedCell, cellDir.Cell, cellDir.MirrorAnalyzedCell, state.MyCellType, state.Board);
-            //    AddLine(line);
-            //    return;
-            //}
             sameDirLine.AddMissingCell(cellDir.Cell);
         }
 
@@ -139,10 +127,7 @@ namespace Gomoku2.LineCore
 
         private void BrokenLineExistsCase(CellDirection cellDir, Line sameDirLine)
         {
-            sameDirLine.AddLonelyCell(cellDir);
-            //we can re-evaluate only 1 side
-            //also need to fix estimation for BrokenTwo and LongBrokenTwo
-            sameDirLine.Estimate(state.Board);
+            sameDirLine.AddLonelyCell(cellDir, state.Board);
         }
 
         private void BrokenLineDoesntExistCase(CellDirection cellDir)
@@ -154,7 +139,6 @@ namespace Gomoku2.LineCore
         private void AddLine(Line line)
         {
             state.MyLines.Add(line);
-            AddedLines.Add(line);
         }
     }
 }

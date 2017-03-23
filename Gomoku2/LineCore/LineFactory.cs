@@ -31,24 +31,6 @@ namespace Gomoku2.LineCore
                     factory.AddCellToLines();
                     foreach (var lineCell in state.MyLines.SelectMany(l => l))
                         usedCells.Add(lineCell);
-                    //triangle case
-                    //  X  
-                    // X X 
-                    if (factory.AddedLines.Count == 2 && factory.AddedLines.All(l => l.Contains(cell)))
-                    {
-                        var triangleCells = factory.AddedLines.SelectMany(l => l).Where(c => c != cell).ToList();
-                        var first = triangleCells[0];
-                        var second = triangleCells[1];
-                        var dir = (second - first).Normalize();
-                        for (int dist = 1; dist <= 3; dist++)
-                        {
-                            var cellDir = new CellDirection(first, dir, dist);
-                            if (cellDir.AnalyzedCell.IsType(state.Board, state.OpponentCellType)) break;
-                            if (cellDir.AnalyzedCell == second)
-                                state.MyLines.Add(new Line(cellDir, state.Board, state.MyCellType));
-                        }
-                    }
-                    //FillLines(CellManager.Get(i, j), state);
                 }
             }
             state.MyLines.Sort();
@@ -60,6 +42,7 @@ namespace Gomoku2.LineCore
             yield return new Cell(-1, 0);
             yield return new Cell(-1, -1);
             yield return new Cell(0, -1);
+            yield return new Cell(-1, 1);
         }
 
         public static List<Line> GetLines(BoardCell[,] board, BoardCell type)

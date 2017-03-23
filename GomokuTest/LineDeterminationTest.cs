@@ -122,7 +122,7 @@ namespace GomokuTest
         }
 
         [TestMethod]
-        public void LongBrokenThreeInRowAndBrokenThreeInRow()
+        public void LongBrokenThreeAndBrokenThree()
         {
             var lines = GetLines("LongBrokenThreeAndBrokenThree.txt");
             Assert.AreEqual(2, lines.Count);

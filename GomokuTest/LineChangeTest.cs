@@ -93,6 +93,15 @@ namespace GomokuTest
             Assert.AreEqual(LineType.LongBrokenThree, lines[0].LineType);
         }
 
+        [TestMethod]
+        public void LongBrokenThreeInto2Lines()
+        {
+            var lines = GetLines("LongBrokenThreeInto2Lines.txt", new Cell(6, 10));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.LongBrokenThree, lines[0].LineType);
+            Assert.AreEqual(LineType.LongBrokenThree, lines[1].LineType);
+        }
+
         private static List<Line> GetLines(string fileName, Cell cell)
         {
             var board = BoardExportImport.Import(Path.Combine(folder, fileName)).Board;

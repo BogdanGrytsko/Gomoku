@@ -11,7 +11,7 @@ namespace Gomoku2.LineAnalyzer
         {
         }
 
-        protected override LineType OneSideOpened(List<Cell> cells, ref List<Cell> priorityCells)
+        protected override LineType OneSideOpened(List<Cell> cells)
         {
             //OX  X O*
             if (cells[1].BoardCell == owner.Opponent())
@@ -21,10 +21,10 @@ namespace Gomoku2.LineAnalyzer
             return LineType.BlockedTwo;
         }
 
-        public override LineType TwoSidesOpened(ref List<Cell> priorityCells)
+        public override LineType TwoSidesOpened()
         {
-            var nextResult = NextOpened(ref priorityCells);
-            var prevResult = PrevOpened(ref priorityCells);
+            var nextResult = NextOpened();
+            var prevResult = PrevOpened();
             // O X  X O 
             if (nextResult.IsDeadTwo() && prevResult.IsDeadTwo())
                 return LineType.DeadTwo;

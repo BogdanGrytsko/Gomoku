@@ -10,31 +10,17 @@ namespace Gomoku2.LineAnalyzer
         {
         }
 
-        protected override LineType OneSideOpened(List<Cell> cells, ref List<Cell> priorityCells)
+        protected override LineType OneSideOpened(List<Cell> cells)
         {
             //OXXX  
             if (cells[1].IsEmpty)
                 return LineType.BlokedThree;
-            //OXXX X
-            if (cells[1].BoardCell == owner)
-            {
-                priorityCells = new List<Cell> { cells[0] };
-                return LineType.BrokenFour;
-            }
             //OXXX O
             return LineType.DeadThree;
         }
 
-        public override LineType TwoSidesOpened(ref List<Cell> priorityCells)
+        public override LineType TwoSidesOpened()
         {
-            var nextResult = NextOpened(ref priorityCells);
-            var prevResult = PrevOpened(ref priorityCells);
-            //X XXX X
-            if (nextResult.IsBrokenFourInRow() && prevResult.IsBrokenFourInRow())
-                return LineType.StraightFour;
-            //* XXX X
-            if (nextResult.IsBrokenFourInRow() || prevResult.IsBrokenFourInRow())
-                return LineType.BrokenFour;
             // XXX 
             return LineType.ThreeInRow;
         }

@@ -10,12 +10,12 @@ namespace Gomoku2.LineAnalyzer
         {
         }
 
-        protected override LineType OneSideOpened(List<Cell> cells, ref List<Cell> priorityCells)
+        protected override LineType OneSideOpened(List<Cell> cells)
         {
             return LineType.BrokenFour;
         }
 
-        public override LineType TwoSidesOpened(ref List<Cell> priorityCells)
+        public override LineType TwoSidesOpened()
         {
             return LineType.BrokenFour;
         }

@@ -8,27 +8,40 @@ namespace Gomoku2.LineAnalyzer
     {
         protected readonly List<Cell> nextCells, prevCells;
         protected readonly BoardCell owner;
+        protected readonly Line line;
 
         protected AnalyzerBase(Line line)
         {
             nextCells = line.NextCells;
             prevCells = line.PrevCells;
             owner = line.owner;
+            this.line = line;
         }
 
-        public LineType PrevOpened(ref List<Cell> priorityCells)
+        public LineType PrevOpened()
         {
-            return OneSideOpened(prevCells, ref priorityCells);
+            return OneSideOpened(prevCells);
         }
 
-        public LineType NextOpened(ref List<Cell> priorityCells)
+        public LineType NextOpened()
         {
-            return OneSideOpened(nextCells, ref priorityCells);
+            return OneSideOpened(nextCells);
         }
 
-        protected abstract LineType OneSideOpened(List<Cell> cells, ref List<Cell> priorityCells);
+        protected abstract LineType OneSideOpened(List<Cell> cells);
 
-        public abstract LineType TwoSidesOpened(ref List<Cell> priorityCells);
+        public abstract LineType TwoSidesOpened();
         public abstract LineType Dead();
+
+        public LineType DoAnalysis()
+        {
+            if (line.IsDead)
+                return Dead();
+            if (!line.next.IsEmpty && line.prev.IsEmpty)
+                return PrevOpened();
+            if (line.next.IsEmpty && !line.prev.IsEmpty)
+                return NextOpened();
+            return TwoSidesOpened();
+        }
     }
 }

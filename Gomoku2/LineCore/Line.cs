@@ -60,7 +60,11 @@ namespace Gomoku2.LineCore
 
         public void AddCells(BoardCell[,] board, params Cell[] cell)
         {
-            cells.AddRange(cell);
+            foreach (var cell1 in cell)
+            {
+                if (cells.Contains(cell1)) continue;
+                AddCellAndMaybeNullMiddle(cell1);
+            }
             CalcPropsAndEstimate(board);
         }
 
@@ -261,7 +265,7 @@ namespace Gomoku2.LineCore
             priorityCells = null;
             var analyzer = GetAnalyzer();
             if (analyzer != null)
-                return DoAnalysis(analyzer);
+                return analyzer.DoAnalysis();
             switch (Count)
             {
                 case 5:
@@ -296,16 +300,7 @@ namespace Gomoku2.LineCore
             return null;
         }
 
-        private LineType DoAnalysis(AnalyzerBase analyzer)
-        {
-            if (IsDead)
-                return analyzer.Dead();
-            if (!next.IsEmpty && prev.IsEmpty)
-                return analyzer.PrevOpened(ref priorityCells);
-            if (next.IsEmpty && !prev.IsEmpty)
-                return analyzer.NextOpened(ref priorityCells);
-            return analyzer.TwoSidesOpened(ref priorityCells);
-        }
+
 
         public Cell Direction { get; set; }
 
@@ -504,12 +499,25 @@ namespace Gomoku2.LineCore
 
         private void SetLonelyAndMiddleCells(CellDirection cellDir)
         {
-            if (!cells.Contains(cellDir.Cell))
-                cells.Add(cellDir.Cell);
-            middle1 = cellDir.Cell + cellDir.Direction;
+            if (cells.Contains(cellDir.Cell)) return;;
+            AddCellAndMaybeNullMiddle(cellDir.Cell);
+
+            if (middle1 == null)
+                middle1 = cellDir.Cell + cellDir.Direction;
+            // X X X case
+            else
+                middle2 = cellDir.Cell + cellDir.Direction;
+
             if (cellDir.Distance == 3)
                 middle2 = cellDir.Cell + 2*cellDir.Direction;
-            else
+        }
+
+        private void AddCellAndMaybeNullMiddle(Cell cell)
+        {
+            cells.Add(cell);
+            if (cell == middle1)
+                middle1 = null;
+            if (cell == middle2)
                 middle2 = null;
         }
 

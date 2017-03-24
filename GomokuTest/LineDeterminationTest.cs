@@ -237,6 +237,33 @@ namespace GomokuTest
             Assert.IsNotNull(lines[0].Middle2);
         }
 
+        [TestMethod]
+        public void DoubleLongBrokenTwo()
+        {
+            var lines = GetLines("DoubleLongBrokenTwo.txt");
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.LongBrokenTwo, lines[0].LineType);
+            Assert.AreEqual(LineType.LongBrokenTwo, lines[1].LineType);
+        }
+
+        [TestMethod]
+        public void LongBrokenTwoAndBrokenTwo()
+        {
+            var lines = GetLines("LongBrokenTwoAndBrokenTwo.txt");
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.TwoInRow, lines[0].LineType);
+            Assert.AreEqual(LineType.LongBrokenTwo, lines[1].LineType);
+        }
+
+        [TestMethod]
+        public void BrokenTwoAndLongBrokenTwo()
+        {
+            var lines = GetLines("BrokenTwoAndLongBrokenTwo.txt");
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.TwoInRow, lines[0].LineType);
+            Assert.AreEqual(LineType.LongBrokenTwo, lines[1].LineType);
+        }
+
         private static List<Line> GetLines(string fileName)
         {
             var board = BoardExportImport.Import(Path.Combine(folder, fileName)).Board;

@@ -99,7 +99,7 @@ namespace GomokuTest
             var lines = GetLines("LongBrokenThreeInto2Lines.txt", new Cell(6, 10));
             Assert.AreEqual(2, lines.Count);
             Assert.AreEqual(LineType.LongBrokenThree, lines[0].LineType);
-            Assert.AreEqual(LineType.LongBrokenThree, lines[1].LineType);
+            Assert.AreEqual(LineType.TwoInRow, lines[1].LineType);
         }
 
         private static List<Line> GetLines(string fileName, Cell cell)

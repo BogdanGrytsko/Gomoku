@@ -240,16 +240,6 @@ namespace Gomoku2.LineCore
             lineType = GetEstimate();
         }
 
-        private bool IsOpenFromBothSides
-        {
-            get { return next.IsEmpty && prev.IsEmpty; }
-        }
-
-        public bool IsDead
-        {
-            get { return !next.IsEmpty && !prev.IsEmpty; }
-        }
-
         public List<Cell> NextCells
         {
             get { return new List<Cell> {next, nextNext, nextNextNext}; }
@@ -300,8 +290,6 @@ namespace Gomoku2.LineCore
             return null;
         }
 
-
-
         public Cell Direction { get; set; }
 
         public Line Clone()
@@ -325,7 +313,6 @@ namespace Gomoku2.LineCore
             newLine.prevPrevPrev = prevPrevPrev;
             newLine.middle1 = middle1;
             newLine.middle2 = middle2;
-            //newLine.lonelyCell = lonelyCell;
 
             newLine.priorityCells = priorityCells;
 
@@ -345,11 +332,6 @@ namespace Gomoku2.LineCore
         public static bool IsLongBrokenTwoDistance(int dist)
         {
             return dist == 9 || dist == 18;
-        }
-
-        public bool IsBrokenTwo
-        {
-            get { return middle1 != null; }
         }
 
         public bool JoinIfPossible(Cell cell, BoardCell[,] board)
@@ -535,6 +517,24 @@ namespace Gomoku2.LineCore
                 middle1 = null;
             }
             SetEstimate();
+        }
+
+        private bool IsCellMiddle(Cell cell)
+        {
+            return middle1 == cell || middle2 == cell;
+        }
+
+        public bool CanAddCell(CellDirection cellDir)
+        {
+            // X X X
+            if (lineType.IsTwoInRow() && middle1 != null)
+                return IsCellMiddle(cellDir.Cell) || cellDir.Distance <= 2;
+
+            if (lineType.IsLongBrokenThree() || lineType.IsLongBlockedThree())
+                return IsCellMiddle(cellDir.Cell);
+            if (lineType.IsLongBrokenTwo())
+                return IsCellMiddle(cellDir.Cell) || cellDir.Distance == 1;
+            return true;
         }
     }
 }

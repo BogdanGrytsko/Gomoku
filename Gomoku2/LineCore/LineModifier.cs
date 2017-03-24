@@ -98,15 +98,19 @@ namespace Gomoku2.LineCore
 
         private void SolidSingleCase(CellDirection cellDir, Line sameDirLine)
         {
-            // X XX
-            if (sameDirLine != null)
-                sameDirLine.AddCells(state.Board, cellDir.Cell);
-            // X X 
-            else
+            if (sameDirLine == null || !sameDirLine.CanAddCell(cellDir))
             {
                 var line = new Line(cellDir.Cell, cellDir.AnalyzedCell, state.Board, state.MyCellType);
+                var maybeBrokenCell = cellDir.AnalyzedCell + 2*cellDir.Direction;
+                if (maybeBrokenCell.IsType(state.Board, state.MyCellType))
+                {
+                    var additionalDir = new CellDirection(maybeBrokenCell, -cellDir.Direction, 2);
+                    line.AddLonelyCell(additionalDir, state.Board);
+                }
                 AddLine(line);
             }
+            else
+                sameDirLine.AddCells(state.Board, cellDir.Cell);
         }
 
         private void SolidMirrorCase(CellDirection cellDir, Line sameDirLine)
@@ -118,7 +122,7 @@ namespace Gomoku2.LineCore
         private void BrokenCase(CellDirection cellDir, Line sameDirLine)
         {
             //add new BrokenTwo or LongBrokenTwo
-            if (sameDirLine == null)
+            if (sameDirLine == null || !sameDirLine.CanAddCell(cellDir))
                 BrokenLineDoesntExistCase(cellDir);
             // reestimate line. add lonely cell to it.
             else

@@ -272,7 +272,7 @@ namespace Gomoku2
         private static BoardStateBase GetLinesByAddingCell(Cell cell, BoardStateBase state)
         {
             var clonedState = state.Clone();
-            LineFactory.FillLines(cell, clonedState);
+            LineFactory.AddCellToLines(cell, clonedState);
             state.MyLines.Sort();
             return clonedState;
         }

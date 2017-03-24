@@ -35,13 +35,19 @@ namespace Gomoku2.LineAnalyzer
 
         public LineType DoAnalysis()
         {
-            if (line.IsDead)
+            if (IsDead)
                 return Dead();
-            if (!line.next.IsEmpty && line.prev.IsEmpty)
+            if (!NextEmpty && PrevEmpty)
                 return PrevOpened();
-            if (line.next.IsEmpty && !line.prev.IsEmpty)
+            if (NextEmpty && !PrevEmpty)
                 return NextOpened();
             return TwoSidesOpened();
         }
+
+        private bool IsDead => !NextEmpty && !PrevEmpty;
+
+        private bool NextEmpty => line.next.IsEmpty || line.next.BoardCell == line.owner;
+
+        private bool PrevEmpty => line.prev.IsEmpty || line.prev.BoardCell == line.owner;
     }
 }

@@ -37,6 +37,11 @@
             return lineType == LineType.LongBrokenThree;
         }
 
+        public static bool IsLongBrokenTwo(this LineType lineType)
+        {
+            return lineType == LineType.LongBrokenTwo;
+        }
+
         public static bool IsDeadThree(this LineType lineType)
         {
             return lineType == LineType.DeadThree;

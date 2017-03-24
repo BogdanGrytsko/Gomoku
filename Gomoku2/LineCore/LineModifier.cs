@@ -102,7 +102,8 @@ namespace Gomoku2.LineCore
             {
                 var line = new Line(cellDir.Cell, cellDir.AnalyzedCell, state.Board, state.MyCellType);
                 var maybeBrokenCell = cellDir.AnalyzedCell + 2*cellDir.Direction;
-                if (maybeBrokenCell.IsType(state.Board, state.MyCellType))
+                if (maybeBrokenCell.IsType(state.Board, state.MyCellType) 
+                    && (cellDir.AnalyzedCell + cellDir.Direction).IsEmptyWithBoard(state.Board))
                 {
                     var additionalDir = new CellDirection(maybeBrokenCell, -cellDir.Direction, 2);
                     line.AddLonelyCell(additionalDir, state.Board);

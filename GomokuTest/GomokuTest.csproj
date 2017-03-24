@@ -54,6 +54,7 @@
     <Compile Include="GameTest.cs" />
     <Compile Include="LineChangeTest.cs" />
     <Compile Include="LineDeterminationTest.cs" />
+    <Compile Include="OpponentMoveLineChange.cs" />
     <Compile Include="PlaysSecondTest.cs" />
     <Compile Include="PriorityCellsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -163,6 +164,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\LongBrokenThreeAndBrokenThree.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpponentMoveLineChange\StraightFourIntoBlockedFour.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpponentMoveLineChange\BrokenFourIntoBlockedThreeAndSingle.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpponentMoveLineChange\BrokenFourIntoDoubleBlockedTwo.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PlaysSecond\Board06is87WinningMove.txt">

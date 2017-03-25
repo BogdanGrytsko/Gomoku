@@ -24,16 +24,17 @@ namespace Gomoku2.PriorityChain
             //if I have 4 cell line -> finish it. I Win (StraightFour, FourInRow, BrokenFour)
             //if opponent has 4 cell line -> block, otherwise I loose (StraightFour, FourInRow, BrokenFour)
             //if I have Winnable line than do win with it. (ThreeInRow, BrokenThree)
-            //TODO if opponent has winnable 3 cell line vs I have Threat-Generating 3 cell line (LongBrokenThree, BlockedThree) ???
+            //if I have Threat-Generating 3 cell line (LongBrokenThree, BlockedThree) than try it
+            //if opponent has winnable 3 cell line deffend from it.
             //if I have 2 cell Threat-Generating line (Even Double-Threat) (TwoInRow, LongBrokenTwo)
-            //if opponent has Double-threat possibility.
+            //if opponent has Double-threat possibility deffend from it.
 
             yield return new FourCellHandler(myLines);
             yield return new FourCellHandler(oppLines);
-            yield return new ThreatOfThreeHandler(myLines);
-            yield return new ThreatOfThreeHandler(oppLines);
+            yield return new WinningThreeHandler(myLines);
+            yield return new ThreatGeneratingThreeHandler(myLines);
+            yield return new DefenceThreatOfThreeHandler(oppLines);
             yield return new DoubleThreatHandler(myLines);
-            yield return new BlockedThreeHandler(myLines);
             yield return new DoubleThreatHandler(oppLines);
         }
 
@@ -42,7 +43,8 @@ namespace Gomoku2.PriorityChain
             foreach (var handler in handlers)
             {
                 var cells = handler.GetCells();
-                if (cells.Any()) return cells;
+                if (cells.Any())
+                    return cells;
             }
             return new PriorityCells(new List<Cell>());
         }

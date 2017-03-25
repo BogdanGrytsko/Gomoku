@@ -195,7 +195,7 @@
     </Content>
     <Content Include="PlaysSecond\Board09Unknown.txt" />
     <Content Include="PlaysSecond\Board10%284,9%29Unknown.txt" />
-    <Content Include="PlaysSecond\Board10%286,9%29IsWon.txt">
+    <Content Include="PlaysSecond\Board10%286,9%29IsUnknown.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PlaysSecond\Board11IsWon.txt">
@@ -232,7 +232,7 @@
     <Content Include="BoardStates\Board06WrongDefence.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\Board09FirstWon.txt">
+    <Content Include="BoardStates\Board09Unknown.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="BoardStates\Board11FirstLost.txt">

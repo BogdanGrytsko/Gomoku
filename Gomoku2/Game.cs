@@ -235,7 +235,6 @@ namespace Gomoku2
 
             if (nextCells.OppNextCells == null)
                 yield break;
-            //todo use it to fix Board13FirstDontDefend bug
             //foreach (var cell in nextCells.OppNextCells)
             //{
             //    board[cell.X, cell.Y] = state.OpponentCellType;

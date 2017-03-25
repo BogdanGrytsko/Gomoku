@@ -14,7 +14,7 @@ namespace GomokuTest
         [TestMethod]
         public void DoubleThreatDefenceMoves()
         {
-            var cells = GetNextCells("DoubleThreatDefenceMoves.txt");
+            var cells = GetNextCells("DoubleThreatDefenceMoves.txt", true);
             var myCells = cells.MyNextCells.ToList();
             Assert.AreEqual(2, myCells.Count);
             Assert.AreEqual(new Cell(5, 4), myCells[0]);
@@ -101,6 +101,8 @@ namespace GomokuTest
             var myCells = cells.MyNextCells.ToList();
             Assert.AreEqual(3, myCells.Count);
             Assert.AreEqual(new Cell(6, 7), myCells[0]);
+            Assert.AreEqual(new Cell(6, 10), myCells[1]);
+            Assert.AreEqual(new Cell(6, 5), myCells[2]);
         }
 
         [TestMethod]

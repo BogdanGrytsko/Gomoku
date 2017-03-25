@@ -4,9 +4,9 @@ using Gomoku2.LineCore;
 
 namespace Gomoku2.PriorityChain
 {
-    public class ThreatOfThreeHandler : PriorityHandlerBase
+    public class WinningThreeHandler : PriorityHandlerBase
     {
-        public ThreatOfThreeHandler(List<Line> lines) : base(lines)
+        public WinningThreeHandler(List<Line> lines) : base(lines)
         {
         }
 

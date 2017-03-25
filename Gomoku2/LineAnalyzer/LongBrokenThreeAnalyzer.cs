@@ -25,7 +25,7 @@ namespace Gomoku2.LineAnalyzer
             get
             {
                 yield return line.Middle1;
-                yield return line.Middle1;
+                yield return line.Middle2;
             }
         }
     }

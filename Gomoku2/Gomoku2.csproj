@@ -56,12 +56,13 @@
     <Compile Include="LineAnalyzer\ThreeCellAnalyzer.cs" />
     <Compile Include="LineAnalyzer\TwoCellAnalyzer.cs" />
     <Compile Include="LineCore\LineModifier.cs" />
-    <Compile Include="PriorityChain\BlockedThreeHandler.cs" />
+    <Compile Include="PriorityChain\ThreatGeneratingThreeHandler.cs" />
+    <Compile Include="PriorityChain\DefenceThreatOfThreeHandler.cs" />
     <Compile Include="PriorityChain\DoubleThreatHandler.cs" />
     <Compile Include="PriorityChain\FourCellHandler.cs" />
     <Compile Include="PriorityChain\PriorityAlgorithm.cs" />
     <Compile Include="PriorityChain\PriorityHandlerBase.cs" />
-    <Compile Include="PriorityChain\ThreatOfThreeHandler.cs" />
+    <Compile Include="PriorityChain\WinningThreeHandler.cs" />
     <Compile Include="StateCache\BoardState.cs" />
     <Compile Include="CellObjects\Cell.cs" />
     <Compile Include="CellObjects\CellManager.cs" />

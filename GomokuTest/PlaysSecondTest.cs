@@ -18,13 +18,13 @@ namespace GomokuTest
         [TestMethod]
         public void Board10IsWon()
         {
-            DoTestWin("Board10(6,9)IsWon.txt", new Cell(6, 10));
+            TestMove("Board10(6,9)IsUnknown.txt", new Cell(8, 11));
         }
 
         [TestMethod]
         public void Board11IsWon()
         {
-            DoTestWin("Board11IsWon.txt", new Cell(9, 7), new Cell(5, 11));
+            DoTestWin("Board11IsWon.txt", new Cell(6, 6), new Cell(6, 5));
         }
 
         private static Game TestMove(string boardName, int depth, params Cell[] correctMoves)

@@ -56,6 +56,12 @@
     <Compile Include="LineAnalyzer\ThreeCellAnalyzer.cs" />
     <Compile Include="LineAnalyzer\TwoCellAnalyzer.cs" />
     <Compile Include="LineCore\LineModifier.cs" />
+    <Compile Include="PriorityChain\BlockedThreeHandler.cs" />
+    <Compile Include="PriorityChain\DoubleThreatHandler.cs" />
+    <Compile Include="PriorityChain\FourCellHandler.cs" />
+    <Compile Include="PriorityChain\PriorityAlgorithm.cs" />
+    <Compile Include="PriorityChain\PriorityHandlerBase.cs" />
+    <Compile Include="PriorityChain\ThreatOfThreeHandler.cs" />
     <Compile Include="StateCache\BoardState.cs" />
     <Compile Include="CellObjects\Cell.cs" />
     <Compile Include="CellObjects\CellManager.cs" />
@@ -82,6 +88,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

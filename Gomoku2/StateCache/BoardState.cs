@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gomoku2.CellObjects;
 using Gomoku2.LineCore;
+using Gomoku2.PriorityChain;
 
 namespace Gomoku2.StateCache
 {
@@ -41,7 +42,7 @@ namespace Gomoku2.StateCache
         {
             const int minMinDepth = -16;
             var threatCells = GetPriorityThreatCells();
-            if (threatCells.Cells.Any())
+            if (threatCells.Any())
             {
                 if (threatCells.IncreasesDepth && MinDepth > minMinDepth)
                     MinDepth--;
@@ -56,62 +57,8 @@ namespace Gomoku2.StateCache
 
         private PriorityCells GetPriorityThreatCells()
         {
-            var stratighFour = GetPriorityThreatCells(type => type.IsStraightFour());
-            if (stratighFour.Any())
-                return new PriorityCells(stratighFour);
-
-            var threatOfFour = GetPriorityThreatCells(LineTypeExtensions.ThreatOfFour);
-            if (threatOfFour.Any())
-                return new PriorityCells(threatOfFour);
-
-            //todo long broken 3 should be processed separatelly.
-            var threatOfThree = GetPriorityThreatCells(type => type.ThreatOfThree() || type.IsLongBrokenThree());
-            if (threatOfThree.Any())
-                return new PriorityCells(threatOfThree, false);
-
-            //find double threat
-            var myDoubleThreat = DoubleThreatCells(MyLines);
-            if (myDoubleThreat.Any())
-                return new PriorityCells(myDoubleThreat, false);
-
-            //this forces immidiate analyzis on blocked three cells.
-            var myBlockedThree = MyLines.FirstOrDefault(l => l.LineType.IsBlokedThree());
-            if (myBlockedThree != null)
-                return new PriorityCells(myBlockedThree.PriorityCells);
-
-            var oppDoubleThreat = DoubleThreatCells(OppLines);
-            if (oppDoubleThreat.Any())
-                return new PriorityCells(oppDoubleThreat, false);
-
-            return new PriorityCells(new List<Cell>());
-        }
-
-        private IList<Cell> GetPriorityThreatCells(Predicate<LineType> func)
-        {
-            var myThreat = SelectManyHighPriorityCells(MyLines, func).ToList();
-            if (myThreat.Any())
-                return myThreat;
-            var oppThreat = SelectManyHighPriorityCells(OppLines, func).ToList();
-            if (oppThreat.Any())
-                return oppThreat;
-
-            return new List<Cell>();
-        }
-
-        private static IEnumerable<Cell> DoubleThreatCells(IEnumerable<Line> lines)
-        {
-            var doubleThreat = SelectManyPriorityCells(lines, type => type.IsBlokedThree() || type.IsTwoInRow() || type.IsLongBrokenTwo());
-            return doubleThreat.GroupBy(s => s).SelectMany(grp => grp.Skip(1));
-        }
-
-        private static IEnumerable<Cell> SelectManyHighPriorityCells(IEnumerable<Line> lines, Predicate<LineType> predicate)
-        {
-            return lines.Where(l => predicate(l.LineType)).SelectMany(l => l.HighPriorityCells);
-        }
-
-        private static IEnumerable<Cell> SelectManyPriorityCells(IEnumerable<Line> lines, Predicate<LineType> predicate)
-        {
-            return lines.Where(l => predicate(l.LineType)).SelectMany(l => l.PriorityCells);
+            var algorithm = new PriorityAlgorithm(MyLines, OppLines);
+            return algorithm.GetPriorityCells();
         }
 
         public NextCells GetNearEmptyCells()

@@ -206,7 +206,7 @@ namespace Gomoku2
 
         private static bool HasDoubleThreat(List<Line> lines)
         {
-            int killerLines = lines.Count(line => line.LineType.ThreatOfThree() || (line.LineType.ThreatOfFour() && line.Count > 2));
+            int killerLines = lines.Count(line => line.LineType.ThreatOfThree() || line.LineType.ThreatOfFour());
             return killerLines >= 2;
         }
 

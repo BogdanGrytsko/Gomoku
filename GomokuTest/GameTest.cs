@@ -106,7 +106,7 @@ namespace GomokuTest
         [TestMethod]
         public void LongBrokenTwoNotModifiedCorrectly()
         {
-            DoTestWin("LongBrokenTwoNotModifiedCorrectly.txt", new Cell(10, 7));
+            DoTestWin("LongBrokenTwoNotModifiedCorrectly.txt", new Cell(10, 7), new Cell(7, 10));
         }
 
         private static void DoTestWin(string boardName, params Cell[] correctMoves)

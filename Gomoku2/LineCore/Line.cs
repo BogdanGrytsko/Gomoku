@@ -381,7 +381,7 @@ namespace Gomoku2.LineCore
             if (lineType.IsTwoInRow() && middle1 != null)
                 return IsCellMiddle(cellDir.Cell) || cellDir.Distance <= 2;
 
-            if (lineType.IsLongBrokenThree() || lineType.IsLongBlockedThree())
+            if (lineType.IsLongBrokenThree())
                 return IsCellMiddle(cellDir.Cell);
             if (lineType.IsLongBrokenTwo())
                 return IsCellMiddle(cellDir.Cell) || cellDir.Distance == 1;

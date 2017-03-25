@@ -12,7 +12,7 @@ namespace Gomoku2.LineAnalyzer
 
         protected override LineType OneSideOpened(List<Cell> cells)
         {
-            return LineType.LongBlockedThree;
+            return LineType.BlokedThree;
         }
 
         public override LineType TwoSidesOpened()

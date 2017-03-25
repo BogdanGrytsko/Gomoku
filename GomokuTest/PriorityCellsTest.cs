@@ -86,11 +86,20 @@ namespace GomokuTest
         }
 
         [TestMethod]
-        public void BrokenThree()
+        public void BrokenThreeAttack()
         {
             var cells = GetNextCells("BrokenThree.txt");
             var myCells = cells.MyNextCells.ToList();
             Assert.AreEqual(1, myCells.Count);
+            Assert.AreEqual(new Cell(6, 7), myCells[0]);
+        }
+
+        [TestMethod]
+        public void BrokenThreeDeffence()
+        {
+            var cells = GetNextCells("BrokenThree.txt", true);
+            var myCells = cells.MyNextCells.ToList();
+            Assert.AreEqual(3, myCells.Count);
             Assert.AreEqual(new Cell(6, 7), myCells[0]);
         }
 

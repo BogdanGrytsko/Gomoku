@@ -273,7 +273,6 @@ namespace Gomoku2
         {
             var clonedState = state.Clone();
             LineFactory.AddCellToLines(cell, clonedState);
-            state.MyLines.Sort();
             return clonedState;
         }
     }

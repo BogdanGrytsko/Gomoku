@@ -27,7 +27,9 @@ namespace GomokuTest
             var lines = GetLines("BrokenFourIntoBlockedThreeAndSingle.txt", new Cell(5, 6));
             Assert.AreEqual(2, lines.Count);
             Assert.AreEqual(LineType.BlokedThree, lines[0].LineType);
+            Assert.IsNull(lines[0].Middle1);
             Assert.AreEqual(LineType.SingleMark, lines[1].LineType);
+            Assert.IsNull(lines[1].Middle1);
         }
 
         [TestMethod]
@@ -37,6 +39,60 @@ namespace GomokuTest
             Assert.AreEqual(2, lines.Count);
             Assert.AreEqual(LineType.BlockedTwo, lines[0].LineType);
             Assert.AreEqual(LineType.BlockedTwo, lines[0].LineType);
+            Assert.IsNull(lines[0].Middle1);
+            Assert.IsNull(lines[1].Middle1);
+        }
+
+        [TestMethod]
+        public void LongBrokenThreeIntoBlockedTwoAndSingle()
+        {
+            var lines = GetLines("LongBrokenThreeIntoBlockedTwoAndSingle.txt", new Cell(6, 6));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.BlockedTwo, lines[0].LineType);
+            Assert.IsNotNull(lines[0].Middle1);
+            Assert.IsNull(lines[0].Middle2);
+            Assert.AreEqual(LineType.SingleMark, lines[1].LineType);
+            Assert.IsNull(lines[1].Middle1);
+            Assert.IsNull(lines[1].Middle2);
+        }
+
+        [TestMethod]
+        public void LongBrokenThreeIntoTwoAndSingle()
+        {
+            var lines = GetLines("LongBrokenThreeIntoTwoAndSingle.txt", new Cell(6, 6));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.TwoInRow, lines[0].LineType);
+            Assert.IsNull(lines[0].Middle1);
+            Assert.IsNull(lines[0].Middle2);
+            Assert.AreEqual(LineType.SingleMark, lines[1].LineType);
+            Assert.IsNull(lines[1].Middle1);
+            Assert.IsNull(lines[1].Middle2);
+        }
+
+        [TestMethod]
+        public void BrokenThreeIntoBlockedTwoAndSingle()
+        {
+            var lines = GetLines("BrokenThreeIntoBlockedTwoAndSingle.txt", new Cell(7, 6));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.BlockedTwo, lines[0].LineType);
+            Assert.IsNull(lines[0].Middle1);
+            Assert.IsNull(lines[0].Middle2);
+            Assert.AreEqual(LineType.SingleMark, lines[1].LineType);
+            Assert.IsNull(lines[1].Middle1);
+            Assert.IsNull(lines[1].Middle2);
+        }
+
+        [TestMethod]
+        public void LongBrokenThreeIntoBlockedTwoAndSingle2()
+        {
+            var lines = GetLines("LongBrokenThreeIntoBlockedTwoAndSingle.txt", new Cell(8, 6));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.BlockedTwo, lines[0].LineType);
+            Assert.IsNotNull(lines[0].Middle1);
+            Assert.IsNull(lines[0].Middle2);
+            Assert.AreEqual(LineType.SingleMark, lines[1].LineType);
+            Assert.IsNull(lines[1].Middle1);
+            Assert.IsNull(lines[1].Middle2);
         }
 
         private static List<Line> GetLines(string fileName, Cell cell)

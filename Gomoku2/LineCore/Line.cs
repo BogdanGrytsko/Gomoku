@@ -40,11 +40,9 @@ namespace Gomoku2.LineCore
             CalcPropsAndEstimate(board);
         }
 
-        public Line(Cell cell1, Cell cell2, Cell cell3, BoardCell owner, BoardCell[,] board)
+        public Line(IEnumerable<Cell> newCells, BoardCell owner, BoardCell[,] board)
         {
-            cells.Add(cell1);
-            cells.Add(cell2);
-            cells.Add(cell3);
+            cells.AddRange(newCells);
             this.owner = owner;
             CalcPropsAndEstimate(board);
         }
@@ -459,19 +457,6 @@ namespace Gomoku2.LineCore
             return string.Format("{2} S {0} E {1}", Start, End, LineType);
         }
 
-        public Line GetMergedLine(Line otherLine, BoardCell[,] board)
-        {
-            var cells = new HashSet<Cell>();
-            cells.UnionWith(this.cells);
-            cells.UnionWith(otherLine);
-            var mergedLine = new Line();
-            mergedLine.cells.AddRange(cells);
-            mergedLine.owner = owner;
-            //TODO maybe we don't need to recalculate all props
-            mergedLine.CalcPropsAndEstimate(board);
-            return mergedLine;
-        }
-
         private void RemoveCell(CellDirection cellDir)
         {
             cells.Remove(cellDir.Cell);
@@ -497,10 +482,20 @@ namespace Gomoku2.LineCore
         private void AddCellAndMaybeNullMiddle(Cell cell)
         {
             cells.Add(cell);
+            NullMiddle(cell);
+        }
+
+        private void NullMiddle(Cell cell)
+        {
             if (cell == middle1)
                 middle1 = null;
             if (cell == middle2)
                 middle2 = null;
+            if (middle2 != null && middle1 == null)
+            {
+                middle1 = middle2;
+                middle2 = null;
+            }
         }
 
         public void AddLonelyCell(CellDirection cellDir, BoardCell[,] board)
@@ -513,13 +508,11 @@ namespace Gomoku2.LineCore
         {
             cells.Add(cell);
             if (middle1 == cell)
-            {
                 middle1 = null;
-            }
             SetEstimate();
         }
 
-        private bool IsCellMiddle(Cell cell)
+        public bool IsCellMiddle(Cell cell)
         {
             return middle1 == cell || middle2 == cell;
         }
@@ -535,6 +528,50 @@ namespace Gomoku2.LineCore
             if (lineType.IsLongBrokenTwo())
                 return IsCellMiddle(cellDir.Cell) || cellDir.Distance == 1;
             return true;
+        }
+
+        public IEnumerable<Cell> ExtractCells(Cell cell, BoardCell[,] board)
+        {
+            var sameDirCell = new List<Cell>();
+            var oppDirCell = new List<Cell>();
+            foreach (var cell1 in cells.ToList())
+            {
+                if ((cell1 - cell).Normalize() == Direction)
+                    sameDirCell.Add(cell1);
+                else
+                    oppDirCell.Add(cell1);
+            }
+            var shortest = GetShortest(sameDirCell, oppDirCell);
+            foreach (var cell1 in shortest)
+            {
+                cells.Remove(cell1);
+                yield return cell1;
+            }
+            //additional null for all that is not X X X
+            if (!IsStrangeBrokenThree)
+            {
+                middle1 = null;
+                middle2 = null;
+            }
+            NullMiddle(cell);
+            CalcPropsAndEstimate(board);
+        }
+
+        private bool IsStrangeBrokenThree
+        {
+            get
+            {
+                if (middle1 == null || middle2 == null)
+                    return false;
+                return middle1.DistSqr(middle2) == 4;
+            }
+        }
+
+        private static List<Cell> GetShortest(List<Cell> sameDirCell, List<Cell> oppDirCell)
+        {
+            if (sameDirCell.Count >= oppDirCell.Count)
+                return oppDirCell;
+            return sameDirCell;
         }
     }
 }

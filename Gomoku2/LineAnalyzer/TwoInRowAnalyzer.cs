@@ -16,7 +16,7 @@ namespace Gomoku2.LineAnalyzer
             if (cells[1].BoardCell == owner.Opponent())
                 return LineType.DeadTwo;
             //OXX  O
-            if (cells[1].BoardCell == owner.Opponent())
+            if (cells[2].BoardCell == owner.Opponent())
                 return LineType.DeadTwo;
             //OXX   
             return LineType.BlockedTwo;

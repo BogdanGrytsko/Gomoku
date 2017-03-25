@@ -57,7 +57,7 @@ namespace Gomoku2.LineCore
                 }
             }
             if (!addedToSomeLine)
-                AddLine(new Line(cell, state.MyCellType));
+                AddMyLine(new Line(cell, state.MyCellType));
         }
 
         private bool AnalyzeCell(CellDirection cellDir)
@@ -65,9 +65,18 @@ namespace Gomoku2.LineCore
             var analyzedCell = cellDir.AnalyzedCell;
             if (analyzedCell.IsType(state.Board, state.OpponentCellType))
             {
-                //todo hanle case when my cell breaks opp line. Remove cells from it
                 var sameDirOppLine = state.OppLines.Filter(analyzedCell, cellDir.Direction);
-                sameDirOppLine?.Estimate(state.Board);
+                if (sameDirOppLine == null) return true;
+                //split case
+                if (sameDirOppLine.IsCellMiddle(cellDir.Cell))
+                {
+                    skipDirections.Add(cellDir.MirrorDirection);
+                    var cells = sameDirOppLine.ExtractCells(cellDir.Cell, state.Board);
+                    var line = new Line(cells, state.OpponentCellType, state.Board);
+                    state.OppLines.Add(line);
+                }
+                else
+                    sameDirOppLine.Estimate(state.Board);
                 return true;
             }
             if (!analyzedCell.IsType(state.Board, state.MyCellType)) return false;
@@ -108,7 +117,7 @@ namespace Gomoku2.LineCore
                     var additionalDir = new CellDirection(maybeBrokenCell, -cellDir.Direction, 2);
                     line.AddLonelyCell(additionalDir, state.Board);
                 }
-                AddLine(line);
+                AddMyLine(line);
             }
             else
                 sameDirLine.AddCells(state.Board, cellDir.Cell);
@@ -116,7 +125,7 @@ namespace Gomoku2.LineCore
 
         private void SolidMirrorCase(CellDirection cellDir, Line sameDirLine)
         {
-            skipDirections.Add(-cellDir.Direction);
+            skipDirections.Add(cellDir.MirrorDirection);
             sameDirLine.AddMissingCell(cellDir.Cell);
         }
 
@@ -138,10 +147,10 @@ namespace Gomoku2.LineCore
         private void BrokenLineDoesntExistCase(CellDirection cellDir)
         {
             var line = new Line(cellDir, state.Board, state.MyCellType);
-            AddLine(line);
+            AddMyLine(line);
         }
 
-        private void AddLine(Line line)
+        private void AddMyLine(Line line)
         {
             state.MyLines.Add(line);
         }

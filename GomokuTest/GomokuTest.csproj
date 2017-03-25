@@ -166,6 +166,15 @@
     <Content Include="LineDetermination\LongBrokenThreeAndBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="OpponentMoveLineChange\BrokenThreeIntoBlockedTwoAndSingle.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpponentMoveLineChange\LongBrokenThreeIntoTwoAndSingle.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpponentMoveLineChange\LongBrokenThreeIntoBlockedTwoAndSingle.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="OpponentMoveLineChange\StraightFourIntoBlockedFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

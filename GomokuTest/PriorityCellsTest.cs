@@ -57,6 +57,36 @@ namespace GomokuTest
             Assert.AreEqual(new Cell(6, 9), myCells[0]);
         }
 
+        [TestMethod]
+        public void BlockedFour()
+        {
+            var cells = GetNextCells("BlockedFour.txt");
+            var myCells = cells.MyNextCells.ToList();
+            Assert.AreEqual(1, myCells.Count);
+            Assert.AreEqual(new Cell(6, 9), myCells[0]);
+        }
+
+        [TestMethod]
+        public void StraightFour()
+        {
+            var cells = GetNextCells("StraightFour.txt");
+            var myCells = cells.MyNextCells.ToList();
+            Assert.AreEqual(2, myCells.Count);
+            Assert.AreEqual(new Cell(6, 9), myCells[0]);
+            Assert.AreEqual(new Cell(6, 4), myCells[1]);
+        }
+
+        [TestMethod]
+        public void BrokenThree()
+        {
+            var cells = GetNextCells("BrokenThree.txt");
+            var myCells = cells.MyNextCells.ToList();
+            Assert.AreEqual(3, myCells.Count);
+            Assert.AreEqual(new Cell(6, 10), myCells[0]);
+            Assert.AreEqual(new Cell(6, 7), myCells[1]);
+            Assert.AreEqual(new Cell(6, 5), myCells[2]);
+        }
+
         private static NextCells GetNextCells(string fileName, bool next = false)
         {
             var board = BoardExportImport.Import(Path.Combine(folder, fileName)).Board;

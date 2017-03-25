@@ -24,5 +24,7 @@ namespace Gomoku2.LineAnalyzer
         {
             return LineType.DeadFour;
         }
+
+        public override IEnumerable<Cell> HighPriorityCells => line.GetNextCells(false);
     }
 }

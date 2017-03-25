@@ -64,6 +64,7 @@ namespace Gomoku2.StateCache
             if (threatOfFour.Any())
                 return new PriorityCells(threatOfFour);
 
+            //todo long broken 3 should be processed separatelly.
             var threatOfThree = GetPriorityThreatCells(type => type.ThreatOfThree() || type.IsLongBrokenThree());
             if (threatOfThree.Any())
                 return new PriorityCells(threatOfThree, false);
@@ -76,7 +77,7 @@ namespace Gomoku2.StateCache
             //this forces immidiate analyzis on blocked three cells.
             var myBlockedThree = MyLines.FirstOrDefault(l => l.LineType.IsBlokedThree());
             if (myBlockedThree != null)
-                return new PriorityCells(myBlockedThree.HighPriorityCells);
+                return new PriorityCells(myBlockedThree.PriorityCells);
 
             var oppDoubleThreat = DoubleThreatCells(OppLines);
             if (oppDoubleThreat.Any())
@@ -99,13 +100,18 @@ namespace Gomoku2.StateCache
 
         private static IEnumerable<Cell> DoubleThreatCells(IEnumerable<Line> lines)
         {
-            var doubleThreat = SelectManyHighPriorityCells(lines, type => type.IsBlokedThree() || type.IsTwoInRow());
+            var doubleThreat = SelectManyPriorityCells(lines, type => type.IsBlokedThree() || type.IsTwoInRow() || type.IsLongBrokenTwo());
             return doubleThreat.GroupBy(s => s).SelectMany(grp => grp.Skip(1));
         }
 
         private static IEnumerable<Cell> SelectManyHighPriorityCells(IEnumerable<Line> lines, Predicate<LineType> predicate)
         {
             return lines.Where(l => predicate(l.LineType)).SelectMany(l => l.HighPriorityCells);
+        }
+
+        private static IEnumerable<Cell> SelectManyPriorityCells(IEnumerable<Line> lines, Predicate<LineType> predicate)
+        {
+            return lines.Where(l => predicate(l.LineType)).SelectMany(l => l.PriorityCells);
         }
 
         public NextCells GetNearEmptyCells()
@@ -127,8 +133,7 @@ namespace Gomoku2.StateCache
 
         private static IEnumerable<Cell> GetPriorityCells(IEnumerable<Line> lines)
         {
-            //todo for broken and long broken two this has to return middle cells. same for broken Three and long broken three.
-            return lines.SelectMany(line => line.GetNextCells(true));
+            return lines.SelectMany(line => line.PriorityCells);
         }
     }
 }

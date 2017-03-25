@@ -49,5 +49,12 @@ namespace Gomoku2.LineAnalyzer
         private bool NextEmpty => line.next.IsEmpty || line.next.BoardCell == line.owner;
 
         private bool PrevEmpty => line.prev.IsEmpty || line.prev.BoardCell == line.owner;
+
+        public virtual IEnumerable<Cell> HighPriorityCells
+        {
+            get { yield break; }
+        }
+
+        public virtual IEnumerable<Cell> PriorityCells => HighPriorityCells;
     }
 }

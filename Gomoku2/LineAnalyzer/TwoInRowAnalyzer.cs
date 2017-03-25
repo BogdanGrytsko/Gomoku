@@ -28,5 +28,7 @@ namespace Gomoku2.LineAnalyzer
             // XX 
             return LineType.TwoInRow;
         }
+
+        public override IEnumerable<Cell> PriorityCells => line.GetNextCells(true);
     }
 }

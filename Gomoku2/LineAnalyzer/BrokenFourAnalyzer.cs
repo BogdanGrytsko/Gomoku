@@ -24,5 +24,10 @@ namespace Gomoku2.LineAnalyzer
         {
             return LineType.BrokenFour;
         }
+
+        public override IEnumerable<Cell> HighPriorityCells
+        {
+            get { yield return line.Middle1; }
+        }
     }
 }

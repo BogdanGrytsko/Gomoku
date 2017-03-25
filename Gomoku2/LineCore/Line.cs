@@ -13,8 +13,9 @@ namespace Gomoku2.LineCore
         private LineType lineType;
         //todo fix public => private
         public BoardCell owner;
-        public Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev, middle1, middle2;
-        private List<Cell> priorityCells;
+        public Cell next, prev, nextNext, prevPrev, nextNextNext, prevPrevPrev;
+        private Cell middle1, middle2;
+        private AnalyzerBase analyzer;
 
         public Line()
         {
@@ -145,68 +146,9 @@ namespace Gomoku2.LineCore
 
         public LineType LineType { get { return lineType; } }
 
-        public IEnumerable<Cell> HighPriorityCells
-        {
-            get
-            {
-                if (lineType.IsBrokenFourInRow())
-                {
-                    foreach (var cell in priorityCells) yield return cell;
-                    yield break;
-                }
-                switch (Count)
-                {
-                    case 4:
-                        foreach (var cell in GetNextCells(false)) yield return cell;
-                        break;
-                    case 3:
-                        var includeNextNext = lineType.IsBlokedThree();
-                        foreach (var cell in GetNextCells(includeNextNext)) yield return cell;
-                        break;
-                    case 2:
-                        // XX  X OR OXX  X
-                        if (lineType.IsLongBrokenThree() || lineType.IsLongBlockedThree())
-                        {
-                            foreach (var cell in priorityCells) yield return cell;
-                            break;
-                        }
-                        //OXX X 
-                        //todo investigate why need to have check on null and remove it.
-                        if (lineType.IsBlokedThree() && priorityCells != null)
-                        {
-                            foreach (var cell in priorityCells) yield return cell;
-                            break;
-                        }
-                        if (lineType.IsBrokenThree())
-                        {
-                            foreach (var cell in priorityCells) yield return cell;
-                            break;
-                        }
-                        //TwoInRow should return next cell only of next next is open
-                        if (lineType.IsTwoInRow())
-                        {
-                            if (priorityCells != null)
-                            {
-                                foreach (var cell in priorityCells) yield return cell;
-                                //todo return middle cell if any
-                                break;
-                            }
-                            foreach (var cell in GetNextCells(true)) yield return cell;
-                            break;
-                        }
-                        break;
-                    case 1:
-                        if (lineType.IsTwoInRow())
-                        {
-                            //todo uncomment
-                            //foreach (var cell in GetNextCells(false)) yield return cell;
-                            //yield return middle1;
-                            break;
-                        }
-                        break;
-                }
-            }
-        }
+        public IEnumerable<Cell> HighPriorityCells => analyzer.HighPriorityCells;
+
+        public IEnumerable<Cell> PriorityCells => analyzer.PriorityCells;
 
         public IEnumerable<Cell> GetNextCells(bool includeNextNext)
         {
@@ -250,8 +192,7 @@ namespace Gomoku2.LineCore
 
         private LineType GetEstimate()
         {
-            priorityCells = null;
-            var analyzer = GetAnalyzer();
+            analyzer = GetAnalyzer();
             if (analyzer != null)
                 return analyzer.DoAnalysis();
             switch (Count)
@@ -292,8 +233,6 @@ namespace Gomoku2.LineCore
 
         public Line Clone()
         {
-            //todo MemberwiseClone doesn't work. Investigate
-            //return (Line)MemberwiseClone();
             var newLine = new Line();
             newLine.cells.AddRange(cells);
 
@@ -311,8 +250,6 @@ namespace Gomoku2.LineCore
             newLine.prevPrevPrev = prevPrevPrev;
             newLine.middle1 = middle1;
             newLine.middle2 = middle2;
-
-            newLine.priorityCells = priorityCells;
 
             return newLine;
         }

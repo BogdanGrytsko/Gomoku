@@ -30,5 +30,17 @@ namespace Gomoku2.LineAnalyzer
             //  X X  
             return LineType.TwoInRow;
         }
+
+        public override IEnumerable<Cell> PriorityCells
+        {
+            get
+            {
+                yield return line.Middle1;
+                foreach (var nextCell in line.GetNextCells(true))
+                {
+                    yield return nextCell;
+                }
+            }
+        }
     }
 }

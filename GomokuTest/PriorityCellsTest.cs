@@ -77,14 +77,31 @@ namespace GomokuTest
         }
 
         [TestMethod]
+        public void BrokenFour()
+        {
+            var cells = GetNextCells("BrokenFour.txt");
+            var myCells = cells.MyNextCells.ToList();
+            Assert.AreEqual(1, myCells.Count);
+            Assert.AreEqual(new Cell(6, 7), myCells[0]);
+        }
+
+        [TestMethod]
         public void BrokenThree()
         {
             var cells = GetNextCells("BrokenThree.txt");
             var myCells = cells.MyNextCells.ToList();
-            Assert.AreEqual(3, myCells.Count);
-            Assert.AreEqual(new Cell(6, 10), myCells[0]);
-            Assert.AreEqual(new Cell(6, 7), myCells[1]);
-            Assert.AreEqual(new Cell(6, 5), myCells[2]);
+            Assert.AreEqual(1, myCells.Count);
+            Assert.AreEqual(new Cell(6, 7), myCells[0]);
+        }
+
+        [TestMethod]
+        public void ThreeInRow()
+        {
+            var cells = GetNextCells("ThreeInRow.txt");
+            var myCells = cells.MyNextCells.ToList();
+            Assert.AreEqual(2, myCells.Count);
+            Assert.AreEqual(new Cell(6, 9), myCells[0]);
+            Assert.AreEqual(new Cell(6, 5), myCells[1]);
         }
 
         private static NextCells GetNextCells(string fileName, bool next = false)

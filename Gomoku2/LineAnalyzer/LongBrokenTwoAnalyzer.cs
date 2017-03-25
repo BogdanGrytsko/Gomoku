@@ -17,7 +17,6 @@ namespace Gomoku2.LineAnalyzer
             if (cells[1].BoardCell == owner.Opponent())
                 return LineType.DeadTwo;
             //OX  X  
-            //priorityCells = new List<Cell> { middle1, middle2 };
             return LineType.BlockedTwo;
         }
 
@@ -31,6 +30,15 @@ namespace Gomoku2.LineAnalyzer
 
             //  X  X  
             return LineType.LongBrokenTwo;
+        }
+
+        public override IEnumerable<Cell> PriorityCells
+        {
+            get
+            {
+                yield return line.Middle1;
+                yield return line.Middle2;
+            }
         }
     }
 }

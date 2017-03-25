@@ -24,5 +24,9 @@ namespace Gomoku2.LineAnalyzer
             // XXX 
             return LineType.ThreeInRow;
         }
+
+        public override IEnumerable<Cell> HighPriorityCells => line.GetNextCells(false);
+
+        public override IEnumerable<Cell> PriorityCells => line.GetNextCells(line.LineType.IsBlokedThree());
     }
 }

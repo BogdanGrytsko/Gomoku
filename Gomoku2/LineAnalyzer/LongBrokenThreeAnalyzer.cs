@@ -19,5 +19,14 @@ namespace Gomoku2.LineAnalyzer
         {
             return LineType.LongBrokenThree;
         }
+
+        public override IEnumerable<Cell> PriorityCells
+        {
+            get
+            {
+                yield return line.Middle1;
+                yield return line.Middle1;
+            }
+        }
     }
 }

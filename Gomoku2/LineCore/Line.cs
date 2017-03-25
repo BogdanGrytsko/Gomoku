@@ -316,7 +316,8 @@ namespace Gomoku2.LineCore
         private void SetLonelyAndMiddleCells(CellDirection cellDir)
         {
             if (cells.Contains(cellDir.Cell)) return;;
-            AddCellAndMaybeNullMiddle(cellDir.Cell);
+            var wasNulled = AddCellAndMaybeNullMiddle(cellDir.Cell);
+            if (wasNulled) return;
 
             if (middle1 == null)
                 middle1 = cellDir.Cell + cellDir.Direction;
@@ -328,23 +329,31 @@ namespace Gomoku2.LineCore
                 middle2 = cellDir.Cell + 2*cellDir.Direction;
         }
 
-        private void AddCellAndMaybeNullMiddle(Cell cell)
+        private bool AddCellAndMaybeNullMiddle(Cell cell)
         {
             cells.Add(cell);
-            NullMiddle(cell);
+            return NullMiddle(cell);
         }
 
-        private void NullMiddle(Cell cell)
+        private bool NullMiddle(Cell cell)
         {
+            bool wasNulled = false;
             if (cell == middle1)
+            {
                 middle1 = null;
+                wasNulled = true;
+            }
             if (cell == middle2)
+            {
                 middle2 = null;
+                wasNulled = true;
+            }
             if (middle2 != null && middle1 == null)
             {
                 middle1 = middle2;
                 middle2 = null;
             }
+            return wasNulled;
         }
 
         public void AddLonelyCell(CellDirection cellDir, BoardCell[,] board)

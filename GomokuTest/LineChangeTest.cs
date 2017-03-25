@@ -102,11 +102,20 @@ namespace GomokuTest
             Assert.AreEqual(LineType.TwoInRow, lines[1].LineType);
         }
 
-        private static List<Line> GetLines(string fileName, Cell cell)
+        [TestMethod]
+        public void LongBrokenTwoNotModifiedCorrectly()
+        {
+            var lines = GetLines("LongBrokenTwoNotModifiedCorrectly.txt", new Cell(8, 5), true);
+            Assert.AreEqual(8, lines.Count);
+            Assert.AreEqual(LineType.BrokenThree, lines[0].LineType);
+            Assert.AreEqual(LineType.TwoInRow, lines[1].LineType);
+        }
+
+        private static List<Line> GetLines(string fileName, Cell cell, bool movesInOrder = false)
         {
             var board = BoardExportImport.Import(Path.Combine(folder, fileName)).Board;
             var game = new Game(board);
-            var owner = board.WhoMovedLast();
+            var owner = movesInOrder ? board.WhoMovesNext() : board.WhoMovedLast();
             var lines = game.GetLines(owner);
             board[cell.X, cell.Y] = owner;
             LineFactory.AddCellToLines(cell, new BoardStateBase(lines, new List<Line>(), owner, board));

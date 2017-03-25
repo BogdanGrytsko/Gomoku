@@ -70,6 +70,9 @@
     <Content Include="31MovesGame\31MoveGameBoard11IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard15IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard18IsLost.txt" />
+    <Content Include="BoardStates\LongBrokenTwoNotModifiedCorrectly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="LineChange\BrokenThreeIntoStraightFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -104,6 +107,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\BlockedTwoAnd2TwoInRow.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineChange\LongBrokenTwoNotModifiedCorrectly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\BrokenFour2.txt">

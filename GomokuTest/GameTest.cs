@@ -52,7 +52,7 @@ namespace GomokuTest
         [TestMethod]
         public void LongRunningComplexPosition()
         {
-            TestMove("LongRunningComplexPosition.txt", new Cell(9, 7));
+            DoTestWin("LongRunningComplexPosition.txt", new Cell(9, 7));
         }
 
         [TestMethod]
@@ -103,6 +103,12 @@ namespace GomokuTest
             DoTestWin("Board13FirstDontDefend.txt", new Cell(6, 9));
         }
 
+        [TestMethod]
+        public void LongBrokenTwoNotModifiedCorrectly()
+        {
+            DoTestWin("LongBrokenTwoNotModifiedCorrectly.txt", new Cell(10, 7));
+        }
+
         private static void DoTestWin(string boardName, params Cell[] correctMoves)
         {
             var game = TestMove(boardName, correctMoves);
@@ -111,7 +117,7 @@ namespace GomokuTest
 
         public static bool Win(int estim)
         {
-            return Math.Abs(estim) >= (int)LineType.DoubleThreat;
+            return Math.Abs(estim) >= (int)LineType.DoubleThreat / 2;
         }
 
         public static Game TestMove(string boardName, int depth, params Cell[] correctMoves)

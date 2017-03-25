@@ -76,7 +76,7 @@ namespace GomokuTest
         [TestMethod]
         public void Board11FirstLost()
         {
-            TestMove("Board11FirstLost.txt", new Cell(8, 10));
+            DoTestWin("Board11FirstLost.txt", new Cell(8, 10));
         }
 
         [TestMethod]

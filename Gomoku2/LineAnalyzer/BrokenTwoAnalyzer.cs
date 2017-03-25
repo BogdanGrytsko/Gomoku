@@ -36,10 +36,16 @@ namespace Gomoku2.LineAnalyzer
             get
             {
                 yield return line.Middle1;
-                foreach (var nextCell in line.GetNextCells(true))
-                {
-                    yield return nextCell;
-                }
+                foreach (var cell in GetCellForSide(line.NextCells)) yield return cell;
+                foreach (var cell in GetCellForSide(line.PrevCells)) yield return cell;
+            }
+        }
+
+        private static IEnumerable<Cell> GetCellForSide(List<Cell> side)
+        {
+            if (side[0].IsEmpty && side[1].IsEmpty)
+            {
+                yield return side[0];
             }
         }
     }

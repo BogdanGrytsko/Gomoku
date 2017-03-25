@@ -36,7 +36,5 @@ namespace Gomoku2.LineAnalyzer
                 }
             }
         }
-
-        //todo do better priority cells for this line
     }
 }

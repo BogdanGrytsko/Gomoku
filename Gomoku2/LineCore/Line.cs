@@ -27,10 +27,7 @@ namespace Gomoku2.LineCore
             Start = cell;
             End = cell;
             this.owner = owner;
-            Direction = CellManager.Get(0, 0);
-            next = prev = CellManager.Get(-1, -1);
-            next.BoardCell = BoardCell.Invalid;
-            lineType = LineType.SingleMark;
+            CalcPropsAndEstimate(null);
         }
 
         public Line(Cell cell1, Cell cell2, BoardCell[,] board, BoardCell owner)
@@ -118,7 +115,11 @@ namespace Gomoku2.LineCore
         private void CalcNextAndPrev(BoardCell[,] board)
         {
             if (Start == End)
+            {
+                next = prev = CellManager.Get(-1, -1);
+                next.BoardCell = BoardCell.Invalid;
                 return;
+            }
 
             CalcNext(board);
             CalcPrev(board);
@@ -152,9 +153,6 @@ namespace Gomoku2.LineCore
 
         public IEnumerable<Cell> GetNextCells(bool includeNextNext)
         {
-            //todo for some reason next was null for single mark. investigate.
-            if (lineType.IsSingleMark())
-                yield break;
             if (next.IsEmpty)
             {
                 yield return next;
@@ -193,22 +191,15 @@ namespace Gomoku2.LineCore
         private LineType GetEstimate()
         {
             analyzer = GetAnalyzer();
-            if (analyzer != null)
-                return analyzer.DoAnalysis();
-            switch (Count)
-            {
-                case 5:
-                    return LineType.FiveInRow;
-                case 1:
-                    return LineType.SingleMark;
-            }
-            return LineType.Useless;
+            return analyzer.DoAnalysis();
         }
 
         private AnalyzerBase GetAnalyzer()
         {
             switch (Count)
             {
+                case 5:
+                    return new FiveCellAnalyzer(this);
                 case 4:
                     if (middle1 != null)
                         return new BrokenFourAnalyzer(this);
@@ -225,6 +216,8 @@ namespace Gomoku2.LineCore
                     if (middle1 != null)
                         return new BrokenTwoAnalyzer(this);
                     return new TwoInRowAnalyzer(this);
+                case 1:
+                    return new OneCellAnalyzer(this);
             }
             return null;
         }
@@ -250,90 +243,9 @@ namespace Gomoku2.LineCore
             newLine.prevPrevPrev = prevPrevPrev;
             newLine.middle1 = middle1;
             newLine.middle2 = middle2;
+            newLine.analyzer = analyzer;
 
             return newLine;
-        }
-
-        public bool HasSameDirection(Line other)
-        {
-            return Direction == other.Direction;
-        }
-
-        public static bool IsBrokenTwoDistance(int dist)
-        {
-            return dist == 4 || dist == 8;
-        }
-
-        public static bool IsLongBrokenTwoDistance(int dist)
-        {
-            return dist == 9 || dist == 18;
-        }
-
-        public bool JoinIfPossible(Cell cell, BoardCell[,] board)
-        {
-            if (cells.Count == 1 && middle1 == null)
-            {
-                var dist = Start.DistSqr(cell);
-                if (dist <= 2)
-                {
-                    AddCells(board, cell);
-                    return true;
-                }
-                if (IsBrokenTwoDistance(dist))
-                {
-                    var dir = (Start - cell).Normalize();
-                    var tmpNext = cell + dir;
-                    var tmpNextNext = cell - dir;
-                    if (tmpNext.IsEmptyWithBoard(board) && !tmpNextNext.IsType(board, owner))
-                    {
-                        middle1 = tmpNext;
-                        AddCells(board, cell);
-                        cells.Remove(cell);
-                        return true;
-                    }
-                }
-            }
-
-            if (NextCell(1) == cell)
-            {
-                if (middle1 != null)
-                {
-                    End = Start;
-                    middle1 = null;
-                }
-
-                cells.Add(cell);
-                Start = cell;
-                CalcNext(board);
-                SetEstimate();
-                return true;
-            }
-            if (NextCell(-1) == cell)
-            {
-                if (middle1 != null)
-                {
-                    Start = End;
-                    middle1 = null;
-                }
-
-                cells.Add(cell);
-                End = cell;
-                CalcPrev(board);
-                SetEstimate();
-                return true;
-            }
-            if (NextCell(2) == cell || NextCell(3) == cell)
-            {
-                CalcNext(board);
-                SetEstimate();
-            }
-            if (NextCell(-2) == cell || NextCell(-3) == cell)
-            {
-                CalcPrev(board);
-                SetEstimate();
-            }
-
-            return false;
         }
 
         private Cell NextCell(int i)

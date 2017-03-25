@@ -118,7 +118,6 @@ namespace Gomoku2
                 if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) ||
                     StraightFour(estimatedCell.Estimate) ||
                     DoubleThreat(estimatedCell.Estimate))
-                    //todo consider also Double Threat as exit condition
                     minMax = currEstim;
                 else
                     minMax = AlphaBeta(state.GetNextState(estimatedCell.MyLines, estimatedCell.OppLines), alpha, beta, out bestMove, gameState);
@@ -138,8 +137,9 @@ namespace Gomoku2
                     move = cell;
                 }
                 board[cell.X, cell.Y] = BoardCell.None;
-                //todo consider also Double Threat as exit condition
-                if (BreakOnFive(state.ItIsFirstsTurn, minMax) || BreakOnStraightFour(state.ItIsFirstsTurn, minMax)
+                if (BreakOnFive(state.ItIsFirstsTurn, minMax)
+                    || BreakOnStraightFour(state.ItIsFirstsTurn, minMax)
+                    || BreakOnDoubleThreat(state.ItIsFirstsTurn, minMax)
                     || beta <= alpha) break;
             }
             return bestEstim;
@@ -147,6 +147,7 @@ namespace Gomoku2
 
         private static bool DoubleThreat(int estimate)
         {
+            //todo consider also Double Threat as exit condition
             return false;
             return Math.Abs(estimate) >= (int)LineType.DoubleThreat / 2;
         }
@@ -172,6 +173,11 @@ namespace Gomoku2
             return (estim <= -(int)LineType.StraightFour / 2 && !movesFirst) || (estim >= (int)LineType.StraightFour / 2 && movesFirst);
         }
 
+        private static bool BreakOnDoubleThreat(bool movesFirst, int estim)
+        {
+            return (estim <= -(int)LineType.DoubleThreat / 2 && !movesFirst) || (estim >= (int)LineType.DoubleThreat / 2 && movesFirst);
+        }
+
         private void OnStateChanged(GameState gameState, GameState parentState)
         {
             if (parentState == null)
@@ -187,12 +193,6 @@ namespace Gomoku2
         private Cell FirstMoveCase()
         {
             return board[7, 7] == BoardCell.None ? CellManager.Get(7, 7) : CellManager.Get(8, 8);
-        }
-
-        private int EstimateAndSum(List<Line> lines)
-        {
-            lines.ForEach(l => l.Estimate(board));
-            return Sum(lines);
         }
 
         private static int Sum(List<Line> lines)
@@ -250,7 +250,7 @@ namespace Gomoku2
             var myEstim = Sum(myLines);
             if (FiveInRow(myEstim)) return myEstim;
 
-            var oppEstim = EstimateAndSum(oppLines);
+            var oppEstim = Sum(oppLines);
 
             if (oppLines.Any(line => line.LineType.FourCellLine()))
                 return -(int)LineType.FiveInRow;

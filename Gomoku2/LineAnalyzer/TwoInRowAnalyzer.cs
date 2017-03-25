@@ -29,6 +29,23 @@ namespace Gomoku2.LineAnalyzer
             return LineType.TwoInRow;
         }
 
-        public override IEnumerable<Cell> PriorityCells => line.GetNextCells(true);
+        public override IEnumerable<Cell> PriorityCells
+        {
+            get
+            {
+                foreach (var cell in GetCellForSide(line.NextCells)) yield return cell;
+                foreach (var cell in GetCellForSide(line.PrevCells)) yield return cell;
+            }
+        }
+
+        private static IEnumerable<Cell> GetCellForSide(List<Cell> side)
+        {
+            if (side[0].IsEmpty && side[1].IsEmpty)
+            {
+                yield return side[0];
+                if (side[2].IsEmpty)
+                    yield return side[1];
+            }
+        }
     }
 }

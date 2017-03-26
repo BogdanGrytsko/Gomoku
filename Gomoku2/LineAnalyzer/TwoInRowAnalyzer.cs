@@ -38,6 +38,11 @@ namespace Gomoku2.LineAnalyzer
             }
         }
 
+        public override bool CanAddCell(CellDirection cellDir)
+        {
+            return true;
+        }
+
         private static IEnumerable<Cell> GetCellForSide(List<Cell> side)
         {
             if (side[0].IsEmpty && side[1].IsEmpty)

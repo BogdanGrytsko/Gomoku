@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Gomoku2;
-using Gomoku2.LineCore;
+﻿using Gomoku2.LineCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GomokuTest
 {
     [TestClass]
-    public class LineDeterminationTest
+    public class LineDeterminationTest : TestBase
     {
-        private const string folder = "LineDetermination";
+        protected override string Folder => "LineDetermination";
 
         [TestMethod]
         public void TwoInRow()
@@ -63,22 +60,6 @@ namespace GomokuTest
         }
 
         [TestMethod]
-        public void BlockedTwoInRow()
-        {
-            var lines = GetLines("BlockedTwoInRow.txt");
-            Assert.AreEqual(1, lines.Count);
-            Assert.AreEqual(LineType.BlockedTwo, lines[0].LineType);
-        }
-
-        [TestMethod]
-        public void BlockedTwoInRow2()
-        {
-            var lines = GetLines("BlockedTwoInRow2.txt");
-            Assert.AreEqual(1, lines.Count);
-            Assert.AreEqual(LineType.BlockedTwo, lines[0].LineType);
-        }
-
-        [TestMethod]
         public void DeadTwo()
         {
             var lines = GetLines("DeadTwo.txt");
@@ -106,7 +87,6 @@ namespace GomokuTest
         public void BrokenFour2()
         {
             var lines = GetLines("BrokenFour2.txt");
-            //todo fix - there are 2 lines like that. leads to bad estimation
             Assert.AreEqual(1, lines.Count);
             Assert.AreEqual(LineType.BrokenFour, lines[0].LineType);
         }
@@ -147,25 +127,6 @@ namespace GomokuTest
             var lines = GetLines("LongBrokenTwo.txt");
             Assert.AreEqual(1, lines.Count);
             Assert.AreEqual(LineType.LongBrokenTwo, lines[0].LineType);
-        }
-
-        [TestMethod]
-        public void BlockedTwoAnd2TwoInRow()
-        {
-            var lines = GetLines("BlockedTwoAnd2TwoInRow.txt");
-            Assert.AreEqual(3, lines.Count);
-            Assert.AreEqual(LineType.TwoInRow, lines[0].LineType);
-            Assert.AreEqual(LineType.TwoInRow, lines[1].LineType);
-            Assert.AreEqual(LineType.BlockedTwo, lines[2].LineType);
-        }
-
-        [TestMethod]
-        public void BrokenTwoAndBlockedThree()
-        {
-            var lines = GetLines("BrokenTwoAndBlockedThree.txt");
-            Assert.AreEqual(2, lines.Count);
-            Assert.AreEqual(LineType.TwoInRow, lines[0].LineType);
-            Assert.AreEqual(LineType.BlokedThree, lines[1].LineType);
         }
 
         [TestMethod]
@@ -264,11 +225,13 @@ namespace GomokuTest
             Assert.AreEqual(LineType.LongBrokenTwo, lines[1].LineType);
         }
 
-        private static List<Line> GetLines(string fileName)
+        [TestMethod]
+        public void ThreeInRowAndSingle()
         {
-            var board = BoardExportImport.Import(Path.Combine(folder, fileName)).Board;
-            var game = new Game(board);
-            return game.GetLines(board.WhoMovedLast());
+            var lines = GetLines("ThreeInRowAndSingle.txt");
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.ThreeInRow, lines[0].LineType);
+            Assert.AreEqual(LineType.LongBrokenTwo, lines[1].LineType);
         }
     }
 }

@@ -67,14 +67,8 @@ namespace Gomoku2.LineCore
             {
                 var sameDirOppLine = state.OppLines.Filter(analyzedCell, cellDir.Direction);
                 if (sameDirOppLine == null) return true;
-                //split case
                 if (sameDirOppLine.IsCellMiddle(cellDir.Cell))
-                {
-                    skipDirections.Add(cellDir.MirrorDirection);
-                    var cells = sameDirOppLine.ExtractCells(cellDir.Cell, state.Board);
-                    var line = new Line(cells, state.OpponentCellType, state.Board);
-                    state.OppLines.Add(line);
-                }
+                    SplitCase(cellDir, sameDirOppLine);
                 else
                     sameDirOppLine.Estimate(state.Board);
                 return true;
@@ -90,6 +84,14 @@ namespace Gomoku2.LineCore
             else
                 BrokenCase(cellDir, sameDirLine);
             return true;
+        }
+
+        private void SplitCase(CellDirection cellDir, Line sameDirOppLine)
+        {
+            skipDirections.Add(cellDir.MirrorDirection);
+            var cells = sameDirOppLine.ExtractCells(cellDir.Cell, state.Board);
+            var line = new Line(cells, state.OpponentCellType, state.Board);
+            state.OppLines.Add(line);
         }
 
         private void SolidCase(CellDirection cellDir, Line sameDirLine)
@@ -111,7 +113,7 @@ namespace Gomoku2.LineCore
             {
                 var line = new Line(cellDir.Cell, cellDir.AnalyzedCell, state.Board, state.MyCellType);
                 var maybeBrokenCell = cellDir.AnalyzedCell + 2*cellDir.Direction;
-                if (maybeBrokenCell.IsType(state.Board, state.MyCellType) 
+                if (maybeBrokenCell.IsType(state.Board, state.MyCellType)
                     && (cellDir.AnalyzedCell + cellDir.Direction).IsEmptyWithBoard(state.Board))
                 {
                     var additionalDir = new CellDirection(maybeBrokenCell, -cellDir.Direction, 2);
@@ -120,7 +122,10 @@ namespace Gomoku2.LineCore
                 AddMyLine(line);
             }
             else
+            {
+                if (sameDirLine.IsCellMiddle(cellDir.Cell)) skipDirections.Add(cellDir.MirrorDirection);
                 sameDirLine.AddCells(state.Board, cellDir.Cell);
+            }
         }
 
         private void SolidMirrorCase(CellDirection cellDir, Line sameDirLine)
@@ -141,6 +146,7 @@ namespace Gomoku2.LineCore
 
         private void BrokenLineExistsCase(CellDirection cellDir, Line sameDirLine)
         {
+            if (sameDirLine.IsCellMiddle(cellDir.Cell)) skipDirections.Add(cellDir.MirrorDirection);
             sameDirLine.AddLonelyCell(cellDir, state.Board);
         }
 

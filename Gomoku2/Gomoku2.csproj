@@ -62,6 +62,7 @@
     <Compile Include="PriorityChain\FourCellHandler.cs" />
     <Compile Include="PriorityChain\PriorityAlgorithm.cs" />
     <Compile Include="PriorityChain\PriorityHandlerBase.cs" />
+    <Compile Include="PriorityChain\ThreatGeneratingTwoHandler.cs" />
     <Compile Include="PriorityChain\WinningThreeHandler.cs" />
     <Compile Include="StateCache\BoardState.cs" />
     <Compile Include="CellObjects\Cell.cs" />

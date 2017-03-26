@@ -60,7 +60,17 @@ namespace Gomoku2
 
         public Cell DoMove(BoardCell boardCell, int depth, int treeMaxWidth)
         {
-            var move = DoMoveInternal(boardCell, depth, treeMaxWidth);
+            Cell move;
+            //try
+            //{
+            //    move = DoMoveInternal(boardCell, depth, treeMaxWidth);
+            //}
+            //catch (Exception)
+            //{
+            //    BoardExportImport.Export(new EstimatedBoard { Board = board }, "ErrorBoard.txt");
+            //    throw;
+            //}
+            move = DoMoveInternal(boardCell, depth, treeMaxWidth);
             board[move.X, move.Y] = boardCell;
             currentState = GameStates.FirstOrDefault(gs => gs.Cell == move);
             return move;
@@ -152,7 +162,6 @@ namespace Gomoku2
             return Math.Abs(estimate) >= (int)LineType.DoubleThreat / 2;
         }
 
-
         private static bool FiveInRow(int estim)
         {
             return Math.Abs(estim) >= (int)LineType.FiveInRow / 2;
@@ -230,7 +239,7 @@ namespace Gomoku2
                 var estimate = Estimate(newState.MyLines, newState.OppLines);
                 board[cell.X, cell.Y] = BoardCell.None;
 
-                yield return new EstimatedCell(cell, newState.MyLines, newState.OppLines, estimate);
+                yield return new EstimatedCell(cell, newState.MyLines, newState.OppLines, estimate, state.Board);
             }
 
             if (nextCells.OppNextCells == null)

@@ -13,7 +13,7 @@ namespace Gomoku2.PriorityChain
 
         public override PriorityCells GetCells()
         {
-            return new PriorityCells(DoubleThreatCells(lines), false);
+            return new PriorityCells(DoubleThreatCells(lines));
         }
 
         private static IEnumerable<Cell> DoubleThreatCells(IEnumerable<Line> lines)

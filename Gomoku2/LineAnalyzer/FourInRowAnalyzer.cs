@@ -26,5 +26,9 @@ namespace Gomoku2.LineAnalyzer
         }
 
         public override IEnumerable<Cell> HighPriorityCells => line.GetNextCells(false);
+        public override bool CanAddCell(CellDirection cellDir)
+        {
+            return cellDir.Distance == 1;
+        }
     }
 }

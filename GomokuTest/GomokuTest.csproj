@@ -50,6 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="BlockedLineDeterminationTest.cs" />
     <Compile Include="EstimateTest.cs" />
     <Compile Include="GameTest.cs" />
     <Compile Include="LineChangeTest.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="PlaysSecondTest.cs" />
     <Compile Include="PriorityCellsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gomoku2\Gomoku2.csproj">
@@ -70,6 +72,15 @@
     <Content Include="31MovesGame\31MoveGameBoard11IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard15IsLost.txt" />
     <Content Include="31MovesGame\31MoveGameBoard18IsLost.txt" />
+    <Content Include="BlockedLineDetermination\BlockedLongBrokenTwoAndBrokenTwo.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BlockedLineDetermination\BlockedThreeAndTwoInRow.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BlockedLineDetermination\BlockedLongBrokenThree.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="BoardStates\LongBrokenTwoNotModifiedCorrectly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -106,10 +117,13 @@
     <Content Include="LineChange\BrokenFourIntoFive.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="LineDetermination\BlockedTwoAnd2TwoInRow.txt">
+    <Content Include="BlockedLineDetermination\BlockedTwoAnd2TwoInRow.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineChange\LongBrokenTwoNotModifiedCorrectly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BlockedLineDetermination\BlockedThreeAndBlockedTwo.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\BrokenFour2.txt">
@@ -124,7 +138,7 @@
     <Content Include="LineDetermination\BrokenTwoInRow2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="LineDetermination\BrokenTwoAndBlockedThree.txt">
+    <Content Include="BlockedLineDetermination\BrokenTwoAndBlockedThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\BrokenTwoAndLongBrokenTwo.txt">
@@ -146,6 +160,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\BrokenThree.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineDetermination\ThreeInRowAndSingle.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\ThreeInRow.txt">
@@ -208,6 +225,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PriorityCells\BlockedFour.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PriorityCells\OppDoubleInsteadOfMyThreeInRow.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PriorityCells\StraightFour.txt">
@@ -310,13 +330,13 @@
     <Content Include="LineDetermination\DeadTwo.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="LineDetermination\BlockedTwoInRow2.txt">
+    <Content Include="BlockedLineDetermination\BlockedTwoInRow2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\BrokenFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="LineDetermination\BlockedTwoInRow.txt">
+    <Content Include="BlockedLineDetermination\BlockedTwoInRow.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\LongBrokenThree.txt">

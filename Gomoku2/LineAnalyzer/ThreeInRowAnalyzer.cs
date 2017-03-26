@@ -28,5 +28,9 @@ namespace Gomoku2.LineAnalyzer
         public override IEnumerable<Cell> HighPriorityCells => line.GetNextCells(false);
 
         public override IEnumerable<Cell> PriorityCells => line.GetNextCells(line.LineType.IsBlokedThree());
+        public override bool CanAddCell(CellDirection cellDir)
+        {
+            return cellDir.Distance <= 2;
+        }
     }
 }

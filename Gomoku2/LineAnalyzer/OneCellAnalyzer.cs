@@ -24,5 +24,10 @@ namespace Gomoku2.LineAnalyzer
         {
             return LineType.SingleMark;
         }
+
+        public override bool CanAddCell(CellDirection cellDir)
+        {
+            return true;
+        }
     }
 }

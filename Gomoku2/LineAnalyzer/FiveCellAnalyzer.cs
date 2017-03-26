@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Gomoku2.CellObjects;
 using Gomoku2.LineCore;
 
@@ -23,6 +24,11 @@ namespace Gomoku2.LineAnalyzer
         public override LineType Dead()
         {
             return LineType.FiveInRow;
+        }
+
+        public override bool CanAddCell(CellDirection cellDir)
+        {
+           throw new Exception("Should never happen");
         }
     }
 }

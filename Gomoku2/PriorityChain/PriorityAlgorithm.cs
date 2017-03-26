@@ -26,7 +26,7 @@ namespace Gomoku2.PriorityChain
             //if I have Winnable line than do win with it. (ThreeInRow, BrokenThree)
             //if I have Threat-Generating 3 cell line (LongBrokenThree, BlockedThree) than try it
             //if opponent has winnable 3 cell line deffend from it.
-            //if I have 2 cell Threat-Generating line (Even Double-Threat) (TwoInRow, LongBrokenTwo)
+            //if I have 2 cell Threat-Generating line (Even Double-Threat) (TwoInRow, LongBrokenTwo) try it
             //if opponent has Double-threat possibility deffend from it.
 
             yield return new FourCellHandler(myLines);
@@ -35,6 +35,7 @@ namespace Gomoku2.PriorityChain
             yield return new ThreatGeneratingThreeHandler(myLines);
             yield return new DefenceThreatOfThreeHandler(oppLines);
             yield return new DoubleThreatHandler(myLines);
+            yield return new ThreatGeneratingTwoHandler(myLines);
             yield return new DoubleThreatHandler(oppLines);
         }
 

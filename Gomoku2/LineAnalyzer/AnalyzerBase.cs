@@ -56,5 +56,6 @@ namespace Gomoku2.LineAnalyzer
         }
 
         public virtual IEnumerable<Cell> PriorityCells => HighPriorityCells;
+        public abstract bool CanAddCell(CellDirection cellDir);
     }
 }

@@ -28,5 +28,10 @@ namespace Gomoku2.LineAnalyzer
                 yield return line.Middle2;
             }
         }
+
+        public override bool CanAddCell(CellDirection cellDir)
+        {
+            return line.IsCellMiddle(cellDir.Cell);
+        }
     }
 }

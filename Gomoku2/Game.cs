@@ -12,16 +12,12 @@ namespace Gomoku2
     {
         public const int DefaultDepth = 4, DefaultWidth = 15;
 
-        private readonly int width;
-        private readonly int height;
         private readonly BoardCell[,] board;
         private readonly Stopwatch sw;
         private GameState currentState;
 
         public Game(BoardCell[,] board)
         {
-            width = board.GetLength(0);
-            height = board.GetLength(1);
             this.board = (BoardCell[,])board.Clone();
             sw = new Stopwatch();
             GameStates = new List<GameState>();
@@ -285,6 +281,7 @@ namespace Gomoku2
             var lines = LineFactory.GetLines(state.Board, state.MyCellType);
             if (lines.Count != clonedState.MyLines.Count)
             {
+                BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
                 //horrible mismatch
             }
             return clonedState;

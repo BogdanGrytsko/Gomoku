@@ -11,7 +11,7 @@ namespace GomokuTest
 
         protected List<Line> GetLines(string fileName)
         {
-            var board = BoardExportImport.Import(Path.Combine(Folder, fileName)).Board;
+            var board = BoardExportImport.Import(Path.Combine(Folder, fileName));
             var game = new Game(board);
             return game.GetLines(board.WhoMovedLast());
         }

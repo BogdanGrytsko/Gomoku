@@ -117,7 +117,7 @@ namespace GomokuTest
 
         private static NextCells GetNextCells(string fileName, bool next = false)
         {
-            var board = BoardExportImport.Import(Path.Combine(folder, fileName)).Board;
+            var board = BoardExportImport.Import(Path.Combine(folder, fileName));
             var game = new Game(board);
             var owner = next ? board.WhoMovesNext() : board.WhoMovedLast();
             var state = game.GetBoardState(owner, Game.DefaultDepth, Game.DefaultWidth);

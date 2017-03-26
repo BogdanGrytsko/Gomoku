@@ -5,7 +5,7 @@ namespace Gomoku2
 {
     public class BoardExportImport
     {
-        public static EstimatedBoard Import(string fileName)
+        public static BoardCell[,] Import(string fileName)
         {
             var board = new BoardCell[15, 15];
             using (var sw = new StreamReader(fileName))
@@ -21,14 +21,13 @@ namespace Gomoku2
                     }
                 }
             }
-            return new EstimatedBoard { Board = board };
+            return board;
         }
 
-        public static void Export(EstimatedBoard estimatedBoard, string fileName)
+        public static void Export(BoardCell[,] board, string fileName)
         {
             using (var sw = new StreamWriter(fileName))
             {
-                var board = estimatedBoard.Board;
                 for (int x = 0; x < board.GetLength(0); x++)
                 {
                     for (int y = 0; y < board.GetLength(1); y++)

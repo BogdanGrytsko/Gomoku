@@ -83,7 +83,7 @@ namespace GomokuTest
 
         private static int TestEstimation(string fileName)
         {
-            var board = BoardExportImport.Import(Path.Combine(folder, fileName)).Board;
+            var board = BoardExportImport.Import(Path.Combine(folder, fileName));
             var game = new Game(board);
             return GetEstimate(game, board.WhoMovedLast());
         }

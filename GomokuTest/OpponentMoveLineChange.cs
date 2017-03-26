@@ -106,7 +106,7 @@ namespace GomokuTest
 
         private static List<Line> GetLines(string fileName, Cell cell)
         {
-            var board = BoardExportImport.Import(Path.Combine(folder, fileName)).Board;
+            var board = BoardExportImport.Import(Path.Combine(folder, fileName));
             var game = new Game(board);
             var owner = board.WhoMovedLast();
             var lines = game.GetLines(owner);

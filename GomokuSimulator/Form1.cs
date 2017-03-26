@@ -152,7 +152,7 @@ namespace GomokuSimulator
         {
             if (exportBoardFileDialog.ShowDialog() != DialogResult.OK) return;
 
-            BoardExportImport.Export(currentBoard, exportBoardFileDialog.FileName);
+            BoardExportImport.Export(currentBoard.Board, exportBoardFileDialog.FileName);
         }
 
         private void ImportBoardBtnClick(object sender, System.EventArgs e)
@@ -160,7 +160,7 @@ namespace GomokuSimulator
             if (importBoardFileDialog.ShowDialog() != DialogResult.OK) return;
 
             var board = BoardExportImport.Import(importBoardFileDialog.FileName);
-            UpdateGrid(board);
+            UpdateGrid(new EstimatedBoard {Board = board});
         }
         
         private void AnalyzeBtnClick(object sender, System.EventArgs e)

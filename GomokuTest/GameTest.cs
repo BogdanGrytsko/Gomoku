@@ -128,7 +128,7 @@ namespace GomokuTest
 
         public static Game TestMove(string folderPath, string boardName, int depth, params Cell[] correctMoves)
         {
-            var board = BoardExportImport.Import(Path.Combine(folderPath, boardName)).Board;
+            var board = BoardExportImport.Import(Path.Combine(folderPath, boardName));
             var game = new Game(board);
             var move = game.DoMove(board.WhoMovesNext(), depth, Game.DefaultWidth);
             Assert.IsTrue(correctMoves.Any(cm => cm == move));

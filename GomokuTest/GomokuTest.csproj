@@ -198,6 +198,9 @@
     <Content Include="OpponentMoveLineChange\LongBrokenThreeIntoBlockedTwoAndSingle.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="OpponentMoveLineChange\LongBrokenTwoIntoNoSingleLines.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="OpponentMoveLineChange\StraightFourIntoBlockedFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

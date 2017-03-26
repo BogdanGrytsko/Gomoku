@@ -89,7 +89,12 @@ namespace Gomoku2.LineCore
         private void SplitCase(CellDirection cellDir, Line sameDirOppLine)
         {
             skipDirections.Add(cellDir.MirrorDirection);
-            var cells = sameDirOppLine.ExtractCells(cellDir.Cell, state.Board);
+            var cells = sameDirOppLine.ExtractCells(cellDir.Cell, state.Board).ToList();
+            if (sameDirOppLine.Count == 1 && state.OppLines.FilterByCell(sameDirOppLine.Start).Any())
+                state.OppLines.Remove(sameDirOppLine);
+            if (cells.Count == 1 && state.OppLines.FilterByCell(cells[0]).Any())
+                return;
+
             var line = new Line(cells, state.OpponentCellType, state.Board);
             state.OppLines.Add(line);
         }

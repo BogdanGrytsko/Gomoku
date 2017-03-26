@@ -100,15 +100,21 @@ namespace Gomoku2
 
         public static Line Filter(this List<Line> lines, Cell analyzedCell, Cell direction)
         {
+            return
+                lines.FilterByCell(analyzedCell)
+                    .FirstOrDefault(line => line.Count == 1 || line.Direction == direction || line.Direction == -direction);
+        }
+
+        public static IEnumerable<Line> FilterByCell(this List<Line> lines, Cell analyzedCell)
+        {
             foreach (var line in lines)
             {
                 foreach (var lineCell in line)
                 {
-                    if (lineCell == analyzedCell && (line.Count == 1 || line.Direction == direction || line.Direction == -direction))
-                        return line;
+                    if (lineCell == analyzedCell)
+                        yield return line;
                 }
             }
-            return null;
         }
     }
 }

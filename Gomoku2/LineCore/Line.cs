@@ -139,7 +139,7 @@ namespace Gomoku2.LineCore
             prevPrevPrev = NextCellWithType(-3, board);
         }
 
-        private Cell Start { get; set; }
+        public Cell Start { get; set; }
 
         private Cell End { get; set; }
 

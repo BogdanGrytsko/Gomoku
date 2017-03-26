@@ -239,7 +239,7 @@ namespace Gomoku2
                 var estimate = Estimate(newState.MyLines, newState.OppLines);
                 board[cell.X, cell.Y] = BoardCell.None;
 
-                yield return new EstimatedCell(cell, newState.MyLines, newState.OppLines, estimate, state.Board);
+                yield return new EstimatedCell(cell, newState.MyLines, newState.OppLines, estimate);
             }
 
             if (nextCells.OppNextCells == null)
@@ -281,6 +281,12 @@ namespace Gomoku2
         {
             var clonedState = state.Clone();
             LineFactory.AddCellToLines(cell, clonedState);
+            //todo remove
+            var lines = LineFactory.GetLines(state.Board, state.MyCellType);
+            if (lines.Count != clonedState.MyLines.Count)
+            {
+                //horrible mismatch
+            }
             return clonedState;
         }
     }

@@ -95,6 +95,15 @@ namespace GomokuTest
             Assert.IsNull(lines[1].Middle2);
         }
 
+        [TestMethod]
+        public void LongBrokenTwoIntoNoSingleLines()
+        {
+            var lines = GetLines("LongBrokenTwoIntoNoSingleLines.txt", new Cell(5, 8));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.TwoInRow, lines[0].LineType);
+            Assert.AreEqual(LineType.BlockedTwo, lines[1].LineType);
+        }
+
         private static List<Line> GetLines(string fileName, Cell cell)
         {
             var board = BoardExportImport.Import(Path.Combine(folder, fileName)).Board;

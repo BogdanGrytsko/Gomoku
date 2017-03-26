@@ -192,6 +192,9 @@
     <Content Include="OpponentMoveLineChange\BrokenThreeIntoBlockedTwoAndSingle.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="OpponentMoveLineChange\SingleMarkAfterLongBrokenTwoSplit.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="OpponentMoveLineChange\LongBrokenThreeIntoTwoAndSingle.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

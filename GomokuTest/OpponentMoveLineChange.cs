@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Gomoku2;
 using Gomoku2.CellObjects;
 using Gomoku2.LineCore;
@@ -102,6 +103,14 @@ namespace GomokuTest
             Assert.AreEqual(2, lines.Count);
             Assert.AreEqual(LineType.TwoInRow, lines[0].LineType);
             Assert.AreEqual(LineType.BlockedTwo, lines[1].LineType);
+        }
+
+        [TestMethod]
+        public void SingleMarkAfterLongBrokenTwoSplit()
+        {
+            var lines = GetLines("SingleMarkAfterLongBrokenTwoSplit.txt", new Cell(8, 4));
+            var singleMarks = lines.Where(l => l.LineType == LineType.SingleMark).ToList();
+            Assert.AreEqual(2, singleMarks.Count);
         }
 
         private static List<Line> GetLines(string fileName, Cell cell)

@@ -278,8 +278,15 @@ namespace Gomoku2
             var clonedState = state.Clone();
             LineFactory.AddCellToLines(cell, clonedState);
             //todo remove
-            var lines = LineFactory.GetLines(state.Board, state.MyCellType);
-            if (lines.Count != clonedState.MyLines.Count)
+            var myLines = LineFactory.GetLines(state.Board, state.MyCellType);
+            if (myLines.Count != clonedState.MyLines.Count)
+            {
+                BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
+                //horrible mismatch
+            }
+
+            var oppLines = LineFactory.GetLines(state.Board, state.OpponentCellType);
+            if (oppLines.Count != clonedState.OppLines.Count)
             {
                 BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
                 //horrible mismatch

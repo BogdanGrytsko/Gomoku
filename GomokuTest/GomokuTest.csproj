@@ -96,6 +96,21 @@
     <Content Include="LineChange\BrokenThreeIntoBrokenFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="LineChange\VeryLongBrokenTwoIntoLongBrokenThree5.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineChange\VeryLongBrokenTwoIntoLongBrokenThree4.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineChange\VeryLongBrokenTwoIntoLongBrokenThree3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineChange\VeryLongBrokenTwoIntoLongBrokenThree2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LineChange\VeryLongBrokenTwoIntoLongBrokenThree.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="LineChange\LongBrokenThreeInto2Lines.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -281,6 +281,7 @@ namespace Gomoku2
             var myLines = LineFactory.GetLines(state.Board, state.MyCellType);
             if (myLines.Count != clonedState.MyLines.Count)
             {
+                var line = myLines.Except(clonedState.MyLines).FirstOrDefault();
                 BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
                 //horrible mismatch
             }
@@ -288,6 +289,7 @@ namespace Gomoku2
             var oppLines = LineFactory.GetLines(state.Board, state.OpponentCellType);
             if (oppLines.Count != clonedState.OppLines.Count)
             {
+                var line = oppLines.Except(clonedState.OppLines).FirstOrDefault();
                 BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
                 //horrible mismatch
             }

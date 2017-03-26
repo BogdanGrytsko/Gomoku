@@ -81,6 +81,8 @@ namespace Gomoku2.LineCore
             //merge case is possible
             if (cellDir.Distance == 1)
                 SolidCase(cellDir, sameDirLine);
+            //merge is also possible : X   X => XX  X
+            //now cry fcking fuck
             else
                 BrokenCase(cellDir, sameDirLine);
             return true;
@@ -115,22 +117,30 @@ namespace Gomoku2.LineCore
         private void SolidSingleCase(CellDirection cellDir, Line sameDirLine)
         {
             if (sameDirLine == null || !sameDirLine.CanAddCell(cellDir))
-            {
-                var line = new Line(cellDir.Cell, cellDir.AnalyzedCell, state.Board, state.MyCellType);
-                var maybeBrokenCell = cellDir.AnalyzedCell + 2*cellDir.Direction;
-                if (maybeBrokenCell.IsType(state.Board, state.MyCellType)
-                    && (cellDir.AnalyzedCell + cellDir.Direction).IsEmptyWithBoard(state.Board))
-                {
-                    var additionalDir = new CellDirection(maybeBrokenCell, -cellDir.Direction, 2);
-                    line.AddLonelyCell(additionalDir, state.Board);
-                }
-                AddMyLine(line);
-            }
+                SolidLineDoesntExist(cellDir);
             else
+                SolidLineExistsCase(cellDir, sameDirLine);
+        }
+
+        private void SolidLineExistsCase(CellDirection cellDir, Line sameDirLine)
+        {
+            if (sameDirLine.IsCellMiddle(cellDir.Cell)) skipDirections.Add(cellDir.MirrorDirection);
+
+
+            sameDirLine.AddCells(state.Board, cellDir.Cell);
+        }
+
+        private void SolidLineDoesntExist(CellDirection cellDir)
+        {
+            var line = new Line(cellDir.Cell, cellDir.AnalyzedCell, state.Board, state.MyCellType);
+            var maybeBrokenCell = cellDir.AnalyzedCell + 2*cellDir.Direction;
+            if (maybeBrokenCell.IsType(state.Board, state.MyCellType)
+                && (cellDir.AnalyzedCell + cellDir.Direction).IsEmptyWithBoard(state.Board))
             {
-                if (sameDirLine.IsCellMiddle(cellDir.Cell)) skipDirections.Add(cellDir.MirrorDirection);
-                sameDirLine.AddCells(state.Board, cellDir.Cell);
+                var additionalDir = new CellDirection(maybeBrokenCell, -cellDir.Direction, 2);
+                line.AddLonelyCell(additionalDir, state.Board);
             }
+            AddMyLine(line);
         }
 
         private void SolidMirrorCase(CellDirection cellDir, Line sameDirLine)
@@ -144,7 +154,6 @@ namespace Gomoku2.LineCore
             //add new BrokenTwo or LongBrokenTwo
             if (sameDirLine == null || !sameDirLine.CanAddCell(cellDir))
                 BrokenLineDoesntExistCase(cellDir);
-            // reestimate line. add lonely cell to it.
             else
                 BrokenLineExistsCase(cellDir, sameDirLine);
         }
@@ -152,7 +161,39 @@ namespace Gomoku2.LineCore
         private void BrokenLineExistsCase(CellDirection cellDir, Line sameDirLine)
         {
             if (sameDirLine.IsCellMiddle(cellDir.Cell)) skipDirections.Add(cellDir.MirrorDirection);
+
+            var mirrorAnalyzedCell = GetMirrorCellForBrokenCase(cellDir);
+            // X   X case
+            if (mirrorAnalyzedCell.IsType(state.Board, state.MyCellType))
+                BrokenMirrorCase(cellDir, sameDirLine, mirrorAnalyzedCell);
+            else
+                sameDirLine.AddLonelyCell(cellDir, state.Board);
+        }
+
+        private void BrokenMirrorCase(CellDirection cellDir, Line sameDirLine, Cell mirrorAnalyzedCell)
+        {
+            //todo create a separate method for this
             sameDirLine.AddLonelyCell(cellDir, state.Board);
+            sameDirLine.AddCells(state.Board, mirrorAnalyzedCell);
+            skipDirections.Add(cellDir.MirrorDirection);
+            var mirrorLine = state.MyLines
+                .FilterByCell(mirrorAnalyzedCell)
+                .FirstOrDefault(l => l.Count == 1);
+            //remove line if it was lonely cell
+            if (mirrorLine != null)
+                state.MyLines.Remove(mirrorLine);
+        }
+
+        private Cell GetMirrorCellForBrokenCase(CellDirection cellDir)
+        {
+            var doesntExist = new Cell(-1, -1);
+            if (!directions.Contains(cellDir.MirrorDirection))
+                return doesntExist;
+            if (cellDir.Distance == 3)
+                return cellDir.Cell + cellDir.MirrorDirection;
+            if (cellDir.Distance == 2)
+                return cellDir.Cell + 2*cellDir.MirrorDirection;
+            return doesntExist;
         }
 
         private void BrokenLineDoesntExistCase(CellDirection cellDir)

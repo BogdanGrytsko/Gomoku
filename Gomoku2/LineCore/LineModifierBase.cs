@@ -24,18 +24,18 @@ namespace Gomoku2.LineCore
 
         protected Line CreateMaxCellLine(CellDirection cellDir)
         {
-            //create line with maximum possible number of cells. Distance <= 4 | *  XXX => BrokenThree and ThreeInRow| X  XX*|
+            //create line with maximum possible number of cells. Distance <= 4 | X X*| X  X*| X X *|
             var cells = new List<Cell> { cellDir.AnalyzedCell };
             var line = new Line(cells, state.MyCellType);
             for (int i = cellDir.Distance + 1; i <= 4; i++)
             {
                 var cell = cellDir.Analyzed(i);
+                if (cell.IsType(state.Board, state.OpponentCellType)) break;
                 if (cell.IsType(state.Board, state.MyCellType))
                 {
                     var tmpCellDir = new CellDirection(cell, cellDir.MirrorDirection, i -  cellDir.Distance);
                     line.AddOuterCell(tmpCellDir);
                 }
-                //| X X*| X  X*| X X *|
             }
             
             line.AddOuterCellAndEstimate(state.Board, cellDir);

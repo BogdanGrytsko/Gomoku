@@ -76,7 +76,7 @@
     <Compile Include="LineCore\Line.cs" />
     <Compile Include="LineAnalyzer\AnalyzerBase.cs" />
     <Compile Include="LineAnalyzer\BrokenTwoAnalyzer.cs" />
-    <Compile Include="LineCore\LineFactory.cs" />
+    <Compile Include="LineCore\BoardFactory.cs" />
     <Compile Include="LineCore\LineType.cs" />
     <Compile Include="LineCore\LineTypeExtensions.cs" />
     <Compile Include="CellObjects\NextCells.cs" />

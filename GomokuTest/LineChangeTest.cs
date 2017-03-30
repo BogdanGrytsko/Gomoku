@@ -168,7 +168,7 @@ namespace GomokuTest
             var owner = movesInOrder ? board.WhoMovesNext() : board.WhoMovedLast();
             var lines = game.GetLines(owner);
             board[cell.X, cell.Y] = owner;
-            LineFactory.AddCellToLines(cell, new BoardStateBase(lines, new List<Line>(), owner, board));
+            BoardFactory.AddCellToLines(cell, new BoardStateBase(lines, new List<Line>(), owner, board));
             return lines;
         }
     }

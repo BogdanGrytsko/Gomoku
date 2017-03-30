@@ -423,5 +423,15 @@ namespace Gomoku2.LineCore
                 return oppDirCell;
             return sameDirCell;
         }
+
+        public void AddOuterCell(BoardCell[,] board, CellDirection cellDir)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddMiddleCell(Cell cell)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

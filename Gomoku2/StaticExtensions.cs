@@ -94,7 +94,7 @@ namespace Gomoku2
 
         public static bool HasFiveInARow(this BoardCell[,] board, BoardCell cellType)
         {
-            var lines = LineFactory.GetLines(board, cellType);
+            var lines = BoardFactory.GetLines(board, cellType);
             return lines.Any(l => l.Count >= 5);
         }
 

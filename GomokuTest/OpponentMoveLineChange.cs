@@ -120,7 +120,7 @@ namespace GomokuTest
             var owner = board.WhoMovedLast();
             var lines = game.GetLines(owner);
             board[cell.X, cell.Y] = owner.Opponent();
-            LineFactory.AddCellToLines(cell, new BoardStateBase(new List<Line>(), lines, owner.Opponent(), board));
+            BoardFactory.AddCellToLines(cell, new BoardStateBase(new List<Line>(), lines, owner.Opponent(), board));
             return lines;
         }
     }

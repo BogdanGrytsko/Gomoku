@@ -5,13 +5,13 @@ using Gomoku2.StateCache;
 
 namespace Gomoku2.LineCore
 {
-    public class LineFactory
+    public class BoardFactory
     {
         private readonly HashSet<Cell> usedCells = new HashSet<Cell>();
         private readonly BoardCell[,] board;
         private readonly BoardCell type;
 
-        public LineFactory(BoardCell[,] board, BoardCell type)
+        public BoardFactory(BoardCell[,] board, BoardCell type)
         {
             this.board = board;
             this.type = type;
@@ -48,7 +48,7 @@ namespace Gomoku2.LineCore
 
         public static List<Line> GetLines(BoardCell[,] board, BoardCell type)
         {
-            var factory = new LineFactory(board, type);
+            var factory = new BoardFactory(board, type);
             return factory.GetState();
         }
 

@@ -38,6 +38,127 @@ namespace Gomoku2.LineCore
             }
         }
 
+        public void AddCellToLinesNew()
+        {
+            foreach (var direction in directions)
+            {
+                if (skipDirections.Contains(direction)) continue;
+                for (int distance = 1; distance <= 3; distance++)
+                {
+                    var cellDir = new CellDirection(cell, direction, distance);
+                    if (AnalyzeCellDir(cellDir)) break;
+                }
+            }
+            if (!addedToSomeLine)
+                AddMyLine(new Line(cell, state.MyCellType));
+        }
+
+        private bool AnalyzeCellDir(CellDirection cellDir)
+        {
+            var analyzedCell = cellDir.AnalyzedCell;
+            if (analyzedCell.IsType(state.Board, state.OpponentCellType))
+            {
+                OpponentLineCase(cellDir);
+                return true;
+            }
+            if (!analyzedCell.IsType(state.Board, state.MyCellType)) return false;
+
+            //My cell was found
+            addedToSomeLine = true;
+            //spawn search in mirror direction,
+            for (int distance = 1; distance <= 3; distance++)
+            {
+                var mirrorCellDir = new CellDirection(cell, cellDir.MirrorDirection, distance);
+                if (mirrorCellDir.AnalyzedCell.IsType(state.Board, state.OpponentCellType))
+                {
+                    OpponentLineCase(mirrorCellDir);
+                    NoMirrorCellCase(cellDir);
+                    skipDirections.Add(cellDir.MirrorDirection);
+                    return true;
+                }
+                if (mirrorCellDir.AnalyzedCell.IsType(state.Board, state.MyCellType))
+                {
+                    MirrorCellCase(cellDir, mirrorCellDir);
+                    skipDirections.Add(cellDir.MirrorDirection);
+                    return true;
+                }
+            }
+
+            NoMirrorCellCase(cellDir);
+            return true;
+        }
+
+        //means that this cell is outer cell to My line
+        private void NoMirrorCellCase(CellDirection cellDir)
+        {
+            var sameDirLine = state.MyLines.Filter(cellDir.AnalyzedCell, cellDir.Direction);
+            if (sameDirLine == null || !sameDirLine.CanAddCell(cellDir))
+            {
+                //create line with maximum possible number of cells. Distance <= 5 | *  XXX => BrokenThree and ThreeInRow| X  XX*|
+            }
+            else
+                sameDirLine.AddOuterCell(state.Board, cellDir);
+        }
+
+        private void MirrorCellCase(CellDirection cellDir, CellDirection mirrorCellDir)
+        {
+            var sameDirLine = state.MyLines.Filter(cellDir.AnalyzedCell, cellDir.Direction);
+            var mirrorDirLine = state.MyLines.Filter(mirrorCellDir.AnalyzedCell, mirrorCellDir.Direction);
+            if (sameDirLine == null && mirrorDirLine == null)
+            {
+                SameDirLinesNullCase(cellDir, mirrorCellDir);
+                return;
+            }
+            //if it is same line then add middle cell, reestimate and finish
+            if (sameDirLine == mirrorDirLine)
+                sameDirLine.AddMiddleCell(cellDir.Cell);
+
+            if (sameDirLine == null)
+            {
+                // X        |X      |
+                // X * XX   |X *  XX|
+                //create line with maximum possible number of cells. Distance <= 5
+            }
+            if (mirrorDirLine == null)
+            {
+                
+            }
+            //if both are not null we have  | XX * XX | X * X | | X*X |
+            //if distance is 5 then add new LongBrokenThree. Remove single marks if there were any
+            //if can add to line, than add to line
+        }
+
+        private void SameDirLinesNullCase(CellDirection cellDir, CellDirection mirrorCellDir)
+        {
+            if (cellDir.AnalyzedCell.DistSqr(mirrorCellDir.AnalyzedCell) <= 16)
+                AddMyLine(CreateThreeCellLine(cellDir, mirrorCellDir));
+            else
+            {
+                AddMyLine(CreateTwoCellLine(cellDir));
+                AddMyLine(CreateTwoCellLine(mirrorCellDir));
+            }
+        }
+
+        private Line CreateTwoCellLine(CellDirection cellDir)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private Line CreateThreeCellLine(CellDirection cellDir, CellDirection mirrorCellDir)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void OpponentLineCase(CellDirection cellDir)
+        {
+            var sameDirOppLine = state.OppLines.Filter(cellDir.AnalyzedCell, cellDir.Direction);
+            if (sameDirOppLine == null) return;
+            if (sameDirOppLine.IsCellMiddle(cellDir.Cell))
+                SplitCase(cellDir, sameDirOppLine);
+            else
+                sameDirOppLine.Estimate(state.Board);
+        }
+
         public void AddCellToLines()
         {
             //handle cases:
@@ -65,24 +186,28 @@ namespace Gomoku2.LineCore
             var analyzedCell = cellDir.AnalyzedCell;
             if (analyzedCell.IsType(state.Board, state.OpponentCellType))
             {
-                var sameDirOppLine = state.OppLines.Filter(analyzedCell, cellDir.Direction);
-                if (sameDirOppLine == null) return true;
-                if (sameDirOppLine.IsCellMiddle(cellDir.Cell))
-                    SplitCase(cellDir, sameDirOppLine);
-                else
-                    sameDirOppLine.Estimate(state.Board);
+                OpponentLineCase(cellDir);
                 return true;
             }
             if (!analyzedCell.IsType(state.Board, state.MyCellType)) return false;
 
             addedToSomeLine = true;
             var sameDirLine = state.MyLines.Filter(analyzedCell, cellDir.Direction);
-            //??*X?
-            //merge case is possible
+            //spawn search in mirror direction, if cell found than find mirrorDirLine
+            //if both are not null we have  | XX * XX | X * X | | X*X |
+            //if it is same line then add middle cell, reestimate and finish
+            //if distance is 5 then add new LongBrokenThree. Remove single marks if there were any
+            //if can add to line, than add to line
+
+            //if both are null then add new LongBrokenThree
+            //One null, other isn't
+
+
+            // if sameDirLine exists then add to it.
+            //bear in mind that we need to add mirror line to it also, if possible -> merge case
+
             if (cellDir.Distance == 1)
                 SolidCase(cellDir, sameDirLine);
-            //merge is also possible : X   X => XX  X
-            //now cry fcking fuck
             else
                 BrokenCase(cellDir, sameDirLine);
             return true;
@@ -125,8 +250,6 @@ namespace Gomoku2.LineCore
         private void SolidLineExistsCase(CellDirection cellDir, Line sameDirLine)
         {
             if (sameDirLine.IsCellMiddle(cellDir.Cell)) skipDirections.Add(cellDir.MirrorDirection);
-
-
             sameDirLine.AddCells(state.Board, cellDir.Cell);
         }
 

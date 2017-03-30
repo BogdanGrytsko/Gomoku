@@ -270,15 +270,15 @@ namespace Gomoku2
 
         public List<Line> GetLines(BoardCell cellType)
         {
-            return LineFactory.GetLines(board, cellType);
+            return BoardFactory.GetLines(board, cellType);
         }
 
         private static BoardStateBase GetLinesByAddingCell(Cell cell, BoardStateBase state)
         {
             var clonedState = state.Clone();
-            LineFactory.AddCellToLines(cell, clonedState);
+            BoardFactory.AddCellToLines(cell, clonedState);
             //todo remove
-            var myLines = LineFactory.GetLines(state.Board, state.MyCellType);
+            var myLines = BoardFactory.GetLines(state.Board, state.MyCellType);
             if (myLines.Count != clonedState.MyLines.Count)
             {
                 var line = myLines.Except(clonedState.MyLines).FirstOrDefault();
@@ -286,7 +286,7 @@ namespace Gomoku2
                 //horrible mismatch
             }
 
-            var oppLines = LineFactory.GetLines(state.Board, state.OpponentCellType);
+            var oppLines = BoardFactory.GetLines(state.Board, state.OpponentCellType);
             if (oppLines.Count != clonedState.OppLines.Count)
             {
                 var line = oppLines.Except(clonedState.OppLines).FirstOrDefault();

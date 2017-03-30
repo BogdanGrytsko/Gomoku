@@ -75,7 +75,7 @@
     <Content Include="BlockedLineDetermination\BlockedLongBrokenTwoAndBrokenTwo.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BlockedLineDetermination\BlockedThreeAndTwoInRow.txt">
+    <Content Include="BlockedLineDetermination\BlockedThreeAndLongBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="BlockedLineDetermination\BlockedLongBrokenThree.txt">
@@ -138,7 +138,7 @@
     <Content Include="LineChange\LongBrokenTwoNotModifiedCorrectly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BlockedLineDetermination\BlockedThreeAndBlockedTwo.txt">
+    <Content Include="BlockedLineDetermination\BlockedThreeAndBlockedThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\BrokenFour2.txt">
@@ -177,7 +177,7 @@
     <Content Include="LineDetermination\BrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="LineDetermination\ThreeInRowAndSingle.txt">
+    <Content Include="LineDetermination\ThreeInRowAndLongBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\ThreeInRow.txt">

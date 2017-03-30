@@ -28,7 +28,7 @@ namespace Gomoku2.LineCore
                     var cell = CellManager.Get(i, j);
                     if (board[i, j] != type || usedCells.Contains(cell)) continue;
                     var factory = new LineModifier(cell, state, GetBackwardsDirections());
-                    factory.AddCellToLines();
+                    factory.AddCellToLinesNew();
                     foreach (var lineCell in state.MyLines.SelectMany(l => l))
                         usedCells.Add(lineCell);
                 }

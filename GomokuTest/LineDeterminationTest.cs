@@ -226,12 +226,12 @@ namespace GomokuTest
         }
 
         [TestMethod]
-        public void ThreeInRowAndSingle()
+        public void ThreeInRowAndLongBrokenThree()
         {
-            var lines = GetLines("ThreeInRowAndSingle.txt");
+            var lines = GetLines("ThreeInRowAndLongBrokenThree.txt");
             Assert.AreEqual(2, lines.Count);
             Assert.AreEqual(LineType.ThreeInRow, lines[0].LineType);
-            Assert.AreEqual(LineType.LongBrokenTwo, lines[1].LineType);
+            Assert.AreEqual(LineType.LongBrokenThree, lines[1].LineType);
         }
     }
 }

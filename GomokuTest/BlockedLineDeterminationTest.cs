@@ -44,12 +44,12 @@ namespace GomokuTest
         }
 
         [TestMethod]
-        public void BlockedThreeAndBlockedTwo()
+        public void BlockedThreeAndBlockedThree()
         {
-            var lines = GetLines("BlockedThreeAndBlockedTwo.txt");
+            var lines = GetLines("BlockedThreeAndBlockedThree.txt");
             Assert.AreEqual(2, lines.Count);
             Assert.AreEqual(LineType.BlokedThree, lines[0].LineType);
-            Assert.AreEqual(LineType.BlockedTwo, lines[1].LineType);
+            Assert.AreEqual(LineType.BlokedThree, lines[1].LineType);
         }
 
         [TestMethod]
@@ -61,11 +61,11 @@ namespace GomokuTest
         }
 
         [TestMethod]
-        public void BlockedThreeAndTwoInRow()
+        public void BlockedThreeAndLongBrokenThree()
         {
-            var lines = GetLines("BlockedThreeAndTwoInRow.txt");
+            var lines = GetLines("BlockedThreeAndLongBrokenThree.txt");
             Assert.AreEqual(2, lines.Count);
-            Assert.AreEqual(LineType.TwoInRow, lines[0].LineType);
+            Assert.AreEqual(LineType.LongBrokenThree, lines[0].LineType);
             Assert.AreEqual(LineType.BlokedThree, lines[1].LineType);
         }
 

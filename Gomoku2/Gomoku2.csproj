@@ -56,6 +56,10 @@
     <Compile Include="LineAnalyzer\ThreeCellAnalyzer.cs" />
     <Compile Include="LineAnalyzer\TwoCellAnalyzer.cs" />
     <Compile Include="LineCore\LineModifier.cs" />
+    <Compile Include="LineCore\LineModifierBase.cs" />
+    <Compile Include="LineCore\MirrorLineModifier.cs" />
+    <Compile Include="LineCore\OpponentLineModifier.cs" />
+    <Compile Include="LineCore\SingleLineModifier.cs" />
     <Compile Include="PriorityChain\ThreatGeneratingThreeHandler.cs" />
     <Compile Include="PriorityChain\DefenceThreatOfThreeHandler.cs" />
     <Compile Include="PriorityChain\DoubleThreatHandler.cs" />

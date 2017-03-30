@@ -45,6 +45,12 @@ namespace Gomoku2.LineCore
             CalcPropsAndEstimate(board);
         }
 
+        public Line(IEnumerable<Cell> newCells, BoardCell owner)
+        {
+            cells.AddRange(newCells);
+            this.owner = owner;
+        }
+
         public Line(CellDirection cellDir, BoardCell[,] board, BoardCell owner)
         {
             cells.Add(cellDir.Cell);
@@ -424,14 +430,39 @@ namespace Gomoku2.LineCore
             return sameDirCell;
         }
 
-        public void AddOuterCell(BoardCell[,] board, CellDirection cellDir)
+        public void AddOuterCellAndEstimate(BoardCell[,] board, CellDirection cellDir)
         {
-            throw new NotImplementedException();
+            AddOuterCell(cellDir);
+            CalcPropsAndEstimate(board);
+        }
+
+        public void AddOuterCell(CellDirection cellDir)
+        {
+            cells.Add(cellDir.Cell);
+            SetMiddle(cellDir);
+        }
+
+        private void SetMiddle(CellDirection cellDir)
+        {
+            if (cellDir.Distance == 3)
+            {
+                middle1 = cellDir.Analyzed1;
+                middle2 = cellDir.Analyzed2;
+            }
+            if (cellDir.Distance == 2)
+            {
+                if (middle1 == null)
+                    middle1 = cellDir.Analyzed1;
+                else
+                    middle2 = cellDir.Analyzed1;
+            }
         }
 
         public void AddMiddleCell(Cell cell)
         {
-            throw new NotImplementedException();
+            cells.Add(cell);
+            NullMiddle(cell);
+            SetEstimate();
         }
     }
 }

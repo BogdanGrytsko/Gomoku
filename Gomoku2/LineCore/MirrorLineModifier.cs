@@ -18,49 +18,46 @@ namespace Gomoku2.LineCore
         {
             var sameDirLine = state.MyLines.Filter(cellDir.AnalyzedCell, cellDir.Direction);
             var mirrorDirLine = state.MyLines.Filter(mirrorCellDir.AnalyzedCell, mirrorCellDir.Direction);
-            if (sameDirLine == null && mirrorDirLine == null)
+
+            //if it is same line then add middle cell, reestimate and finish
+            //| X *X|
+            if (sameDirLine == mirrorDirLine && sameDirLine != null)
             {
-                SameDirLinesNullCase(cellDir, mirrorCellDir);
+                sameDirLine.AddMiddleCell(cellDir.Cell);
                 return;
             }
-            //if it is same line then add middle cell, reestimate and finish
-            if (sameDirLine == mirrorDirLine)
-                sameDirLine.AddMiddleCell(cellDir.Cell);
 
-            if (sameDirLine == null)
+            var isStrangeLongBrokenThree = StrangeLongBrokenThree(cellDir);
+            if (isStrangeLongBrokenThree)
             {
-                // X        |X      |
-                // X * XX   |X *  XX|
-                //create line with maximum possible number of cells. Distance <= 5
+                AddMyLine(CreateMaxCellLine(cellDir.Swap()));
+                RemoveOneCellLine(sameDirLine);
+                RemoveOneCellLine(mirrorDirLine);
             }
-            if (mirrorDirLine == null)
-            {
 
-            }
-            //if both are not null we have  | XX * XX | X * X | | X*X |
-            //if distance is 5 then add new LongBrokenThree. Remove single marks if there were any
-            //if can add to line, than add to line
+            ProcessSide(cellDir, sameDirLine, isStrangeLongBrokenThree);
+            ProcessSide(mirrorCellDir, mirrorDirLine, isStrangeLongBrokenThree);
         }
 
-        private void SameDirLinesNullCase(CellDirection cellDir, CellDirection mirrorCellDir)
+        private void ProcessSide(CellDirection cellDir, Line line, bool isStrangeLongBrokenThree)
         {
-            if (cellDir.AnalyzedCell.DistSqr(mirrorCellDir.AnalyzedCell) <= 16)
-                AddMyLine(CreateThreeCellLine(cellDir, mirrorCellDir));
-            else
+            if (CanAddCell(line, cellDir))
+                line.AddOuterCellAndEstimate(state.Board, cellDir);
+            else if (!isStrangeLongBrokenThree)
+                AddMyLine(CreateMaxCellLine(cellDir));
+        }
+
+        private bool StrangeLongBrokenThree(CellDirection cellDir)
+        {
+            return cellDir.Distance + mirrorCellDir.Distance == 4;
+        }
+
+        private void RemoveOneCellLine(Line line)
+        {
+            if (line != null && line.Count == 1)
             {
-                AddMyLine(CreateTwoCellLine(cellDir));
-                AddMyLine(CreateTwoCellLine(mirrorCellDir));
+                state.MyLines.Remove(line);
             }
-        }
-
-        private Line CreateTwoCellLine(CellDirection cellDir)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        private Line CreateThreeCellLine(CellDirection cellDir, CellDirection mirrorCellDir)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

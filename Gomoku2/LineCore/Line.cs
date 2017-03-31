@@ -30,14 +30,6 @@ namespace Gomoku2.LineCore
             CalcPropsAndEstimate(null);
         }
 
-        public Line(Cell cell1, Cell cell2, BoardCell[,] board, BoardCell owner)
-        {
-            cells.Add(cell1);
-            cells.Add(cell2);
-            this.owner = owner;
-            CalcPropsAndEstimate(board);
-        }
-
         public Line(IEnumerable<Cell> newCells, BoardCell owner, BoardCell[,] board)
         {
             cells.AddRange(newCells);
@@ -49,25 +41,6 @@ namespace Gomoku2.LineCore
         {
             cells.AddRange(newCells);
             this.owner = owner;
-        }
-
-        public Line(CellDirection cellDir, BoardCell[,] board, BoardCell owner)
-        {
-            cells.Add(cellDir.Cell);
-            cells.Add(cellDir.AnalyzedCell);
-            this.owner = owner;
-            CalcProps(board);
-            RemoveCell(cellDir);
-        }
-
-        public void AddCells(BoardCell[,] board, params Cell[] cell)
-        {
-            foreach (var cell1 in cell)
-            {
-                if (cells.Contains(cell1)) continue;
-                AddCellAndMaybeNullMiddle(cell1);
-            }
-            CalcPropsAndEstimate(board);
         }
 
         private void CalcPropsAndEstimate(BoardCell[,] board)
@@ -288,6 +261,7 @@ namespace Gomoku2.LineCore
 
         public bool Equals(Line other)
         {
+            //todo not true anymore, but we can live with that
             return Start.Equals(other.Start) && End.Equals(other.End);
         }
 
@@ -312,68 +286,17 @@ namespace Gomoku2.LineCore
             return string.Format("{2} S {0} E {1}", Start, End, LineType);
         }
 
-        private void RemoveCell(CellDirection cellDir)
+        private void NullMiddle(Cell cell)
         {
-            cells.Remove(cellDir.Cell);
-            SetLonelyAndMiddleCells(cellDir);
-            SetEstimate();
-        }
-
-        private void SetLonelyAndMiddleCells(CellDirection cellDir)
-        {
-            if (cells.Contains(cellDir.Cell)) return;;
-            var wasNulled = AddCellAndMaybeNullMiddle(cellDir.Cell);
-            if (wasNulled) return;
-
-            if (middle1 == null)
-                middle1 = cellDir.Cell + cellDir.Direction;
-            // X X X case
-            else
-                middle2 = cellDir.Cell + cellDir.Direction;
-
-            if (cellDir.Distance == 3)
-                middle2 = cellDir.Cell + 2*cellDir.Direction;
-        }
-
-        private bool AddCellAndMaybeNullMiddle(Cell cell)
-        {
-            cells.Add(cell);
-            return NullMiddle(cell);
-        }
-
-        private bool NullMiddle(Cell cell)
-        {
-            bool wasNulled = false;
             if (cell == middle1)
-            {
                 middle1 = null;
-                wasNulled = true;
-            }
             if (cell == middle2)
-            {
                 middle2 = null;
-                wasNulled = true;
-            }
             if (middle2 != null && middle1 == null)
             {
                 middle1 = middle2;
                 middle2 = null;
             }
-            return wasNulled;
-        }
-
-        public void AddLonelyCell(CellDirection cellDir, BoardCell[,] board)
-        {
-            SetLonelyAndMiddleCells(cellDir);
-            CalcPropsAndEstimate(board);
-        }
-
-        public void AddMissingCell(Cell cell)
-        {
-            cells.Add(cell);
-            if (middle1 == cell)
-                middle1 = null;
-            SetEstimate();
         }
 
         public bool IsCellMiddle(Cell cell)

@@ -41,5 +41,10 @@ namespace Gomoku2.LineCore
             line.AddOuterCellAndEstimate(state.Board, cellDir);
             return line;
         }
+
+        protected static bool CanAddCell(Line line, CellDirection cellDir)
+        {
+            return line != null && line.CanAddCell(cellDir);
+        }
     }
 }

@@ -107,7 +107,7 @@ namespace GomokuTest
             var lines = GetChangedLines("LongBrokenThreeInto2Lines.txt", new Cell(6, 10));
             Assert.AreEqual(2, lines.Count);
             Assert.AreEqual(LineType.LongBrokenThree, lines[0].LineType);
-            Assert.AreEqual(LineType.TwoInRow, lines[1].LineType);
+            Assert.AreEqual(LineType.LongBrokenThree, lines[1].LineType);
         }
 
         [TestMethod]
@@ -159,6 +159,27 @@ namespace GomokuTest
             var lines = GetChangedLines("VeryLongBrokenTwoIntoLongBrokenThree5.txt", new Cell(5, 4));
             Assert.AreEqual(1, lines.Count);
             Assert.AreEqual(LineType.LongBrokenThree, lines[0].LineType);
+        }
+
+        [TestMethod]
+        public void MiddleCreatesLongBrokenThree()
+        {
+            var lines = GetChangedLines("MiddleCreatesLongBrokenThree.txt", new Cell(7, 7));
+            Assert.AreEqual(3, lines.Count);
+            Assert.AreEqual(LineType.LongBrokenThree, lines[0].LineType);
+            Assert.AreEqual(LineType.TwoInRow, lines[1].LineType);
+            Assert.AreEqual(LineType.TwoInRow, lines[2].LineType);
+        }
+
+        [TestMethod]
+        public void MiddleCreatesTwoLines()
+        {
+            var lines = GetChangedLines("MiddleCreatesTwoLines.txt", new Cell(7, 7));
+            Assert.AreEqual(4, lines.Count);
+            Assert.AreEqual(LineType.TwoInRow, lines[0].LineType);
+            Assert.AreEqual(LineType.TwoInRow, lines[1].LineType);
+            Assert.AreEqual(LineType.TwoInRow, lines[2].LineType);
+            Assert.AreEqual(LineType.LongBrokenTwo, lines[3].LineType);
         }
 
         private static List<Line> GetChangedLines(string fileName, Cell cell, bool movesInOrder = false)

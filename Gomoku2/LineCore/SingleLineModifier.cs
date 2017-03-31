@@ -10,17 +10,13 @@ namespace Gomoku2.LineCore
         {
         }
 
-        //means that this cell is outer cell to My line
         public override void Modify(CellDirection cellDir)
         {
             var sameDirLine = state.MyLines.Filter(cellDir.AnalyzedCell, cellDir.Direction);
-            if (sameDirLine == null || !sameDirLine.CanAddCell(cellDir))
-            {
-                var line = CreateMaxCellLine(cellDir);
-                AddMyLine(line);
-            }
-            else
+            if (CanAddCell(sameDirLine, cellDir))
                 sameDirLine.AddOuterCellAndEstimate(state.Board, cellDir);
+            else
+                AddMyLine(CreateMaxCellLine(cellDir));
         }
     }
 }

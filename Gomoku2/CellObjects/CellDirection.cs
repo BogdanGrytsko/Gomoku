@@ -31,5 +31,10 @@
         {
             return Cell + i*Direction;
         }
+
+        public CellDirection Swap()
+        {
+            return new CellDirection(AnalyzedCell, MirrorDirection, Distance);
+        }
     }
 }

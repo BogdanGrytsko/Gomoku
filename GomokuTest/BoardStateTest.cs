@@ -9,9 +9,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GomokuTest
 {
     [TestClass]
-    public class GameTest
+    public class BoardStateTest
     {
-        private const string folder = "BoardStates";
+        private const string folder = "BoardState";
 
         [TestMethod]
         public void SecondHasWinningMove()
@@ -82,14 +82,15 @@ namespace GomokuTest
         [TestMethod]
         public void Board06WrongDefence()
         {
-            Assert.Inconclusive();
             TestMove("Board06WrongDefence.txt", 5, new Cell(5, 9));
+            Assert.Inconclusive();
         }
 
         [TestMethod]
         public void Board09Unknown()
         {
             TestMove("Board09Unknown.txt", new Cell(5, 7));
+            Assert.Inconclusive();
         }
 
         [TestMethod]
@@ -108,6 +109,7 @@ namespace GomokuTest
         public void LongBrokenTwoNotModifiedCorrectly()
         {
             TestMove("LongBrokenTwoNotModifiedCorrectly.txt", new Cell(7, 4));
+            Assert.Inconclusive();
         }
 
         private static void DoTestWin(string boardName, params Cell[] correctMoves)

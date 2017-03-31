@@ -113,6 +113,44 @@ namespace GomokuTest
             Assert.AreEqual(2, singleMarks.Count);
         }
 
+        [TestMethod]
+        public void SplitLongBrokenThree()
+        {
+            var lines = GetLines("SplitLongBrokenThree.txt", new Cell(5, 8));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.BlokedThree, lines[0].LineType);
+            Assert.AreEqual(LineType.SingleMark, lines[1].LineType);
+        }
+
+        [TestMethod]
+        public void SplitBrokenThree()
+        {
+            var lines = GetLines("SplitBrokenThree.txt", new Cell(9, 8));
+            Assert.AreEqual(4, lines.Count);
+            Assert.AreEqual(LineType.TwoInRow, lines[0].LineType);
+            Assert.AreEqual(LineType.TwoInRow, lines[1].LineType);
+            Assert.AreEqual(LineType.DeadTwo, lines[2].LineType);
+            Assert.AreEqual(LineType.SingleMark, lines[3].LineType);
+        }
+
+        [TestMethod]
+        public void DoubleBrokenFourIntoBlockedLines()
+        {
+            var lines = GetLines("DoubleBrokenFourIntoBlockedLines.txt", new Cell(5, 7));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.BlokedThree, lines[0].LineType);
+            Assert.AreEqual(LineType.BlockedTwo, lines[1].LineType);
+        }
+
+        [TestMethod]
+        public void DoubleBrokenThreeSplit()
+        {
+            var lines = GetLines("DoubleBrokenThreeSplit.txt", new Cell(5, 7));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.BlockedTwo, lines[0].LineType);
+            Assert.AreEqual(LineType.BlockedTwo, lines[1].LineType);
+        }
+
         private static List<Line> GetLines(string fileName, Cell cell)
         {
             var board = BoardExportImport.Import(Path.Combine(folder, fileName));

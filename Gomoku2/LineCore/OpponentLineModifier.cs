@@ -13,25 +13,40 @@ namespace Gomoku2.LineCore
 
         public override void Modify(CellDirection cellDir)
         {
-            var sameDirOppLine = state.OppLines.Filter(cellDir.AnalyzedCell, cellDir.Direction);
-            if (sameDirOppLine == null) return;
-            if (sameDirOppLine.IsCellMiddle(cellDir.Cell))
-                SplitCase(cellDir, sameDirOppLine);
-            else
-                sameDirOppLine.Estimate(state.Board);
+            var sameDirOppLines = state.OppLines.Filter(cellDir.AnalyzedCell, cellDir.Direction).ToList();
+            if (!sameDirOppLines.Any()) return;
+            foreach (var sameDirOppLine in sameDirOppLines)
+            {
+                if (sameDirOppLine.IsCellMiddle(cellDir.Cell))
+                    SplitCase(cellDir, sameDirOppLine);
+                else
+                    sameDirOppLine.Estimate(state.Board);
+            }
         }
 
         private void SplitCase(CellDirection cellDir, Line sameDirOppLine)
         {
             skipDirections.Add(cellDir.MirrorDirection);
             var cells = sameDirOppLine.ExtractCells(cellDir.Cell, state.Board).ToList();
-            if (sameDirOppLine.Count == 1 && state.OppLines.FilterByCell(sameDirOppLine.Start).Count() >= 2)
+            if (LineIsOneCellAndOtherLineExists(sameDirOppLine)
+                || TwoOrMoreLinesExistInCell(sameDirOppLine.Start, cellDir.Direction)
+                || TwoOrMoreLinesExistInCell(sameDirOppLine.End, cellDir.Direction))
                 state.OppLines.Remove(sameDirOppLine);
             if (cells.Count == 1 && state.OppLines.FilterByCell(cells[0]).Any())
                 return;
 
             var line = new Line(cells, state.OpponentCellType, state.Board);
             state.OppLines.Add(line);
+        }
+
+        private bool LineIsOneCellAndOtherLineExists(Line sameDirOppLine)
+        {
+            return sameDirOppLine.Count == 1 && state.OppLines.FilterByCell(sameDirOppLine.Start).Count() >= 2;
+        }
+
+        private bool TwoOrMoreLinesExistInCell(Cell cell, Cell direction)
+        {
+            return state.OppLines.Filter(cell, direction).Count() >= 2;
         }
     }
 }

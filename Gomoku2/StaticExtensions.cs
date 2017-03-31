@@ -98,11 +98,16 @@ namespace Gomoku2
             return lines.Any(l => l.Count >= 5);
         }
 
-        public static Line Filter(this List<Line> lines, Cell analyzedCell, Cell direction)
+        public static Line FilterFirstOrDefault(this List<Line> lines, Cell analyzedCell, Cell direction)
         {
-            return
-                lines.FilterByCell(analyzedCell)
-                    .FirstOrDefault(line => line.Count == 1 || line.Direction == direction || line.Direction == -direction);
+            return Filter(lines, analyzedCell, direction).FirstOrDefault();
+        }
+
+        public static IEnumerable<Line> Filter(this List<Line> lines, Cell analyzedCell, Cell direction)
+        {
+            return lines
+               .FilterByCell(analyzedCell)
+               .Where(line => line.Count == 1 || line.Direction == direction || line.Direction == -direction);
         }
 
         public static IEnumerable<Line> FilterByCell(this List<Line> lines, Cell analyzedCell)

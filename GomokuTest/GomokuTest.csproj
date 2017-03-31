@@ -52,7 +52,7 @@
   <ItemGroup>
     <Compile Include="BlockedLineDeterminationTest.cs" />
     <Compile Include="EstimateTest.cs" />
-    <Compile Include="GameTest.cs" />
+    <Compile Include="BoardStateTest.cs" />
     <Compile Include="LineChangeTest.cs" />
     <Compile Include="LineDeterminationTest.cs" />
     <Compile Include="OpponentMoveLineChange.cs" />
@@ -81,7 +81,7 @@
     <Content Include="BlockedLineDetermination\BlockedLongBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\LongBrokenTwoNotModifiedCorrectly.txt">
+    <Content Include="BoardState\LongBrokenTwoNotModifiedCorrectly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineChange\BrokenThreeIntoStraightFour.txt">
@@ -213,6 +213,9 @@
     <Content Include="OpponentMoveLineChange\BrokenThreeIntoBlockedTwoAndSingle.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="OpponentMoveLineChange\DoubleBrokenThreeSplit.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="OpponentMoveLineChange\SingleMarkAfterLongBrokenTwoSplit.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -223,6 +226,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="OpponentMoveLineChange\LongBrokenTwoIntoNoSingleLines.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpponentMoveLineChange\SplitBrokenThree.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpponentMoveLineChange\SplitLongBrokenThree.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpponentMoveLineChange\DoubleBrokenFourIntoBlockedLines.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="OpponentMoveLineChange\StraightFourIntoBlockedFour.txt">
@@ -269,86 +281,86 @@
     <Content Include="PriorityCells\DoubleThreatDefenceMoves.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\BlockedThreeIntoDeadFour.txt">
+    <Content Include="BoardState\BlockedThreeIntoDeadFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\BlockedThreeNotCountedInThreat.txt" />
-    <Content Include="BoardStates\Board05CorrectMove.txt">
+    <Content Include="BoardState\BlockedThreeNotCountedInThreat.txt" />
+    <Content Include="BoardState\Board05CorrectMove.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\Board06WrongDefence.txt">
+    <Content Include="BoardState\Board06WrongDefence.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\Board09Unknown.txt">
+    <Content Include="BoardState\Board09Unknown.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\Board11FirstLost.txt">
+    <Content Include="BoardState\Board11FirstLost.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\Board13FirstDontDefend.txt">
+    <Content Include="BoardState\Board13FirstDontDefend.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PriorityCells\LongBrokenTwoIntoDoubleThreat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\LongBrokenThree.txt">
+    <Content Include="BoardState\LongBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\Board14HasWinningMove.txt">
+    <Content Include="BoardState\Board14HasWinningMove.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PlaysSecond\Board07Unknown.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\Board16WinNotFound.txt">
+    <Content Include="BoardState\Board16WinNotFound.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\Board34WrongDefensiveMove.txt">
+    <Content Include="BoardState\Board34WrongDefensiveMove.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Estimations\BlockedThreeAndThreeInRowEstimatedAsDoubleThreat.txt">
+    <Content Include="Estimation\BlockedThreeAndThreeInRowEstimatedAsDoubleThreat.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Estimations\BrokenFourEstimatedTwice.txt">
+    <Content Include="Estimation\BrokenFourEstimatedTwice.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\FourInLineNotPriorityForDef.txt">
+    <Content Include="BoardState\FourInLineNotPriorityForDef.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\LongRunningComplexPosition.txt">
+    <Content Include="BoardState\LongRunningComplexPosition.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\StraightFiveIsNotCountered.txt">
+    <Content Include="BoardState\StraightFiveIsNotCountered.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\SecondHasWinningMove.txt">
+    <Content Include="BoardState\SecondHasWinningMove.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Estimations\BlockedFourEstimatedAsLost.txt">
+    <Content Include="Estimation\BlockedFourEstimatedAsLost.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Estimations\FourInRowEstimatedAsWin.txt">
+    <Content Include="Estimation\FourInRowEstimatedAsWin.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Estimations\BlockedThreeEstimatedAsBrokenThree.txt">
+    <Content Include="Estimation\BlockedThreeEstimatedAsBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardStates\ThreeInRowDefensiveMove.txt">
+    <Content Include="BoardState\ThreeInRowDefensiveMove.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Estimations\BlockedThreeHighPriorityCellsWrong.txt">
+    <Content Include="Estimation\BlockedThreeHighPriorityCellsWrong.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Estimations\DoubleLongBrokenThree.txt">
+    <Content Include="Estimation\DoubleLongBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Estimations\ThreeInRowEstimatedAsLost.txt">
+    <Content Include="Estimation\ThreeInRowEstimatedAsLost.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Estimations\StraightFourEstimatedAsLost.txt">
+    <Content Include="Estimation\StraightFourEstimatedAsLost.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Estimations\DoubleThreatEstimatedAsLost.txt">
+    <Content Include="Estimation\DoubleThreatEstimatedAsLost.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineDetermination\DeadTwo2.txt">

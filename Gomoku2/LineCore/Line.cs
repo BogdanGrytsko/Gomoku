@@ -120,7 +120,7 @@ namespace Gomoku2.LineCore
 
         public Cell Start { get; set; }
 
-        private Cell End { get; set; }
+        public Cell End { get; set; }
 
         public int Count { get { return cells.Count; } }
 

@@ -12,7 +12,7 @@ namespace Gomoku2.LineCore
 
         public override void Modify(CellDirection cellDir)
         {
-            var sameDirLine = state.MyLines.Filter(cellDir.AnalyzedCell, cellDir.Direction);
+            var sameDirLine = state.MyLines.FilterFirstOrDefault(cellDir.AnalyzedCell, cellDir.Direction);
             if (CanAddCell(sameDirLine, cellDir))
                 sameDirLine.AddOuterCellAndEstimate(state.Board, cellDir);
             else

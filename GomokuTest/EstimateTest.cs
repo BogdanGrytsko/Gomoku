@@ -9,7 +9,7 @@ namespace GomokuTest
     [TestClass]
     public class EstimateTest
     {
-        private const string folder = "Estimations";
+        private const string folder = "Estimation";
 
         [TestMethod]
         public void BrokenFourEstimatedTwice()

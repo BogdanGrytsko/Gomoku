@@ -16,8 +16,8 @@ namespace Gomoku2.LineCore
 
         public override void Modify(CellDirection cellDir)
         {
-            var sameDirLine = state.MyLines.Filter(cellDir.AnalyzedCell, cellDir.Direction);
-            var mirrorDirLine = state.MyLines.Filter(mirrorCellDir.AnalyzedCell, mirrorCellDir.Direction);
+            var sameDirLine = state.MyLines.FilterFirstOrDefault(cellDir.AnalyzedCell, cellDir.Direction);
+            var mirrorDirLine = state.MyLines.FilterFirstOrDefault(mirrorCellDir.AnalyzedCell, mirrorCellDir.Direction);
 
             //if it is same line then add middle cell, reestimate and finish
             //| X *X|

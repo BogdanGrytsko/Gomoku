@@ -29,7 +29,7 @@ namespace GomokuTest
 
         private static Game TestMove(string boardName, int depth, params Cell[] correctMoves)
         {
-            return GameTest.TestMove(folder, boardName, depth, correctMoves);
+            return BoardStateTest.TestMove(folder, boardName, depth, correctMoves);
         }
 
         public static Game TestMove(string boardName, params Cell[] correctMoves)
@@ -40,7 +40,7 @@ namespace GomokuTest
         private static void DoTestWin(string boardName, params Cell[] correctMoves)
         {
             var game = TestMove(boardName, correctMoves);
-            Assert.IsTrue(GameTest.Win(game.LastEstimate));
+            Assert.IsTrue(BoardStateTest.Win(game.LastEstimate));
         }
     }
 }

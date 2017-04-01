@@ -42,7 +42,7 @@ namespace Gomoku2.LineCore
         {
             Line line = null;
             var space = 1;
-            for (int i = 0; i <= 3; i++)
+            for (int i = 0; i <= 4; i++)
             {
                 var cell = startCell + i*direction;
                 if (cell.IsEmptyWithBoard(state.Board)) space++;
@@ -68,7 +68,13 @@ namespace Gomoku2.LineCore
 
         private void AddOpponentLine(Line line)
         {
-            if (state.OppLines.Contains(line)) return;
+            if (state.OppLines.Contains(line))
+            {
+                //swap old line with new fresh estimated
+                state.OppLines.Remove(line);
+                state.OppLines.Add(line);
+                return;
+            }
             if (line.Count == 1 && state.OppLines.FilterByCell(line.Start).Any())return;
 
             state.OppLines.Add(line);

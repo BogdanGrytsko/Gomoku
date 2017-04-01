@@ -45,9 +45,8 @@ namespace Gomoku2.LineCore
 
         public void CalcPropsAndEstimate(BoardCell[,] board)
         {
-            CalcProps(board);
-            //todo move it higher. Calc next shit based on line type
             analyzer = GetAnalyzer();
+            CalcProps(board);
             SetEstimate();
         }
 
@@ -109,8 +108,9 @@ namespace Gomoku2.LineCore
         private void CalcNext(BoardCell[,] board)
         {
             next = NextCellWithType(1, board);
-            nextNext = NextCellWithType(2, board);
-            nextNextNext = NextCellWithType(3, board);
+            var length = analyzer.NextAnalyzeLength;
+            if (length >= 2) nextNext = NextCellWithType(2, board);
+            if (length == 3) nextNextNext = NextCellWithType(3, board);
         }
 
         private void CalcPrev(BoardCell[,] board)

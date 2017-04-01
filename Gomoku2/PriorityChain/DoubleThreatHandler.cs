@@ -20,6 +20,7 @@ namespace Gomoku2.PriorityChain
         {
             //long broken three can also contribute. but is is used in ThreatGeneratingThreeHandler.
             //as well as BLocked three. So it should be moved away from here.
+            //todo investigate
             var doubleThreat = GetPriorityCells(lines, type => type.IsBlokedThree() || type.IsTwoInRow() || type.IsLongBrokenTwo());
             return doubleThreat.GroupBy(s => s).SelectMany(grp => grp.Skip(1));
         }

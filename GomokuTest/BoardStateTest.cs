@@ -82,8 +82,8 @@ namespace GomokuTest
         [TestMethod]
         public void Board06WrongDefence()
         {
-            //todo take 2nd look if 9,5 leads to loose
-            TestMove("Board06WrongDefence.txt", 5, new Cell(5, 9));
+            //second has lost anyway
+            DoTestWin("Board06WrongDefence.txt", 5, new Cell(5, 9), new Cell(9, 5));
         }
 
         [TestMethod]
@@ -108,6 +108,12 @@ namespace GomokuTest
         public void LongBrokenTwoNotModifiedCorrectly()
         {
             TestMove("LongBrokenTwoNotModifiedCorrectly.txt", new Cell(7, 4));
+        }
+
+        private static void DoTestWin(string boardName, int depth, params Cell[] correctMoves)
+        {
+            var game = TestMove(boardName, depth, correctMoves);
+            Assert.IsTrue(Win(game.LastEstimate));
         }
 
         private static void DoTestWin(string boardName, params Cell[] correctMoves)

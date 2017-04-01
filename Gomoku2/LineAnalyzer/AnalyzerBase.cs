@@ -6,26 +6,23 @@ namespace Gomoku2.LineAnalyzer
 {
     public abstract class AnalyzerBase
     {
-        protected readonly List<Cell> nextCells, prevCells;
         protected readonly BoardCell owner;
         protected readonly Line line;
 
         protected AnalyzerBase(Line line)
         {
-            nextCells = line.NextCells;
-            prevCells = line.PrevCells;
             owner = line.owner;
             this.line = line;
         }
 
         public LineType PrevOpened()
         {
-            return OneSideOpened(prevCells);
+            return OneSideOpened(line.PrevCells);
         }
 
         public LineType NextOpened()
         {
-            return OneSideOpened(nextCells);
+            return OneSideOpened(line.NextCells);
         }
 
         protected abstract LineType OneSideOpened(List<Cell> cells);
@@ -56,6 +53,8 @@ namespace Gomoku2.LineAnalyzer
         }
 
         public virtual IEnumerable<Cell> PriorityCells => HighPriorityCells;
+        public abstract int NextAnalyzeLength { get; }
+
         public abstract bool CanAddCell(CellDirection cellDir);
     }
 }

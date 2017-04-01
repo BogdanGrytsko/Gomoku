@@ -41,6 +41,8 @@ namespace Gomoku2.LineAnalyzer
             }
         }
 
+        public override int NextAnalyzeLength => 2;
+
         public override bool CanAddCell(CellDirection cellDir)
         {
             return line.IsCellMiddle(cellDir.Cell) || cellDir.Distance <= 2;

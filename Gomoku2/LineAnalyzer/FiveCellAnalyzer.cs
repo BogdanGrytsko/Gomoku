@@ -26,6 +26,8 @@ namespace Gomoku2.LineAnalyzer
             return LineType.FiveInRow;
         }
 
+        public override int NextAnalyzeLength => 0;
+
         public override bool CanAddCell(CellDirection cellDir)
         {
            throw new Exception("Should never happen");

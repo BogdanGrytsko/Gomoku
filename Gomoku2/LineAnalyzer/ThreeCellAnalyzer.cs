@@ -12,5 +12,7 @@ namespace Gomoku2.LineAnalyzer
         {
             return LineType.DeadThree;
         }
+
+        public override int NextAnalyzeLength => 2;
     }
 }

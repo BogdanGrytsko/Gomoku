@@ -38,6 +38,8 @@ namespace Gomoku2.LineAnalyzer
             }
         }
 
+        public override int NextAnalyzeLength => 3;
+
         public override bool CanAddCell(CellDirection cellDir)
         {
             return true;

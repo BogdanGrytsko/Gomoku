@@ -7,5 +7,7 @@ namespace Gomoku2.LineAnalyzer
         protected FourCellAnalyzer(Line line) : base(line)
         {
         }
+
+        public override int NextAnalyzeLength => 1;
     }
 }

@@ -43,9 +43,11 @@ namespace Gomoku2.LineCore
             this.owner = owner;
         }
 
-        private void CalcPropsAndEstimate(BoardCell[,] board)
+        public void CalcPropsAndEstimate(BoardCell[,] board)
         {
             CalcProps(board);
+            //todo move it higher. Calc next shit based on line type
+            analyzer = GetAnalyzer();
             SetEstimate();
         }
 
@@ -146,13 +148,7 @@ namespace Gomoku2.LineCore
             }
         }
 
-        public LineType Estimate(BoardCell[,] board)
-        {
-            CalcNextAndPrev(board);
-            return lineType = GetEstimate();
-        }
-
-        public void SetEstimate()
+        private void SetEstimate()
         {
             lineType = GetEstimate();
         }
@@ -169,7 +165,10 @@ namespace Gomoku2.LineCore
 
         private LineType GetEstimate()
         {
-            analyzer = GetAnalyzer();
+#if (DEBUG)
+            if (cells.Contains(Middle1) || cells.Contains(Middle2))
+                throw new Exception("Sad sad larry");
+#endif
             return analyzer.DoAnalysis();
         }
 
@@ -385,6 +384,7 @@ namespace Gomoku2.LineCore
         {
             cells.Add(cell);
             NullMiddle(cell);
+            analyzer = GetAnalyzer();
             SetEstimate();
         }
     }

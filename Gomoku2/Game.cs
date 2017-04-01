@@ -282,8 +282,9 @@ namespace Gomoku2
             if (myLines.Count != clonedState.MyLines.Count)
             {
                 var line = myLines.Except(clonedState.MyLines);
+                var line2 = clonedState.MyLines.Except(myLines);
                 BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
-                //horrible mismatch
+                throw new Exception("HorribleMismatch.txt");
             }
 
             var oppLines = BoardFactory.GetLines(state.Board, state.OpponentCellType);
@@ -292,7 +293,7 @@ namespace Gomoku2
                 var line = oppLines.Except(clonedState.OppLines);
                 var line2 = clonedState.OppLines.Except(oppLines);
                 BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
-                //horrible mismatch
+                throw new Exception("HorribleMismatch.txt");
             }
             return clonedState;
         }

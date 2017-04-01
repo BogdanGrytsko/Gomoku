@@ -15,13 +15,58 @@ namespace Gomoku2.LineCore
         {
             var sameDirOppLines = state.OppLines.Filter(cellDir.AnalyzedCell, cellDir.Direction).ToList();
             if (!sameDirOppLines.Any()) return;
+            if (sameDirOppLines.Count >= 2 && sameDirOppLines.All(l => l.IsCellMiddle(cellDir.Cell)))
+            {
+                SuperSplitCase(cellDir, sameDirOppLines);
+                return;
+            }
             foreach (var sameDirOppLine in sameDirOppLines)
             {
+                //todo : use super split case
                 if (sameDirOppLine.IsCellMiddle(cellDir.Cell))
                     SplitCase(cellDir, sameDirOppLine);
                 else
-                    sameDirOppLine.Estimate(state.Board);
+                    sameDirOppLine.CalcPropsAndEstimate(state.Board);
             }
+        }
+
+        private void SuperSplitCase(CellDirection cellDir, List<Line> sameDirOppLines)
+        {
+            skipDirections.Add(cellDir.MirrorDirection);
+            foreach (var sameDirOppLine in sameDirOppLines)
+                state.OppLines.Remove(sameDirOppLine);
+            AddOpponentLine(GetMaxLine(cellDir.AnalyzedCell, cellDir.Direction));
+            AddOpponentLine(GetMaxLine(cellDir.Cell + cellDir.MirrorDirection, cellDir.MirrorDirection));
+        }
+
+        private Line GetMaxLine(Cell startCell, Cell direction)
+        {
+            Line line = null;
+            var space = 1;
+            for (int i = 0; i <= 3; i++)
+            {
+                var cell = startCell + i*direction;
+                if (cell.IsEmptyWithBoard(state.Board)) space++;
+                if (cell.IsType(state.Board, state.MyCellType)) break;
+                if (cell.IsType(state.Board, state.OpponentCellType))
+                {
+                    if (line == null)
+                        line = new Line(cell, state.OpponentCellType);
+                    else
+                    {
+                        //todo this is a bit too much. reduce maybe.
+                        var cellDir = new CellDirection(cell, -direction, space);
+                        line.AddOuterCellAndEstimate(state.Board, cellDir);
+                        space = 1;
+                    }
+                }
+            }
+            return line;
+        }
+
+        private void AddOpponentLine(Line line)
+        {
+            state.OppLines.Add(line);
         }
 
         private void SplitCase(CellDirection cellDir, Line sameDirOppLine)

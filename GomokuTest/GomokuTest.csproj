@@ -213,6 +213,12 @@
     <Content Include="OpponentMoveLineChange\BrokenThreeIntoBlockedTwoAndSingle.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="OpponentMoveLineChange\BrokenTwoSplit.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OpponentMoveLineChange\DoubleFourIntoBlockedLines.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="OpponentMoveLineChange\DoubleBrokenThreeSplit.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

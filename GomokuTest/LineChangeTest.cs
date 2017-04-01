@@ -201,6 +201,15 @@ namespace GomokuTest
             Assert.AreEqual(LineType.LongBrokenThree, lines[1].LineType);
         }
 
+        [TestMethod]
+        public void LongBrokenAndBrokenThree()
+        {
+            var lines = GetChangedLines("LongBrokenAndBrokenThree.txt", new Cell(7, 1));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.FourInRow, lines[0].LineType);
+            Assert.AreEqual(LineType.BrokenFour, lines[1].LineType);
+        }
+
         private static List<Line> GetChangedLines(string fileName, Cell cell, bool movesInOrder = false)
         {
             var board = BoardExportImport.Import(Path.Combine(folder, fileName));

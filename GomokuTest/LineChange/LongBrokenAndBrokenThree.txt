@@ -2,13 +2,13 @@
                
                
                
+ X             
+ O             
+ O             
                
-     XX XXXXO  
+ O             
                
-               
-               
-               
-               
+ O             
                
                
                

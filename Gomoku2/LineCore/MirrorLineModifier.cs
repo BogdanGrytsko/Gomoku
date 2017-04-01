@@ -21,11 +21,10 @@ namespace Gomoku2.LineCore
             var mirrorDirLines = state.MyLines.Filter(mirrorCellDir.AnalyzedCell, mirrorCellDir.Direction).ToList();
 
             var intersect = sameDirLines.Intersect(mirrorDirLines).ToList();
-            var singleIntersect = intersect.SingleOrDefault();
 
-            if (singleIntersect != null)
+            foreach (var intersectedLine in intersect)
             {
-                singleIntersect.AddMiddleCell(cellDir.Cell);
+                intersectedLine.AddMiddleCell(cellDir.Cell);
             }
 
             var sameDirLine = sameDirLines.Except(intersect).FirstOrDefault();
@@ -39,7 +38,7 @@ namespace Gomoku2.LineCore
                 RemoveOneCellLine(mirrorDirLine);
             }
 
-            var shouldNotAddLine =  singleIntersect != null || isStrangeLongBrokenThree;
+            var shouldNotAddLine =  intersect.Any() || isStrangeLongBrokenThree;
             ProcessSide(cellDir, sameDirLine, shouldNotAddLine);
             ProcessSide(mirrorCellDir, mirrorDirLine, shouldNotAddLine);
         }

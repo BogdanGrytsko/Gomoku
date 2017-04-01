@@ -142,16 +142,6 @@ namespace GomokuTest
             Assert.AreEqual(LineType.BlockedTwo, lines[1].LineType);
         }
 
-        [TestMethod, Ignore]
-        public void DoubleFourIntoBlockedLines()
-        {
-            //actually is a triple four. Ignore for now, investigate if it really happens IRL
-            var lines = GetLines("DoubleFourIntoBlockedLines.txt", new Cell(5, 7));
-            Assert.AreEqual(2, lines.Count);
-            Assert.AreEqual(LineType.BlockedTwo, lines[0].LineType);
-            Assert.AreEqual(LineType.DeadFour, lines[1].LineType);
-        }
-
         [TestMethod]
         public void DoubleBrokenThreeSplit()
         {

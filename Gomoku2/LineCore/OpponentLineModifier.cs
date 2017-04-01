@@ -17,20 +17,19 @@ namespace Gomoku2.LineCore
             if (!sameDirOppLines.Any()) return;
             if (sameDirOppLines.Count >= 2 && sameDirOppLines.All(l => l.IsCellMiddle(cellDir.Cell)))
             {
-                SuperSplitCase(cellDir, sameDirOppLines);
+                SplitCase(cellDir, sameDirOppLines);
                 return;
             }
             foreach (var sameDirOppLine in sameDirOppLines)
             {
-                //todo : use super split case
                 if (sameDirOppLine.IsCellMiddle(cellDir.Cell))
-                    SplitCase(cellDir, sameDirOppLine);
+                    SplitCase(cellDir, new List<Line> { sameDirOppLine });
                 else
                     sameDirOppLine.CalcPropsAndEstimate(state.Board);
             }
         }
 
-        private void SuperSplitCase(CellDirection cellDir, List<Line> sameDirOppLines)
+        private void SplitCase(CellDirection cellDir, List<Line> sameDirOppLines)
         {
             skipDirections.Add(cellDir.MirrorDirection);
             foreach (var sameDirOppLine in sameDirOppLines)
@@ -51,11 +50,14 @@ namespace Gomoku2.LineCore
                 if (cell.IsType(state.Board, state.OpponentCellType))
                 {
                     if (line == null)
+                    {
                         line = new Line(cell, state.OpponentCellType);
+                        space = 1;
+                    }
                     else
                     {
-                        //todo this is a bit too much. reduce maybe.
                         var cellDir = new CellDirection(cell, -direction, space);
+                        //todo this is a bit too much. reduce maybe. no need to estimate etc
                         line.AddOuterCellAndEstimate(state.Board, cellDir);
                         space = 1;
                     }
@@ -66,32 +68,10 @@ namespace Gomoku2.LineCore
 
         private void AddOpponentLine(Line line)
         {
+            if (state.OppLines.Contains(line)) return;
+            if (line.Count == 1 && state.OppLines.FilterByCell(line.Start).Any())return;
+
             state.OppLines.Add(line);
-        }
-
-        private void SplitCase(CellDirection cellDir, Line sameDirOppLine)
-        {
-            skipDirections.Add(cellDir.MirrorDirection);
-            var cells = sameDirOppLine.ExtractCells(cellDir.Cell, state.Board).ToList();
-            if (LineIsOneCellAndOtherLineExists(sameDirOppLine)
-                || TwoOrMoreLinesExistInCell(sameDirOppLine.Start, cellDir.Direction)
-                || TwoOrMoreLinesExistInCell(sameDirOppLine.End, cellDir.Direction))
-                state.OppLines.Remove(sameDirOppLine);
-            if (cells.Count == 1 && state.OppLines.FilterByCell(cells[0]).Any())
-                return;
-
-            var line = new Line(cells, state.OpponentCellType, state.Board);
-            state.OppLines.Add(line);
-        }
-
-        private bool LineIsOneCellAndOtherLineExists(Line sameDirOppLine)
-        {
-            return sameDirOppLine.Count == 1 && state.OppLines.FilterByCell(sameDirOppLine.Start).Count() >= 2;
-        }
-
-        private bool TwoOrMoreLinesExistInCell(Cell cell, Cell direction)
-        {
-            return state.OppLines.Filter(cell, direction).Count() >= 2;
         }
     }
 }

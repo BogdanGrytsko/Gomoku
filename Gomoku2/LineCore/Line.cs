@@ -308,50 +308,6 @@ namespace Gomoku2.LineCore
             return analyzer.CanAddCell(cellDir);
         }
 
-        public IEnumerable<Cell> ExtractCells(Cell cell, BoardCell[,] board)
-        {
-            var sameDirCell = new List<Cell>();
-            var oppDirCell = new List<Cell>();
-            foreach (var cell1 in cells.ToList())
-            {
-                if ((cell1 - cell).Normalize() == Direction)
-                    sameDirCell.Add(cell1);
-                else
-                    oppDirCell.Add(cell1);
-            }
-            var shortest = GetShortest(sameDirCell, oppDirCell);
-            foreach (var cell1 in shortest)
-            {
-                cells.Remove(cell1);
-                yield return cell1;
-            }
-            //additional null for all that is not X X X
-            if (!IsStrangeBrokenThree)
-            {
-                middle1 = null;
-                middle2 = null;
-            }
-            NullMiddle(cell);
-            CalcPropsAndEstimate(board);
-        }
-
-        private bool IsStrangeBrokenThree
-        {
-            get
-            {
-                if (middle1 == null || middle2 == null)
-                    return false;
-                return middle1.DistSqr(middle2) == 4;
-            }
-        }
-
-        private static List<Cell> GetShortest(List<Cell> sameDirCell, List<Cell> oppDirCell)
-        {
-            if (sameDirCell.Count >= oppDirCell.Count)
-                return oppDirCell;
-            return sameDirCell;
-        }
-
         public void AddOuterCellAndEstimate(BoardCell[,] board, CellDirection cellDir)
         {
             AddOuterCell(cellDir);

@@ -216,6 +216,9 @@
     <Content Include="LineDetermination\LongBrokenThreeAndBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="OpponentMoveLineChange\BrokenFourAndBrokenThreeSplit.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="OpponentMoveLineChange\BrokenThreeIntoBlockedTwoAndSingle.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

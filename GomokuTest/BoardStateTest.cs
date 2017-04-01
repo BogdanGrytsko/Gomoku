@@ -109,7 +109,6 @@ namespace GomokuTest
         public void LongBrokenTwoNotModifiedCorrectly()
         {
             TestMove("LongBrokenTwoNotModifiedCorrectly.txt", new Cell(7, 4));
-            Assert.Inconclusive();
         }
 
         private static void DoTestWin(string boardName, params Cell[] correctMoves)

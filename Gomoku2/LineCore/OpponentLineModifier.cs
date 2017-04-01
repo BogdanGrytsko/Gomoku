@@ -56,6 +56,8 @@ namespace Gomoku2.LineCore
                     }
                     else
                     {
+                        //don't allow very long broken two
+                        if (space == 4) break;
                         var cellDir = new CellDirection(cell, -direction, space);
                         //todo this is a bit too much. reduce maybe. no need to estimate etc
                         line.AddOuterCellAndEstimate(state.Board, cellDir);

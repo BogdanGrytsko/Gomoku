@@ -188,6 +188,16 @@ namespace GomokuTest
             Assert.AreEqual(LineType.SingleMark, lines[1].LineType);
         }
 
+        [TestMethod]
+        public void VeryLongBrokenTwoNotAllowed()
+        {
+            var lines = GetLines("VeryLongBrokenTwoNotAllowed.txt", new Cell(7, 6));
+            Assert.AreEqual(3, lines.Count);
+            Assert.AreEqual(LineType.SingleMark, lines[0].LineType);
+            Assert.AreEqual(LineType.SingleMark, lines[1].LineType);
+            Assert.AreEqual(LineType.SingleMark, lines[2].LineType);
+        }
+
         private static List<Line> GetLines(string fileName, Cell cell)
         {
             var board = BoardExportImport.Import(Path.Combine(folder, fileName));

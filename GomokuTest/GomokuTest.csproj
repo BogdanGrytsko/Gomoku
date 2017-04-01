@@ -105,6 +105,9 @@
     <Content Include="LineChange\MiddleCreatesLongBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="LineChange\BrokenTwoCombined.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="LineChange\VeryLongBrokenTwoIntoLongBrokenThree5.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -192,6 +192,15 @@ namespace GomokuTest
             Assert.AreEqual(LineType.LongBrokenThree, lines[2].LineType);
         }
 
+        [TestMethod]
+        public void BrokenTwoCombined()
+        {
+            var lines = GetChangedLines("BrokenTwoCombined.txt", new Cell(6, 9));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual(LineType.ThreeInRow, lines[0].LineType);
+            Assert.AreEqual(LineType.LongBrokenThree, lines[1].LineType);
+        }
+
         private static List<Line> GetChangedLines(string fileName, Cell cell, bool movesInOrder = false)
         {
             var board = BoardExportImport.Import(Path.Combine(folder, fileName));

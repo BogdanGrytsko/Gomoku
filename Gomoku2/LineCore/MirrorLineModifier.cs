@@ -23,14 +23,13 @@ namespace Gomoku2.LineCore
             var intersect = sameDirLines.Intersect(mirrorDirLines).ToList();
             var singleIntersect = intersect.SingleOrDefault();
 
-            var sameDirLine = sameDirLines.Except(intersect).FirstOrDefault();
-            var mirrorDirLine = mirrorDirLines.Except(intersect).FirstOrDefault();
             if (singleIntersect != null)
             {
                 singleIntersect.AddMiddleCell(cellDir.Cell);
-                if (sameDirLine == null && mirrorDirLine == null)
-                    return;
             }
+
+            var sameDirLine = sameDirLines.Except(intersect).FirstOrDefault();
+            var mirrorDirLine = mirrorDirLines.Except(intersect).FirstOrDefault();
 
             var isStrangeLongBrokenThree = StrangeLongBrokenThree(cellDir);
             if (isStrangeLongBrokenThree)
@@ -40,15 +39,16 @@ namespace Gomoku2.LineCore
                 RemoveOneCellLine(mirrorDirLine);
             }
 
-            ProcessSide(cellDir, sameDirLine, isStrangeLongBrokenThree);
-            ProcessSide(mirrorCellDir, mirrorDirLine, isStrangeLongBrokenThree);
+            var shouldNotAddLine =  singleIntersect != null || isStrangeLongBrokenThree;
+            ProcessSide(cellDir, sameDirLine, shouldNotAddLine);
+            ProcessSide(mirrorCellDir, mirrorDirLine, shouldNotAddLine);
         }
 
-        private void ProcessSide(CellDirection cellDir, Line line, bool isStrangeLongBrokenThree)
+        private void ProcessSide(CellDirection cellDir, Line line, bool shouldNotAddLine)
         {
             if (CanAddCell(line, cellDir))
                 line.AddOuterCellAndEstimate(state.Board, cellDir);
-            else if (!isStrangeLongBrokenThree)
+            else if (!shouldNotAddLine)
                 AddMyLine(CreateMaxCellLine(cellDir));
         }
 

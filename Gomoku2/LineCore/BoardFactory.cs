@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Gomoku2.CellObjects;
 using Gomoku2.StateCache;
@@ -54,10 +55,18 @@ namespace Gomoku2.LineCore
 
         public static void AddCellToLines(Cell cell, BoardStateBase state)
         {
-            var factory = new LineModifier(cell, state);
-            factory.AddCellToLines();
-            state.MyLines.Sort();
-            state.OppLines.Sort();
+            try
+            {
+                var factory = new LineModifier(cell, state);
+                factory.AddCellToLines();
+                state.MyLines.Sort();
+                state.OppLines.Sort();
+            }
+            catch (Exception)
+            {
+                BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
+                throw;
+            }
         }
     }
 }

@@ -84,6 +84,9 @@
     <Content Include="BoardState\LongBrokenTwoNotModifiedCorrectly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="LineChange\TripleTwoIntoTripleThree.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="LineChange\BrokenThreeIntoStraightFour.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

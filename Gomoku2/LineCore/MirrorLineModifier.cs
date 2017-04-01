@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Gomoku2.CellObjects;
 using Gomoku2.StateCache;
 
@@ -16,15 +17,19 @@ namespace Gomoku2.LineCore
 
         public override void Modify(CellDirection cellDir)
         {
-            var sameDirLine = state.MyLines.FilterFirstOrDefault(cellDir.AnalyzedCell, cellDir.Direction);
-            var mirrorDirLine = state.MyLines.FilterFirstOrDefault(mirrorCellDir.AnalyzedCell, mirrorCellDir.Direction);
+            var sameDirLines = state.MyLines.Filter(cellDir.AnalyzedCell, cellDir.Direction).ToList();
+            var mirrorDirLines = state.MyLines.Filter(mirrorCellDir.AnalyzedCell, mirrorCellDir.Direction).ToList();
 
-            //if it is same line then add middle cell, reestimate and finish
-            //| X *X|
-            if (sameDirLine == mirrorDirLine && sameDirLine != null)
+            var intersect = sameDirLines.Intersect(mirrorDirLines).ToList();
+            var singleIntersect = intersect.SingleOrDefault();
+
+            var sameDirLine = sameDirLines.Except(intersect).FirstOrDefault();
+            var mirrorDirLine = mirrorDirLines.Except(intersect).FirstOrDefault();
+            if (singleIntersect != null)
             {
-                sameDirLine.AddMiddleCell(cellDir.Cell);
-                return;
+                singleIntersect.AddMiddleCell(cellDir.Cell);
+                if (sameDirLine == null && mirrorDirLine == null)
+                    return;
             }
 
             var isStrangeLongBrokenThree = StrangeLongBrokenThree(cellDir);

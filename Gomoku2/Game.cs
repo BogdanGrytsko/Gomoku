@@ -277,7 +277,12 @@ namespace Gomoku2
         {
             var clonedState = state.Clone();
             BoardFactory.AddCellToLines(cell, clonedState);
-            //todo remove
+            //CheckConsistency(state, clonedState);
+            return clonedState;
+        }
+
+        private static void CheckConsistency(BoardStateBase state, BoardStateBase clonedState)
+        {
             var myLines = BoardFactory.GetLines(state.Board, state.MyCellType);
             if (myLines.Count != clonedState.MyLines.Count)
             {
@@ -295,7 +300,6 @@ namespace Gomoku2
                 BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
                 throw new Exception("HorribleMismatch.txt");
             }
-            return clonedState;
         }
     }
 }

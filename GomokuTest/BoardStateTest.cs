@@ -82,15 +82,14 @@ namespace GomokuTest
         [TestMethod]
         public void Board06WrongDefence()
         {
+            //todo take 2nd look if 9,5 leads to loose
             TestMove("Board06WrongDefence.txt", 5, new Cell(5, 9));
-            Assert.Inconclusive();
         }
 
         [TestMethod]
         public void Board09Unknown()
         {
-            TestMove("Board09Unknown.txt", new Cell(5, 7));
-            Assert.Inconclusive();
+            TestMove("Board09Unknown.txt", new Cell(5, 7), new Cell(7, 9));
         }
 
         [TestMethod]

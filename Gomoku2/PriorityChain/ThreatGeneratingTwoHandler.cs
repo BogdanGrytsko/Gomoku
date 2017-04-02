@@ -13,8 +13,8 @@ namespace Gomoku2.PriorityChain
 
         public override PriorityCells GetCells()
         {
-            var threatGenerating = lines.FirstOrDefault(l => l.LineType.IsTwoInRow() || l.LineType.IsLongBrokenTwo());
-            return new PriorityCells(threatGenerating?.PriorityCells);
+            var threatGenerating = GetPriorityCells(lines, l => l.IsTwoInRow() || l.IsLongBrokenTwo());
+            return new PriorityCells(threatGenerating);
         }
     }
 }

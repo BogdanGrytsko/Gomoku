@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,9 @@ namespace GomokuSimulator
 {
     public partial class Form1 : Form
     {
+        private const string Human = "Human";
         private GamePlayer gamePlayer = new GamePlayer("Gomoku2.Game", "Gomoku.Game");
+        private HumanComputerGame humanGame;
         private readonly List<EstimatedBoard> boards = new List<EstimatedBoard>();
         private EstimatedBoard currentBoard;
         private int currState;
@@ -40,7 +43,7 @@ namespace GomokuSimulator
         {
             yield return new ComboBoxItem {Text = "Gomoku2", Value = "Gomoku2.Game"};
             yield return new ComboBoxItem { Text = "Gomoku", Value = "Gomoku.Game"};
-            yield return new ComboBoxItem { Text = "Human", Value = "Human" };
+            yield return new ComboBoxItem { Text = Human, Value = Human };
         }
 
         private void DrawGrid(int xcount, int ycount)
@@ -64,8 +67,7 @@ namespace GomokuSimulator
                 for (int y = 0; y < board.GetLength(1); y++)
                 {
                     var cell = Controls[GetName(x,y)];
-                    cell.Text = board[x, y].GetCellText();
-                    cell.ForeColor = board[x, y].GetButonColor();
+                    SetButtonProps(cell, board[x,y]);
                 }
             }
 
@@ -77,7 +79,13 @@ namespace GomokuSimulator
                 totalElapsedPlayer2TxtBox.Text = estimatedBoard.Elapsed.ToString();
         }
 
-        private static Button CreateButton(int x, int y)
+        private static void SetButtonProps(Control cell, BoardCell boardCell)
+        {
+            cell.Text = boardCell.GetCellText();
+            cell.ForeColor = boardCell.GetButonColor();
+        }
+
+        private Button CreateButton(int x, int y)
         {
             const int buttonWidth = 40;
             const int buttonHeight = 40;
@@ -91,8 +99,10 @@ namespace GomokuSimulator
                 Left = startY + (y*buttonWidth + distance),
                 Width = buttonWidth,
                 Height = buttonHeight,
-                Name = GetName(x,y)
+                Name = GetName(x,y),
+                Tag = new Cell(x,y)
             };
+            tmpButton.Click += CellClick;
             if (x == 15)
                 tmpButton.Text = y.ToString();
             if (y == 15)
@@ -100,12 +110,35 @@ namespace GomokuSimulator
             return tmpButton;
         }
 
+        private void CellClick(object sender, EventArgs eventArgs)
+        {
+            try
+            {
+                var button = (Button)sender;
+                var board = humanGame.HumanMove((Cell)button.Tag);
+                boards.Add(board);
+                currState++;
+                SetButtonProps(button, humanGame.HumanMoveType);
+                Application.DoEvents();
+                if (humanGame.GameIsFinished)
+                    MessageBox.Show("Game is finished!");
+                DoComputerMove();
+                Application.DoEvents();
+                if (humanGame.GameIsFinished)
+                    MessageBox.Show("Game is finished!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         private static string GetName(int x, int y)
         {
             return string.Format("ButtonX{0}Y{1}", x, y);
         }
 
-        private void PlayButtonClick(object sender, System.EventArgs e)
+        private void PlayButtonClick(object sender, EventArgs e)
         {
             boards.Clear();
             currState = 0;
@@ -130,7 +163,7 @@ namespace GomokuSimulator
             }
         }
 
-        private void BackBtnClick(object sender, System.EventArgs e)
+        private void BackBtnClick(object sender, EventArgs e)
         {
             if (currState > 0)
             {
@@ -139,7 +172,7 @@ namespace GomokuSimulator
             }
         }
 
-        private void ForwardBtnClick(object sender, System.EventArgs e)
+        private void ForwardBtnClick(object sender, EventArgs e)
         {
             if (currState < boards.Count - 1)
             {
@@ -148,14 +181,14 @@ namespace GomokuSimulator
             }
         }
 
-        private void ExportBoardBtnClick(object sender, System.EventArgs e)
+        private void ExportBoardBtnClick(object sender, EventArgs e)
         {
             if (exportBoardFileDialog.ShowDialog() != DialogResult.OK) return;
 
             BoardExportImport.Export(currentBoard.Board, exportBoardFileDialog.FileName);
         }
 
-        private void ImportBoardBtnClick(object sender, System.EventArgs e)
+        private void ImportBoardBtnClick(object sender, EventArgs e)
         {
             if (importBoardFileDialog.ShowDialog() != DialogResult.OK) return;
 
@@ -163,7 +196,7 @@ namespace GomokuSimulator
             UpdateGrid(new EstimatedBoard {Board = board});
         }
         
-        private void AnalyzeBtnClick(object sender, System.EventArgs e)
+        private void AnalyzeBtnClick(object sender, EventArgs e)
         {
             analyzisTreeView.Nodes.Clear();
 
@@ -212,15 +245,39 @@ namespace GomokuSimulator
             UpdateGrid(gameState.EstimatedBoard);
         }
 
-        private void player1Box_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void player1Box_SelectedIndexChanged(object sender, EventArgs e)
         {
             var item1 = (ComboBoxItem) player1Box.SelectedItem;
             var item2 = (ComboBoxItem) player2Box.SelectedItem;
-            if (item1 != null && item2 != null)
-                gamePlayer = new GamePlayer(item1.Value, item2.Value);
+            if (item1 == null || item2 == null) return;
+
+            boards.Clear();
+            currState = 0;
+            Application.DoEvents();
+            //human makes first move
+            if (item1.Value == Human)
+            {
+                humanGame = new HumanComputerGame(new Game(15,15), BoardCell.First );
+                return;
+            }
+            if (item2.Value == Human)
+            {
+                humanGame = new HumanComputerGame(new Game(15, 15), BoardCell.Second);
+                DoComputerMove();
+                return;
+            }
+            gamePlayer = new GamePlayer(item1.Value, item2.Value);
         }
 
-        private void player2Box_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void DoComputerMove()
+        {
+            var board = humanGame.ComputerMove();
+            boards.Add(board);
+            UpdateGrid(board);
+            currState++;
+        }
+
+        private void player2Box_SelectedIndexChanged(object sender, EventArgs e)
         {
             player1Box_SelectedIndexChanged(sender, e);
         }

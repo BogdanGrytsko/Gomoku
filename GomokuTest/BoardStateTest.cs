@@ -52,7 +52,7 @@ namespace GomokuTest
         [TestMethod]
         public void LongRunningComplexPosition()
         {
-            TestMove("LongRunningComplexPosition.txt", new Cell(10, 6));
+            TestMove("LongRunningComplexPosition.txt", new Cell(9, 7));
         }
 
         [TestMethod]

@@ -115,6 +115,14 @@ namespace GomokuTest
             Assert.AreEqual(new Cell(6, 5), myCells[1]);
         }
 
+        [TestMethod]
+        public void TwoInRow()
+        {
+            var cells = GetNextCells("TwoInRow.txt");
+            var myCells = cells.MyNextCells.ToList();
+            Assert.AreEqual(4, myCells.Count);
+        }
+
         private static NextCells GetNextCells(string fileName, bool next = false)
         {
             var board = BoardExportImport.Import(Path.Combine(folder, fileName));

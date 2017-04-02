@@ -60,9 +60,10 @@
     <Compile Include="LineCore\MirrorLineModifier.cs" />
     <Compile Include="LineCore\OpponentLineModifier.cs" />
     <Compile Include="LineCore\SingleLineModifier.cs" />
+    <Compile Include="PriorityChain\DoubleThreatThreeHandler.cs" />
     <Compile Include="PriorityChain\ThreatGeneratingThreeHandler.cs" />
     <Compile Include="PriorityChain\DefenceThreatOfThreeHandler.cs" />
-    <Compile Include="PriorityChain\DoubleThreatHandler.cs" />
+    <Compile Include="PriorityChain\DoubleThreatTwoHandler.cs" />
     <Compile Include="PriorityChain\FourCellHandler.cs" />
     <Compile Include="PriorityChain\PriorityAlgorithm.cs" />
     <Compile Include="PriorityChain\PriorityHandlerBase.cs" />

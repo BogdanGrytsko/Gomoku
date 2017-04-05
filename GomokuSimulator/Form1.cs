@@ -251,13 +251,15 @@ namespace GomokuSimulator
             var item2 = (ComboBoxItem) player2Box.SelectedItem;
             if (item1 == null || item2 == null) return;
 
+            UpdateGrid(new EstimatedBoard());
             boards.Clear();
             currState = 0;
+            
             Application.DoEvents();
             //human makes first move
             if (item1.Value == Human)
             {
-                humanGame = new HumanComputerGame(new Game(15,15), BoardCell.First );
+                humanGame = new HumanComputerGame(new Game(15, 15), BoardCell.First);
                 return;
             }
             if (item2.Value == Human)

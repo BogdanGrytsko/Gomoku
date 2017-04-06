@@ -102,7 +102,7 @@ namespace Gomoku2
         {
             var myLines = GetLines(boardCell);
             var oppLines = GetLines(boardCell.Opponent());
-            return new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board);
+            return new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board) { StartDepth = depth };
         }
 
         private int AlphaBeta(BoardState state, int alpha, int beta, out Cell move, GameState parent)

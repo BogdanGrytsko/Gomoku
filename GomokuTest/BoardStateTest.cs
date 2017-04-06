@@ -1,17 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Gomoku2;
-using Gomoku2.CellObjects;
-using Gomoku2.LineCore;
+﻿using Gomoku2.CellObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GomokuTest
 {
     [TestClass]
-    public class BoardStateTest
+    public class BoardStateTest : TestBase
     {
-        private const string folder = "BoardState";
+        protected override string Folder => "BoardState";
 
         [TestMethod]
         public void SecondHasWinningMove()
@@ -108,42 +103,6 @@ namespace GomokuTest
         public void LongBrokenTwoNotModifiedCorrectly()
         {
             TestMove("LongBrokenTwoNotModifiedCorrectly.txt", new Cell(7, 4));
-        }
-
-        private static void DoTestWin(string boardName, int depth, params Cell[] correctMoves)
-        {
-            var game = TestMove(boardName, depth, correctMoves);
-            Assert.IsTrue(Win(game.LastEstimate));
-        }
-
-        private static void DoTestWin(string boardName, params Cell[] correctMoves)
-        {
-            var game = TestMove(boardName, correctMoves);
-            Assert.IsTrue(Win(game.LastEstimate));
-        }
-
-        public static bool Win(int estim)
-        {
-            return Math.Abs(estim) >= (int)LineType.DoubleThreat / 2;
-        }
-
-        public static Game TestMove(string boardName, int depth, params Cell[] correctMoves)
-        {
-            return TestMove(folder, boardName, depth, correctMoves);
-        }
-
-        public static Game TestMove(string folderPath, string boardName, int depth, params Cell[] correctMoves)
-        {
-            var board = BoardExportImport.Import(Path.Combine(folderPath, boardName));
-            var game = new Game(board);
-            var move = game.DoMove(board.WhoMovesNext(), depth, Game.DefaultWidth);
-            Assert.IsTrue(correctMoves.Any(cm => cm == move));
-            return game;
-        }
-
-        public static Game TestMove(string boardName, params Cell[] correctMoves)
-        {
-            return TestMove(boardName, Game.DefaultDepth, correctMoves);
         }
     }
 }

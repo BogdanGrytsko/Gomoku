@@ -118,9 +118,10 @@ namespace GomokuTest
         [TestMethod]
         public void TwoInRow()
         {
-            var cells = GetNextCells("TwoInRow.txt");
+            var cells = GetNextCells("TwoInRow.txt", true);
             var myCells = cells.MyNextCells.ToList();
-            Assert.AreEqual(4, myCells.Count);
+            //maybe even more since it is starting position. 9 is all surronding
+            Assert.AreEqual(9 + 2, myCells.Count);
         }
 
         private static NextCells GetNextCells(string fileName, bool next = false)

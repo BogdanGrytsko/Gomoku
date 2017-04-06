@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Gomoku2.CellObjects;
 using Gomoku2.LineCore;
@@ -12,6 +11,10 @@ namespace Gomoku2.StateCache
         public int Depth { get; private set; }
 
         public int MaxWidth { get; private set; }
+
+        private int MinDepth { get; set; }
+
+        public int StartDepth { get; set; }
 
         public BoardState(
             List<Line> myLines, List<Line> oppLines, BoardCell myCellType, int depth, int minDepth, int maxWidth, BoardCell[,] board)
@@ -30,7 +33,7 @@ namespace Gomoku2.StateCache
 
         public BoardState GetNextState(List<Line> myNewLines, List<Line> oppNewLines)
         {
-            return new BoardState(oppNewLines, myNewLines, OpponentCellType, Depth - 1, MinDepth, MaxWidth, Board);
+            return new BoardState(oppNewLines, myNewLines, OpponentCellType, Depth - 1, MinDepth, MaxWidth, Board) { StartDepth = StartDepth };
         }
 
         public BoardState GetThisState(List<Line> myNewLines, List<Line> oppNewLines)
@@ -50,8 +53,6 @@ namespace Gomoku2.StateCache
             }
             return GetNearEmptyCells();
         }
-
-        private int MinDepth { get; set; }
 
         public bool IsTerminal => Depth == MinDepth;
 

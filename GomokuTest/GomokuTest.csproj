@@ -51,6 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BlockedLineDeterminationTest.cs" />
+    <Compile Include="DeepAnalyzisTest.cs" />
     <Compile Include="EstimateTest.cs" />
     <Compile Include="BoardStateTest.cs" />
     <Compile Include="LineChangeTest.cs" />
@@ -82,6 +83,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="BoardState\LongBrokenTwoNotModifiedCorrectly.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DeepAnalyzis\Board05SecondLost.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineChange\TripleTwoIntoTripleThree.txt">

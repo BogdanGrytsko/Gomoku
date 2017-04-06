@@ -1,13 +1,12 @@
-﻿using Gomoku2;
-using Gomoku2.CellObjects;
+﻿using Gomoku2.CellObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GomokuTest
 {
     [TestClass]
-    public class PlaysSecondTest
+    public class PlaysSecondTest : TestBase
     {
-        private const string folder = "PlaysSecond";
+        protected override string Folder => "PlaysSecond";
 
         [TestMethod]
         public void Board07Unknown()
@@ -25,22 +24,6 @@ namespace GomokuTest
         public void Board11IsWon()
         {
             DoTestWin("Board11IsWon.txt", new Cell(6, 6), new Cell(6, 5));
-        }
-
-        private static Game TestMove(string boardName, int depth, params Cell[] correctMoves)
-        {
-            return BoardStateTest.TestMove(folder, boardName, depth, correctMoves);
-        }
-
-        public static Game TestMove(string boardName, params Cell[] correctMoves)
-        {
-            return TestMove(boardName, Game.DefaultDepth, correctMoves);
-        }
-
-        private static void DoTestWin(string boardName, params Cell[] correctMoves)
-        {
-            var game = TestMove(boardName, correctMoves);
-            Assert.IsTrue(BoardStateTest.Win(game.LastEstimate));
         }
     }
 }

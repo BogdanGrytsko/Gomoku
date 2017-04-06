@@ -82,6 +82,9 @@
     <Content Include="BlockedLineDetermination\BlockedLongBrokenThree.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="BoardState\FirstWrongDefenceMove.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="BoardState\LongBrokenTwoNotModifiedCorrectly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

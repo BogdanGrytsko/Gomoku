@@ -104,5 +104,11 @@ namespace GomokuTest
         {
             TestMove("LongBrokenTwoNotModifiedCorrectly.txt", new Cell(7, 4));
         }
+
+        [TestMethod]
+        public void FirstWrongDefenceMove()
+        {
+            DoTestWin("FirstWrongDefenceMove.txt", new Cell(4, 7));
+        }
     }
 }

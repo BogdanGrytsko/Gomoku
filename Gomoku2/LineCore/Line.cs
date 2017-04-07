@@ -30,13 +30,6 @@ namespace Gomoku2.LineCore
             CalcPropsAndEstimate(null);
         }
 
-        public Line(IEnumerable<Cell> newCells, BoardCell owner, BoardCell[,] board)
-        {
-            cells.AddRange(newCells);
-            this.owner = owner;
-            CalcPropsAndEstimate(board);
-        }
-
         public Line(IEnumerable<Cell> newCells, BoardCell owner)
         {
             cells.AddRange(newCells);

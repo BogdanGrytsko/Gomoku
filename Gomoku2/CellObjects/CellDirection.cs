@@ -21,8 +21,6 @@
 
         public Cell AnalyzedCell => analyzedCell ?? (analyzedCell = Cell + Distance*Direction);
 
-        public Cell MirrorAnalyzedCell => mirrorAnalyzedCell ?? (mirrorAnalyzedCell = Cell + Distance*MirrorDirection);
-
         public Cell Analyzed1 => Cell + Direction;
 
         public Cell Analyzed2 => Cell + 2*Direction;

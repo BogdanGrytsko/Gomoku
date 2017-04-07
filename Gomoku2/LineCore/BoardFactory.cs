@@ -55,18 +55,10 @@ namespace Gomoku2.LineCore
 
         public static void AddCellToLines(Cell cell, BoardStateBase state)
         {
-            try
-            {
-                var factory = new LineModifier(cell, state);
-                factory.AddCellToLines();
-                state.MyLines.Sort();
-                state.OppLines.Sort();
-            }
-            catch (Exception)
-            {
-                BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
-                throw;
-            }
+            var factory = new LineModifier(cell, state);
+            factory.AddCellToLines();
+            state.MyLines.Sort();
+            state.OppLines.Sort();
         }
     }
 }

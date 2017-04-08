@@ -37,7 +37,7 @@ namespace Gomoku2
         public List<GameState> GameStates { get; }
 
         public int Depth { private get; set; }
-        public bool StoreGameStates { get; set; }
+        public bool AnalyzeModeOn { get; set; }
 
         public void DoOpponentMove(int x, int y)
         {
@@ -103,7 +103,7 @@ namespace Gomoku2
             var estimatedCells = EstimateCells(state);
 
             //double enumeration doesn't happen - we parallelize only non-terminal states
-            if (state.AllowParallelize(estimatedCells))
+            if (state.AllowParallelize(estimatedCells) && !AnalyzeModeOn)
             {
                 Parallel.ForEach(estimatedCells, (estimatedCell, parallelLoopState) =>
                 {
@@ -198,7 +198,7 @@ namespace Gomoku2
 
         private void OnStateChanged(GameState gameState, GameState parentState)
         {
-            if (StoreGameStates)
+            if (AnalyzeModeOn)
             {
                 if (parentState == null)
                     GameStates.Add(gameState);

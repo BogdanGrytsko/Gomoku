@@ -39,15 +39,9 @@ namespace GomokuTest
         }
 
         [TestMethod]
-        public void BlockedThreeIntoDeadFour()
-        {
-            DoTestWin("BlockedThreeIntoDeadFour.txt", new Cell(7, 6), new Cell(3, 9));
-        }
-
-        [TestMethod]
         public void LongRunningComplexPosition()
         {
-            TestMove("LongRunningComplexPosition.txt", new Cell(9, 7));
+            TestMove("LongRunningComplexPosition.txt", new Cell(10, 6));
         }
 
         [TestMethod]
@@ -69,22 +63,21 @@ namespace GomokuTest
         }
 
         [TestMethod]
-        public void Board11FirstLost()
+        public void Board11FirstWon()
         {
-            DoTestWin("Board11FirstLost.txt", new Cell(8, 10));
+            DoTestWin("Board11FirstWon.txt", new Cell(5, 8));
         }
 
         [TestMethod]
         public void Board06WrongDefence()
         {
-            //second has lost anyway
-            DoTestWin("Board06WrongDefence.txt", 5, new Cell(5, 9), new Cell(9, 5));
+            TestMove("Board06WrongDefence.txt", new Cell(5, 9));
         }
 
         [TestMethod]
         public void Board09Unknown()
         {
-            TestMove("Board09Unknown.txt", new Cell(5, 7), new Cell(7, 9));
+            DoTestWin("Board09Unknown.txt", new Cell(6, 9));
         }
 
         [TestMethod]
@@ -96,13 +89,13 @@ namespace GomokuTest
         [TestMethod]
         public void Board13FirstDontDefend()
         {
-            TestMove("Board13FirstDontDefend.txt", new Cell(6, 9));
+            TestMove("Board13FirstDontDefend.txt", new Cell(5, 5));
         }
 
         [TestMethod]
         public void LongBrokenTwoNotModifiedCorrectly()
         {
-            TestMove("LongBrokenTwoNotModifiedCorrectly.txt", new Cell(7, 4));
+            TestMove("LongBrokenTwoNotModifiedCorrectly.txt", new Cell(7, 5), new Cell(10, 5));
         }
 
         [TestMethod]

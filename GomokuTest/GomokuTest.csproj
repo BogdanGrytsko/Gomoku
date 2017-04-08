@@ -309,10 +309,6 @@
     <Content Include="PriorityCells\DoubleThreatDefenceMoves.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardState\BlockedThreeIntoDeadFour.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="BoardState\BlockedThreeNotCountedInThreat.txt" />
     <Content Include="BoardState\Board05CorrectMove.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -322,7 +318,7 @@
     <Content Include="BoardState\Board09Unknown.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BoardState\Board11FirstLost.txt">
+    <Content Include="BoardState\Board11FirstWon.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="BoardState\Board13FirstDontDefend.txt">

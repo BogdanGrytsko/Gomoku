@@ -80,11 +80,7 @@ namespace GomokuTest
             DoTestWin("Board09Unknown.txt", new Cell(6, 9));
         }
 
-        [TestMethod]
-        public void Board05CorrectMove()
-        {
-            TestMove("Board05CorrectMove.txt", new Cell(7, 6), new Cell(6, 8));
-        }
+
 
         [TestMethod]
         public void Board13FirstDontDefend()

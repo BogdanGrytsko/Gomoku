@@ -22,7 +22,7 @@ namespace Gomoku2.PriorityChain
             return lines.Where(l => predicate(l.LineType)).SelectMany(l => l.HighPriorityCells);
         }
 
-        protected static IEnumerable<Cell> GetPriorityCells(IEnumerable<Line> lines, Predicate<LineType> predicate)
+        public static IEnumerable<Cell> GetPriorityCells(IEnumerable<Line> lines, Predicate<LineType> predicate)
         {
             return lines.Where(l => predicate(l.LineType)).SelectMany(l => l.PriorityCells);
         }

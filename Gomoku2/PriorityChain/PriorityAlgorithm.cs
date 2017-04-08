@@ -37,7 +37,8 @@ namespace Gomoku2.PriorityChain
             yield return new DoubleThreatThreeHandler(oppLines);
             yield return new DefenceThreatOfThreeHandler(oppLines);
             yield return new DoubleThreatTwoHandler(myLines);
-            yield return new ThreatGeneratingTwoHandler(myLines);
+            if (myLines.Count >= 2)
+                yield return new ThreatGeneratingTwoHandler(myLines);
             yield return new DoubleThreatTwoHandler(oppLines);
         }
 

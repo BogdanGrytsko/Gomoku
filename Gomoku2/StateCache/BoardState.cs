@@ -48,7 +48,9 @@ namespace Gomoku2.StateCache
 
         public bool AllowParallelize(IEnumerable<EstimatedCell> cells)
         {
-            return StartDepth - Depth <= 4 && !IsTerminal && cells.Count() >= 2;
+            if (IsTerminal)
+                return false;
+            return StartDepth - Depth <= 4 && cells.Count() >= 2;
         }
 
         private PriorityCells GetPriorityThreatCells()
@@ -57,10 +59,10 @@ namespace Gomoku2.StateCache
             return algorithm.GetPriorityCells();
         }
 
-        public NextCells GetNearEmptyCells()
+        private NextCells GetNearEmptyCells()
         {
             var set = new HashSet<Cell>();
-            set.UnionWith(GetPriorityCells(MyLines));
+            set.UnionWith(PriorityHandlerBase.GetPriorityCells(MyLines, t => true));
 
             for (int x = 0; x < 15; ++x)
             {
@@ -71,12 +73,7 @@ namespace Gomoku2.StateCache
                         set.UnionWith(CellManager.Get(x, y).GetAdjustmentEmptyCells(Board));
                 }
             }
-            return new NextCells(set, GetPriorityCells(OppLines));
-        }
-
-        private static IEnumerable<Cell> GetPriorityCells(IEnumerable<Line> lines)
-        {
-            return lines.SelectMany(line => line.PriorityCells);
+            return new NextCells(set, PriorityHandlerBase.GetPriorityCells(OppLines, t => true));
         }
 
         public BoardState GetNextState(BoardStateBase newState)

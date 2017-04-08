@@ -13,5 +13,11 @@ namespace GomokuTest
         {
             DoTestWin("Board05SecondLost.txt", new Cell(9, 8), new Cell(10, 8));
         }
+
+        [TestMethod]
+        public void Board04CorrectMove()
+        {
+            TestMove("Board04CorrectMove.txt", new Cell(9, 7));
+        }
     }
 }

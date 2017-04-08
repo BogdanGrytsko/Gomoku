@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Gomoku2.CellObjects;
 using Gomoku2.LineCore;
 using Gomoku2.StateCache;
@@ -56,17 +57,7 @@ namespace Gomoku2
 
         public Cell DoMove(BoardCell boardCell, int depth, int treeMaxWidth)
         {
-            Cell move;
-            //try
-            //{
-            //    move = DoMoveInternal(boardCell, depth, treeMaxWidth);
-            //}
-            //catch (Exception)
-            //{
-            //    BoardExportImport.Export(new EstimatedBoard { Board = board }, "ErrorBoard.txt");
-            //    throw;
-            //}
-            move = DoMoveInternal(boardCell, depth, treeMaxWidth);
+            var move = DoMoveInternal(boardCell, depth, treeMaxWidth);
             board[move.X, move.Y] = boardCell;
             currentState = GameStates.FirstOrDefault(gs => gs.Cell == move);
             return move;
@@ -92,10 +83,10 @@ namespace Gomoku2
 
             //todo we may want to remember history for perf improvement
             GameStates.Clear();
-            Cell move;
-            LastEstimate = AlphaBeta(state, int.MinValue, int.MaxValue, out move, null);
+            var move = AlphaBeta(state, int.MinValue, int.MaxValue, null);
+            LastEstimate = move.MinMax;
             sw.Stop();
-            return move;
+            return move.Move;
         }
 
         public BoardState GetBoardState(BoardCell boardCell, int depth, int maxWidth)
@@ -105,55 +96,77 @@ namespace Gomoku2
             return new BoardState(myLines, oppLines, boardCell, depth, 0, maxWidth, board) { StartDepth = depth };
         }
 
-        private int AlphaBeta(BoardState state, int alpha, int beta, out Cell move, GameState parent)
+        private AlphaBetaResult AlphaBeta(BoardState state, int alpha, int beta, GameState parent)
         {
-            move = null;
-            int bestEstim = state.StartEstimate;
+            var result = new AlphaBetaResult(state.StartEstimate, alpha, beta);
 
-            foreach (var estimatedCell in EstimateCells(state))
+            if (state.StartDepth - state.Depth <= -1)
             {
-                var cell = estimatedCell.Cell;
-                Cell bestMove;
-
-                board[cell.X, cell.Y] = state.MyCellType;
-                var currEstim = estimatedCell.Estimate*state.Multiplier;
-
-                var gameState = new GameState {BoardState = state.GetThisState(estimatedCell.MyLines, estimatedCell.OppLines), Cell = cell, Estimate = currEstim};
-                OnStateChanged(gameState, parent);
-                int minMax;
-                if (state.IsTerminal || FiveInRow(estimatedCell.Estimate) ||
-                    StraightFour(estimatedCell.Estimate) ||
-                    DoubleThreat(estimatedCell.Estimate))
-                    minMax = currEstim;
-                else
-                    minMax = AlphaBeta(state.GetNextState(estimatedCell.MyLines, estimatedCell.OppLines), alpha, beta, out bestMove, gameState);
-
-                gameState.Estimate = minMax;
-
-                if (state.ItIsFirstsTurn && minMax > bestEstim)
+                Parallel.ForEach(EstimateCells(state), (estimatedCell, parallelLoopState) =>
                 {
-                    bestEstim = minMax;
-                    alpha = minMax;
-                    move = cell;
-                }
-                if (!state.ItIsFirstsTurn && minMax < bestEstim)
-                {
-                    bestEstim = minMax;
-                    beta = minMax;
-                    move = cell;
-                }
-                board[cell.X, cell.Y] = BoardCell.None;
-                if (BreakOnFive(state.ItIsFirstsTurn, minMax)
-                    || BreakOnStraightFour(state.ItIsFirstsTurn, minMax)
-                    || BreakOnDoubleThreat(state.ItIsFirstsTurn, minMax)
-                    || beta <= alpha) break;
+                    if (ProcessCell(state, parent, estimatedCell, result))
+                        parallelLoopState.Stop();
+                });
             }
-            return bestEstim;
+            else
+            {
+                foreach (var estimatedCell in EstimateCells(state))
+                {
+                    if (ProcessCell(state, parent, estimatedCell, result)) break;
+                }
+            }
+            return result;
+        }
+
+        private bool ProcessCell(BoardState state, GameState parent, EstimatedCell estimatedCell, AlphaBetaResult res)
+        {
+            var cell = estimatedCell.Cell;
+
+            board[cell.X, cell.Y] = state.MyCellType;
+            var currEstim = estimatedCell.Estimate*state.Multiplier;
+
+            var gameState = new GameState(state, estimatedCell);
+            OnStateChanged(gameState, parent);
+            var cellResult = ShoudNotGoDeeper(state, estimatedCell)
+                ? new AlphaBetaResult(currEstim)
+                : AlphaBeta(state.GetNextState(estimatedCell.MyLines, estimatedCell.OppLines), res.Alpha, res.Beta, gameState);
+
+            gameState.Estimate = cellResult.MinMax;
+            if (state.ItIsFirstsTurn && cellResult.MinMax > res.MinMax)
+            {
+                res.MinMax = cellResult.MinMax;
+                res.Alpha = cellResult.MinMax;
+                res.Move = cell;
+            }
+            if (!state.ItIsFirstsTurn && cellResult.MinMax < res.MinMax)
+            {
+                res.MinMax = cellResult.MinMax;
+                res.Beta = cellResult.MinMax;
+                res.Move = cell;
+            }
+            board[cell.X, cell.Y] = BoardCell.None;
+            return ShouldBreak(state, res, cellResult.MinMax);
+        }
+
+        private static bool ShoudNotGoDeeper(BoardState state, EstimatedCell estimatedCell)
+        {
+            return state.IsTerminal
+                   || FiveInRow(estimatedCell.Estimate)
+                   || StraightFour(estimatedCell.Estimate)
+                   || DoubleThreat(estimatedCell.Estimate);
+        }
+
+        private static bool ShouldBreak(BoardState state, AlphaBetaResult res, int minMax)
+        {
+            return BreakOnFive(state.ItIsFirstsTurn, minMax)
+                   || BreakOnStraightFour(state.ItIsFirstsTurn, minMax)
+                   || BreakOnDoubleThreat(state.ItIsFirstsTurn, minMax)
+                   || res.Beta <= res.Alpha;
         }
 
         private static bool DoubleThreat(int estimate)
         {
-            //todo consider also Double Threat as exit condition
+            //todo consider also Double Threat as an exit condition
             return false;
             return Math.Abs(estimate) >= (int)LineType.DoubleThreat / 2;
         }
@@ -186,13 +199,9 @@ namespace Gomoku2
         private void OnStateChanged(GameState gameState, GameState parentState)
         {
             if (parentState == null)
-            {
                 GameStates.Add(gameState);
-            }
             else
-            {
                 parentState.AddChild(gameState);
-            }
         }
 
         private Cell FirstMoveCase()

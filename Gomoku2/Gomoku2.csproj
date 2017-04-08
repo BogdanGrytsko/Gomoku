@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CellObjects\AlphaBetaResult.cs" />
     <Compile Include="CellObjects\BoardCell.cs" />
     <Compile Include="BoardExportImport.cs" />
     <Compile Include="CellObjects\CellDirection.cs" />

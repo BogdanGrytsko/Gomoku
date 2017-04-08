@@ -5,8 +5,10 @@ namespace Gomoku2.StateCache
 {
     public class GameState
     {
-        public GameState()
+        public GameState(BoardState state, EstimatedCell estimatedCell)
         {
+            BoardState = state.GetThisState(estimatedCell.MyLines, estimatedCell.OppLines);
+            Cell = estimatedCell.Cell;
             Children = new List<GameState>();
         }
 

@@ -32,7 +32,7 @@ namespace Gomoku2.StateCache
         {
             var myLinesClone = new List<Line>(MyLines.Select(l => l.Clone()));
             var oppLinesClone = new List<Line>(OppLines.Select(l => l.Clone()));
-            return new BoardStateBase(myLinesClone, oppLinesClone, MyCellType, Board);
+            return new BoardStateBase(myLinesClone, oppLinesClone, MyCellType, (BoardCell[,])Board.Clone());
         }
     }
 }

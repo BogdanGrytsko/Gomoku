@@ -1,25 +1,21 @@
-﻿using System.Collections.Generic;
-using Gomoku2.LineCore;
+﻿using Gomoku2.StateCache;
 
 namespace Gomoku2.CellObjects
 {
     public class EstimatedCell
     {
-        public EstimatedCell(Cell cell, List<Line> myLines, List<Line> oppLines, int estimate)
+        public EstimatedCell(Cell cell, int estimate, BoardStateBase newState)
         {
             Cell = cell;
-            MyLines = myLines;
             Estimate = estimate;
-            OppLines = oppLines;
+            BoardState = newState;
         }
 
         public Cell Cell { get; }
 
-        public List<Line> MyLines { get; }
-
-        public List<Line> OppLines { get; }
-
         public int Estimate { get; }
+
+        public BoardStateBase BoardState { get; }
 
         public override string ToString()
         {

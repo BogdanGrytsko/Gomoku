@@ -5,14 +5,14 @@ namespace Gomoku2.StateCache
 {
     public class GameState
     {
-        public GameState(BoardState state, EstimatedCell estimatedCell)
+        public GameState(EstimatedCell estimatedCell)
         {
-            BoardState = state.GetThisState(estimatedCell.MyLines, estimatedCell.OppLines);
+            BoardState = estimatedCell.BoardState;
             Cell = estimatedCell.Cell;
             Children = new List<GameState>();
         }
 
-        public BoardState BoardState { get; set; }
+        public BoardStateBase BoardState { get; set; }
         public Cell Cell { get; set; }
         public int Estimate { get; set; }
 

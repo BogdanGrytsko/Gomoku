@@ -31,16 +31,6 @@ namespace Gomoku2.StateCache
 
         public int StartEstimate => ItIsFirstsTurn ? int.MinValue : int.MaxValue;
 
-        public BoardState GetNextState(List<Line> myNewLines, List<Line> oppNewLines)
-        {
-            return new BoardState(oppNewLines, myNewLines, OpponentCellType, Depth - 1, MinDepth, MaxWidth, Board) { StartDepth = StartDepth };
-        }
-
-        public BoardState GetThisState(List<Line> myNewLines, List<Line> oppNewLines)
-        {
-            return new BoardState(myNewLines, oppNewLines, MyCellType, Depth, MinDepth, MaxWidth, (BoardCell[,])Board.Clone());
-        }
-
         public NextCells GetNextCells()
         {
             const int minMinDepth = -16;
@@ -82,6 +72,11 @@ namespace Gomoku2.StateCache
         private static IEnumerable<Cell> GetPriorityCells(IEnumerable<Line> lines)
         {
             return lines.SelectMany(line => line.PriorityCells);
+        }
+
+        public BoardState GetNextState(BoardStateBase newState)
+        {
+            return new BoardState(newState.OppLines, newState.MyLines, OpponentCellType, Depth - 1, MinDepth, MaxWidth, newState.Board) { StartDepth = StartDepth };
         }
     }
 }

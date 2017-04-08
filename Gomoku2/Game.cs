@@ -121,15 +121,13 @@ namespace Gomoku2
         private bool ProcessCell(BoardState state, GameState parent, EstimatedCell estimatedCell, AlphaBetaResult res)
         {
             var cell = estimatedCell.Cell;
-
-            board[cell.X, cell.Y] = state.MyCellType;
             var currEstim = estimatedCell.Estimate*state.Multiplier;
 
-            var gameState = new GameState(state, estimatedCell);
+            var gameState = new GameState(estimatedCell);
             OnStateChanged(gameState, parent);
             var cellResult = ShoudNotGoDeeper(state, estimatedCell)
                 ? new AlphaBetaResult(currEstim)
-                : AlphaBeta(state.GetNextState(estimatedCell.MyLines, estimatedCell.OppLines), res.Alpha, res.Beta, gameState);
+                : AlphaBeta(state.GetNextState(estimatedCell.BoardState), res.Alpha, res.Beta, gameState);
 
             gameState.Estimate = cellResult.MinMax;
             if (state.ItIsFirstsTurn && cellResult.MinMax > res.MinMax)
@@ -144,7 +142,6 @@ namespace Gomoku2
                 res.Beta = cellResult.MinMax;
                 res.Move = cell;
             }
-            board[cell.X, cell.Y] = BoardCell.None;
             return ShouldBreak(state, res, cellResult.MinMax);
         }
 
@@ -239,12 +236,12 @@ namespace Gomoku2
         {
             foreach (var cell in nextCells.MyNextCells)
             {
-                board[cell.X, cell.Y] = state.MyCellType;
+                state.Board[cell.X, cell.Y] = state.MyCellType;
                 var newState = GetLinesByAddingCell(cell, state);
                 var estimate = Estimate(newState.MyLines, newState.OppLines);
-                board[cell.X, cell.Y] = BoardCell.None;
+                state.Board[cell.X, cell.Y] = BoardCell.None;
 
-                yield return new EstimatedCell(cell, newState.MyLines, newState.OppLines, estimate);
+                yield return new EstimatedCell(cell, estimate, newState);
             }
 
             if (nextCells.OppNextCells == null)

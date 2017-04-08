@@ -28,11 +28,18 @@ namespace Gomoku2.StateCache
             Board = board;
         }
 
-        public BoardStateBase Clone()
+        private BoardStateBase Clone()
         {
             var myLinesClone = new List<Line>(MyLines.Select(l => l.Clone()));
             var oppLinesClone = new List<Line>(OppLines.Select(l => l.Clone()));
             return new BoardStateBase(myLinesClone, oppLinesClone, MyCellType, (BoardCell[,])Board.Clone());
+        }
+
+        public BoardStateBase GetNewState(Cell cell)
+        {
+            var clonedState = Clone();
+            BoardFactory.AddCellToLines(cell, clonedState);
+            return clonedState;
         }
     }
 }

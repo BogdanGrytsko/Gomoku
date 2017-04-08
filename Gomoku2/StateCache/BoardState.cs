@@ -46,6 +46,11 @@ namespace Gomoku2.StateCache
 
         public bool IsTerminal => Depth == MinDepth;
 
+        public bool AllowParallelize(IEnumerable<EstimatedCell> cells)
+        {
+            return StartDepth - Depth <= 4 && !IsTerminal && cells.Count() >= 2;
+        }
+
         private PriorityCells GetPriorityThreatCells()
         {
             var algorithm = new PriorityAlgorithm(MyLines, OppLines);

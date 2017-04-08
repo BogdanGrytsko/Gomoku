@@ -201,7 +201,7 @@ namespace GomokuSimulator
             analyzisTreeView.Nodes.Clear();
 
             var board = currentBoard.Board;
-            var game = new Game(board);
+            var game = new Game(board) { StoreGameStates = true };
             game.DoMove(board.WhoMovesNext(), AnalyzeDepth, AnalyzeWidth);
             PopulateTree(analyzisTreeView.Nodes, game.GameStates);
 

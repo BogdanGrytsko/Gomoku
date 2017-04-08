@@ -93,7 +93,7 @@ namespace GomokuTest
             var oppCellType = myCellType.Opponent();
             var myLines = game.GetLines(myCellType);
             var oppLines = game.GetLines(oppCellType);
-            return game.Estimate(myLines, oppLines);
+            return Game.Estimate(myLines, oppLines);
         }
     }
 }

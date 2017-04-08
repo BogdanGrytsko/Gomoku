@@ -121,5 +121,20 @@ namespace Gomoku2
                 }
             }
         }
+
+        public static int Sum(this List<Line> lines)
+        {
+            var estims = lines.Select(l => l.LineType).ToList();
+            var sum = estims.Sum(es => (int)es);
+            if (HasDoubleThreat(lines))
+                sum += (int)LineType.DoubleThreat;
+            return sum;
+        }
+
+        public static bool HasDoubleThreat(this List<Line> lines)
+        {
+            int killerLines = lines.Count(line => line.LineType.ThreatOfThree() || line.LineType.ThreatOfFour());
+            return killerLines >= 2;
+        }
     }
 }

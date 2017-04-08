@@ -37,6 +37,7 @@ namespace Gomoku2
         public List<GameState> GameStates { get; }
 
         public int Depth { private get; set; }
+        public bool StoreGameStates { get; set; }
 
         public void DoOpponentMove(int x, int y)
         {
@@ -99,10 +100,12 @@ namespace Gomoku2
         private AlphaBetaResult AlphaBeta(BoardState state, int alpha, int beta, GameState parent)
         {
             var result = new AlphaBetaResult(state.StartEstimate, alpha, beta);
+            var estimatedCells = EstimateCells(state);
 
-            if (state.StartDepth - state.Depth <= -1)
+            //double enumeration doesn't happen - we parallelize only non-terminal states
+            if (state.AllowParallelize(estimatedCells))
             {
-                Parallel.ForEach(EstimateCells(state), (estimatedCell, parallelLoopState) =>
+                Parallel.ForEach(estimatedCells, (estimatedCell, parallelLoopState) =>
                 {
                     if (ProcessCell(state, parent, estimatedCell, result))
                         parallelLoopState.Stop();
@@ -110,7 +113,7 @@ namespace Gomoku2
             }
             else
             {
-                foreach (var estimatedCell in EstimateCells(state))
+                foreach (var estimatedCell in estimatedCells)
                 {
                     if (ProcessCell(state, parent, estimatedCell, result)) break;
                 }
@@ -195,10 +198,13 @@ namespace Gomoku2
 
         private void OnStateChanged(GameState gameState, GameState parentState)
         {
-            if (parentState == null)
-                GameStates.Add(gameState);
-            else
-                parentState.AddChild(gameState);
+            if (StoreGameStates)
+            {
+                if (parentState == null)
+                    GameStates.Add(gameState);
+                else
+                    parentState.AddChild(gameState);
+            }
         }
 
         private Cell FirstMoveCase()
@@ -206,22 +212,7 @@ namespace Gomoku2
             return board[7, 7] == BoardCell.None ? CellManager.Get(7, 7) : CellManager.Get(8, 8);
         }
 
-        private static int Sum(List<Line> lines)
-        {
-            var estims = lines.Select(l => l.LineType).ToList();
-            var sum = estims.Sum(es => (int)es);
-            if (HasDoubleThreat(lines))
-                sum += (int)LineType.DoubleThreat;
-            return sum;
-        }
-
-        private static bool HasDoubleThreat(List<Line> lines)
-        {
-            int killerLines = lines.Count(line => line.LineType.ThreatOfThree() || line.LineType.ThreatOfFour());
-            return killerLines >= 2;
-        }
-
-        private IEnumerable<EstimatedCell> EstimateCells(BoardState state)
+        private static IEnumerable<EstimatedCell> EstimateCells(BoardState state)
         {
             var cells = state.GetNextCells();
             //todo we estimate leaf position we may consider to take ONLY GetPriorityCells(MyLines), without all near empty cells
@@ -232,12 +223,12 @@ namespace Gomoku2
             return estimatedCells.OrderByDescending(ec => ec.Estimate).Take(state.MaxWidth);
         }
 
-        private IEnumerable<EstimatedCell> GetEstimatedCells(BoardStateBase state, NextCells nextCells)
+        private static IEnumerable<EstimatedCell> GetEstimatedCells(BoardStateBase state, NextCells nextCells)
         {
             foreach (var cell in nextCells.MyNextCells)
             {
                 state.Board[cell.X, cell.Y] = state.MyCellType;
-                var newState = GetLinesByAddingCell(cell, state);
+                var newState = state.GetNewState(cell);
                 var estimate = Estimate(newState.MyLines, newState.OppLines);
                 state.Board[cell.X, cell.Y] = BoardCell.None;
 
@@ -255,12 +246,12 @@ namespace Gomoku2
             //}
         }
 
-        public int Estimate(List<Line> myLines, List<Line> oppLines)
+        public static int Estimate(List<Line> myLines, List<Line> oppLines)
         {
-            var myEstim = Sum(myLines);
+            var myEstim = myLines.Sum();
             if (FiveInRow(myEstim)) return myEstim;
 
-            var oppEstim = Sum(oppLines);
+            var oppEstim = oppLines.Sum();
 
             if (oppLines.Any(line => line.LineType.FourCellLine()))
                 return -(int)LineType.FiveInRow;
@@ -277,35 +268,6 @@ namespace Gomoku2
         public List<Line> GetLines(BoardCell cellType)
         {
             return BoardFactory.GetLines(board, cellType);
-        }
-
-        private static BoardStateBase GetLinesByAddingCell(Cell cell, BoardStateBase state)
-        {
-            var clonedState = state.Clone();
-            BoardFactory.AddCellToLines(cell, clonedState);
-            //CheckConsistency(state, clonedState);
-            return clonedState;
-        }
-
-        private static void CheckConsistency(BoardStateBase state, BoardStateBase clonedState)
-        {
-            var myLines = BoardFactory.GetLines(state.Board, state.MyCellType);
-            if (myLines.Count != clonedState.MyLines.Count)
-            {
-                var line = myLines.Except(clonedState.MyLines);
-                var line2 = clonedState.MyLines.Except(myLines);
-                BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
-                throw new Exception("HorribleMismatch.txt");
-            }
-
-            var oppLines = BoardFactory.GetLines(state.Board, state.OpponentCellType);
-            if (oppLines.Count != clonedState.OppLines.Count)
-            {
-                var line = oppLines.Except(clonedState.OppLines);
-                var line2 = clonedState.OppLines.Except(oppLines);
-                BoardExportImport.Export(state.Board, "HorribleMismatch.txt");
-                throw new Exception("HorribleMismatch.txt");
-            }
         }
     }
 }

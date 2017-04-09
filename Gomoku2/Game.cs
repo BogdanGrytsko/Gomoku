@@ -150,45 +150,18 @@ namespace Gomoku2
 
         private static bool ShoudNotGoDeeper(BoardState state, EstimatedCell estimatedCell)
         {
-            return state.IsTerminal
-                   || FiveInRow(estimatedCell.Estimate)
-                   || StraightFour(estimatedCell.Estimate)
-                   || DoubleThreat(estimatedCell.Estimate);
+            return state.IsTerminal || Math.Abs(estimatedCell.Estimate) >= (int) LineType.DoubleThreat/2;
         }
 
         private static bool ShouldBreak(BoardState state, AlphaBetaResult res, int minMax)
         {
-            return BreakOnFive(state.ItIsFirstsTurn, minMax)
-                   || BreakOnStraightFour(state.ItIsFirstsTurn, minMax)
-                   || BreakOnDoubleThreat(state.ItIsFirstsTurn, minMax)
+            return BreakOnDoubleThreat(state.ItIsFirstsTurn, minMax)
                    || res.Beta <= res.Alpha;
-        }
-
-        private static bool DoubleThreat(int estimate)
-        {
-            //todo consider also Double Threat as an exit condition
-            return false;
-            return Math.Abs(estimate) >= (int)LineType.DoubleThreat / 2;
         }
 
         private static bool FiveInRow(int estim)
         {
             return Math.Abs(estim) >= (int)LineType.FiveInRow / 2;
-        }
-
-        public static bool StraightFour(int estim)
-        {
-            return Math.Abs(estim) >= (int)LineType.StraightFour / 2;
-        }
-
-        private static bool BreakOnFive(bool movesFirst, int estim)
-        {
-            return (estim <= -(int)LineType.FiveInRow / 2 && !movesFirst) || (estim >= (int)LineType.FiveInRow / 2 && movesFirst);
-        }
-
-        private static bool BreakOnStraightFour(bool movesFirst, int estim)
-        {
-            return (estim <= -(int)LineType.StraightFour / 2 && !movesFirst) || (estim >= (int)LineType.StraightFour / 2 && movesFirst);
         }
 
         private static bool BreakOnDoubleThreat(bool movesFirst, int estim)

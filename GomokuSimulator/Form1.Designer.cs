@@ -131,7 +131,7 @@ namespace GomokuSimulator
             // 
             this.analyzisTreeView.Location = new System.Drawing.Point(673, 226);
             this.analyzisTreeView.Name = "analyzisTreeView";
-            this.analyzisTreeView.Size = new System.Drawing.Size(312, 437);
+            this.analyzisTreeView.Size = new System.Drawing.Size(566, 536);
             this.analyzisTreeView.TabIndex = 9;
             this.analyzisTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.AnalyzisTreeViewNodeClick);
             // 
@@ -282,7 +282,7 @@ namespace GomokuSimulator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(993, 675);
+            this.ClientSize = new System.Drawing.Size(1251, 774);
             this.Controls.Add(this.player2Box);
             this.Controls.Add(this.player1Box);
             this.Controls.Add(this.label7);

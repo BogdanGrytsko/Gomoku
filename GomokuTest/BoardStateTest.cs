@@ -80,8 +80,6 @@ namespace GomokuTest
             DoTestWin("Board09Unknown.txt", new Cell(6, 9));
         }
 
-
-
         [TestMethod]
         public void Board13FirstDontDefend()
         {

@@ -9,12 +9,12 @@ namespace Gomoku2.CellObjects
 
         public bool IncreasesDepth { get; private set; }
 
-        public PriorityCells(IEnumerable<Cell> cells)
+        public PriorityCells(IEnumerable<Cell> cells, bool increasesDepth = true)
         {
             if (cells == null)
                 cells = new List<Cell>();
             Cells = cells.ToList();
-            IncreasesDepth = true;
+            IncreasesDepth = increasesDepth;
         }
 
         public bool Any()

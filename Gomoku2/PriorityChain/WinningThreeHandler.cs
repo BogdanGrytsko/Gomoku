@@ -12,7 +12,7 @@ namespace Gomoku2.PriorityChain
 
         public override PriorityCells GetCells()
         {
-            return new PriorityCells(GetHighPriorityCells(lines, LineTypeExtensions.ThreatOfThree));
+            return new PriorityCells(GetHighPriorityCells(lines, LineTypeExtensions.ThreatOfThree), false);
         }
     }
 }

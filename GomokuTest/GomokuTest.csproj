@@ -89,7 +89,13 @@
     <Content Include="BoardState\LongBrokenTwoNotModifiedCorrectly.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="DeepAnalyzis\Board02.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="DeepAnalyzis\Board05SecondLost.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DeepAnalyzis\Board05SecondLost2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LineChange\TripleTwoIntoTripleThree.txt">
